@@ -1,0 +1,53 @@
+<div class="flex flex-col" style="height: 100%">
+  <header class="p-5">
+    <form>
+      <div class="relative mb-6">
+        <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+          <lucide-icon name="search" class="search" size="20" class="pt-0.5 text-zinc-200"></lucide-icon>
+        </div>
+        <input type="text" id="input-group-1"
+               class="bg-slate-700 border-solid border-zinc-400 text-zinc-200 text-sm rounded-full focus:ring-zinc-400 focus:border-zinc-400 w-64 ps-10 p-3"
+               placeholder="name@flowbite.com">
+      </div>
+    </form>
+
+    <div class="grid grid-cols-12 gap-4 pt-4">
+      <div class="flex items-center pl-6">
+        <h4 class="text-zinc-200">#</h4>
+      </div>
+      <div class="flex items-center col-span-8">
+        <h4 class="text-zinc-200">Music</h4>
+      </div>
+      <div class="flex items-center justify-self-end">
+        <h4 class="text-zinc-200">Played</h4>
+      </div>
+      <div class="flex items-center justify-self-end col-span-2 pr-6">
+        <h4 class="text-zinc-200">Duration</h4>
+      </div>
+    </div>
+
+    <hr class="h-px mt-4 mb-4 bg-zinc-700 border-0">
+  </header>
+
+  <main class="flex-1 pr-5 pl-5 overflow-y-auto">
+    <a href="" *ngFor="let music of musics" class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline hover:bg-sky-900 rounded-sm">
+      <div class="flex items-center pl-6">
+        <h4 class="text-zinc-400">1</h4>
+      </div>
+      <div class="flex items-center col-span-8">
+        <div href="" class="flex items-center">
+          <div class="flex flex-col space-y-1">
+            <h4 class="text-md text-zinc-200">teste</h4>
+            <h5 class="text-zinc-400">hinario Adventista</h5>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-self-end text-zinc-400">
+        <h4 class="text-zinc-200">Played</h4>
+      </div>
+      <div class="flex items-center justify-self-end col-span-2 pr-6 text-zinc-400">
+        <h4 class="text-zinc-200">Duration</h4>
+      </div>
+    </a>
+  </main>
+</div>

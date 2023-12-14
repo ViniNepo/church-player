@@ -1,0 +1,85 @@
+<div class="flex flex-col" style="height: 100%">
+  <header>
+    <div class="flex items-end h-72 bg-sky-900 rounded-t-lg">
+      <div class="flex pl-8 pb-8">
+        <div class="w-40 h-40 bg-sky-600"></div>
+      </div>
+
+      <div class="flex-1 pb-6 pl-4">
+        <div>
+          <h5 class="text-xl text-zinc-400">Album</h5>
+          <div class="flex items-end gap-2">
+            <h1 class="text-6xl text-zinc-200">Hinario Adventista</h1>
+            <button class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500">
+              <lucide-icon name="pencil-line" class="pencil-line"></lucide-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex pr-8 pb-8 gap-2">
+        <button class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700" type="button">
+          <div class="flex items-center text-zinc-200">
+            <h4 class="text-zinc-200">Add New Song</h4>
+          </div>
+        </button>
+        <button class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700" type="button">
+          <div class="flex items-center text-zinc-200">
+            <h4 class="text-zinc-200">Delete Album</h4>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-4 pl-5 pr-5 pt-5">
+      <div class="flex items-center pl-6">
+        <h4 class="text-zinc-200">#</h4>
+      </div>
+      <div class="flex items-center col-span-7">
+        <h4 class="text-zinc-200">Music</h4>
+      </div>
+      <div class="flex items-center justify-self-end">
+        <h4 class="text-zinc-200">Played</h4>
+      </div>
+      <div class="flex items-center justify-self-end col-span-2">
+        <h4 class="text-zinc-200">Duration</h4>
+      </div>
+      <div class="flex items-center justify-self-end pr-6">
+        <h4 class="text-zinc-200">Edit</h4>
+      </div>
+    </div>
+
+    <hr class="h-px mt-4 mb-4 bg-zinc-700 border-0">
+  </header>
+
+  <main class="flex-1 p-5 overflow-y-auto">
+    <div *ngFor="let music of musics"
+         class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm">
+      <div class="flex items-center pl-6 text-zinc-400">
+        <h4 class="visible group-hover:invisible">1</h4>
+        <button class="pt-1 no-underline border-none bg-transparent text-zinc-200 hover:text-sky-500 invisible group-hover:visible">
+          <lucide-icon name="play" class="play"></lucide-icon>
+        </button>
+      </div>
+      <div class="flex items-center col-span-7">
+        <div href="" class="flex items-center">
+          <div class="flex flex-col space-y-1">
+            <h4 class="text-md text-zinc-200">teste</h4>
+            <h5 class="text-zinc-400">hinario Adventista</h5>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-self-end text-zinc-400">
+        <h4 class="text-zinc-200">Played</h4>
+      </div>
+      <div class="flex items-center justify-self-end col-span-2 text-zinc-400">
+        <h4 class="text-zinc-200">Duration</h4>
+      </div>
+      <div class="flex items-center justify-self-end pr-6 pt-1">
+        <button href="" class="no-underline border-none bg-transparent text-red-400 hover:text-red-700">
+          <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
+        </button>
+      </div>
+    </div>
+  </main>
+</div>

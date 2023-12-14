@@ -1,0 +1,89 @@
+<div>
+  <div class="flex items-center justify-between p-5">
+    <h1>Good Afternoom!</h1>
+    <!-- select screen to run video -->
+    <div class="flex item-center gap-0.5">
+      <div class="bg-slate-800 p-2 rounded-l-md">
+        <h4>screen selected:</h4>
+      </div>
+      <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
+              class="bg-slate-800 p-2 rounded-r-md border-none hover:bg-slate-700" type="button">
+        <div class="flex items-center">
+          <h4 class="text-zinc-200">monitor 1</h4>
+          <lucide-icon name="chevron-down" class="chevron-down" size="20" class="text-zinc-200"></lucide-icon>
+        </div>
+      </button>
+
+      <!-- Dropdown menu -->
+      <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+          <li>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-zinc-200">Dashboard</a>
+          </li>
+          <li>
+            <a href="#"
+               class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-zinc-200">Settings</a>
+          </li>
+          <li>
+            <a href="#"
+               class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-zinc-200">Earnings</a>
+          </li>
+          <li>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-zinc-200">Sign
+              out</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <hr class="h-px my-8 bg-zinc-700 border-0 mr-5 ml-5">
+
+  <h1 class="font-semibold text-3xl pr-5 pl-5">Worship Programs</h1>
+
+  <div class="grid grid-cols-3 gap-4 p-5">
+    <a href="search-songs"
+       class="bg-slate-800 flex items-center rounded-md no-underline group hover:bg-slate-700 transition-colors"
+       *ngFor="let program of programs">
+      <div class="w-20 h-20 bg-sky-600 rounded-l-md"></div>
+      <h4 class="flex-1 pl-4 text-zinc-200">{{ program }}</h4>
+
+      <button
+        class="bg-sky-500 w-10 h-10 flex pl-1 mr-4 rounded-full border-none items-center justify-center pt-0.5 invisible group-hover:visible hover:bg-sky-400 transition-colors">
+        <lucide-icon name="play" class="play"></lucide-icon>
+      </button>
+    </a>
+  </div>
+
+  <h1 class="font-semibold text-3xl pt-6 pr-5 pl-5">Albums</h1>
+
+  <div class="flex flex-wrap content-around p-5">
+    <a href="" class="p-3 w-52 h-64 m-1 bg-slate-800 flex flex-col rounded-lg no-underline hover:bg-slate-700 transition-colors"
+       *ngFor="let program of programs">
+      <div class="flex items-center justify-center">
+        <div class="w-full h-44 bg-sky-600 rounded-md"></div>
+      </div>
+      <div class="pt-2">
+        <div class="space-y-2">
+          <h4 class="text-zinc-200">{{ program }}</h4>
+          <h5 class="text-zinc-400">{{ program }}</h5>
+        </div>
+      </div>
+    </a>
+  </div>
+
+<!--  <div class="gap-8 pt-4">-->
+<!--    <a href="" class="p-3 w-52 bg-slate-800 flex flex-col rounded-lg no-underline hover:bg-slate-700 transition-colors"-->
+<!--       *ngFor="let program of programs">-->
+<!--      <div class="flex items-center justify-center">-->
+<!--        <div class="w-full h-44 bg-sky-600 rounded-md"></div>-->
+<!--      </div>-->
+<!--      <div class="pt-2">-->
+<!--        <div class="space-y-2">-->
+<!--          <h4 class="text-zinc-200">{{ program }}</h4>-->
+<!--          <h5 class="text-zinc-400">{{ program }}</h5>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </a>-->
+<!--  </div>-->
+</div>

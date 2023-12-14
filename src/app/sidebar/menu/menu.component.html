@@ -1,0 +1,60 @@
+<div class="flex flex-col" style="height: 100%">
+  <header>
+    <aside class="p-5 bg-slate-900 rounded-lg">
+      <nav class="space-y-4">
+        <a href="home"
+           class="p-2 flex items-center gap-3 text-sm font-semibold text-zinc-200 no-underline hover:bg-slate-800 hover:rounded-md transition-colors">
+          <lucide-icon name="home" class="home"></lucide-icon>
+          <h3>Home</h3>
+        </a>
+        <a href="search-songs"
+           class="p-2 flex items-center gap-3 text-sm font-semibold text-zinc-200 no-underline hover:bg-slate-800 hover:rounded-md transition-colors">
+          <lucide-icon name="search" class="search"></lucide-icon>
+          <h3>Search</h3>
+        </a>
+
+        <hr class="h-px my-8 bg-zinc-700 border-0">
+
+        <a href="worship-program"
+           class="p-2 flex items-center gap-3 text-sm font-semibold text-zinc-200 no-underline hover:bg-slate-800 hover:rounded-md transition-colors">
+          <lucide-icon name="plus-square" class="plus-square"></lucide-icon>
+          <h3>Worship programs</h3>
+        </a>
+        <a href="album"
+           class="p-2 flex items-center gap-3 text-sm font-semibold text-zinc-200 no-underline hover:bg-slate-800 hover:rounded-md transition-colors">
+          <lucide-icon name="plus-square" class="plus-square"></lucide-icon>
+          <h3>Album</h3>
+        </a>
+      </nav>
+    </aside>
+
+    <div class="flex items-center mt-2 p-5 pb-2 text-zinc-200 bg-slate-900 rounded-t-lg">
+      <h3 class="flex-1">Played recently</h3>
+      <a href="" class="no-underline text-zinc-400 hover:text-zinc-200">
+        <lucide-icon name="move-up" size="15" class="move-up"></lucide-icon>
+        <lucide-icon name="history" class="history"></lucide-icon>
+      </a>
+    </div>
+  </header>
+
+  <main class="flex-1 overflow-y-auto bg-slate-900 rounded-b-lg">
+    <div class="overflow-y-auto">
+      <ul class="mt-4 flex pl-2 pr-2 flex-col list-none">
+        <li *ngFor="let music of musics" class="hover:bg-slate-800 hover:rounded-md transition-colors pt-2 pb-2">
+          <a href="/album" class="flex items-center no-underline">
+            <div class="w-10 h-10 rounded-md bg-sky-600 ml-2">
+              <img ngSrc="https://s1.static.brasilescola.uol.com.br/be/conteudo/images/imagem-em-lente-convexa.jpg" fill>
+
+            </div>
+
+            <div class="pl-2 flex flex-col space-y-1">
+              <h4 class="text-md text-zinc-200">{{music}}</h4>
+              <h5 class="text-zinc-400">hinario Adventista</h5>
+            </div>
+          </a>
+
+        </li>
+      </ul>
+    </div>
+  </main>
+</div>

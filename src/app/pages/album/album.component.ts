@@ -9,9 +9,14 @@ export class AlbumComponent implements OnInit{
 
   musics: string[] = ["","","","","","","","","","","","","Achei um grande amigo","Achei um grande amigo","Achei um grande amigo", "Alvo mais que a neve", "Vos sois o sal da terra", "Achei um grande amigo", "Alvo mais que a neve", "Vos sois o sal da terra"];
 
-  constructor() {
-  }
-
   ngOnInit() {
   }
+
+  constructor() {}
+
+  showModal = false;
+  toggleModal(){
+    this.showModal = !this.showModal;
+  }
+
 }

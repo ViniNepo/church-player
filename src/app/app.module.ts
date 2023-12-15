@@ -19,10 +19,8 @@ import {QueueService} from "./service/queue.service";
 import {SoundControlService} from "./service/sound-control.service";
 import {PlayerService} from "./service/player.service";
 import {UploadService} from "./service/upload.service";
-import { WorshipComponent } from './dialog/worship/worship.component';
-import { ChangeWorshipComponent } from './dialog/change-worship/change-worship.component';
-import { DeleteComponent } from './dialog/delete/delete.component';
-import {AlbumDialogComponent} from "./dialog/album-dialog/album-dialog.component";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -34,15 +32,44 @@ import {AlbumDialogComponent} from "./dialog/album-dialog/album-dialog.component
     RightMenuComponent,
     MenuComponent,
     SoundControlPanelComponent,
-    WorshipComponent,
-    ChangeWorshipComponent,
-    DeleteComponent,
-    AlbumDialogComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    LucideAngularModule.pick({Home, Search, Library, Play, SquareEqual, ListFilter, PlusSquare, Shuffle, SkipBack, SkipForward, Repeat, ListVideo, ChevronLeftCircle, ChevronRightCircle, ChevronLeft, ChevronRight, ChevronDown, VolumeX, Volume, Volume1, Volume2, Maximize2, Minimize2, SlidersHorizontal, Pencil, PencilLine, MinusCircle, AudioLines, History, MoveUp})
+    LucideAngularModule.pick({
+      Home,
+      Search,
+      Library,
+      Play,
+      SquareEqual,
+      ListFilter,
+      PlusSquare,
+      Shuffle,
+      SkipBack,
+      SkipForward,
+      Repeat,
+      ListVideo,
+      ChevronLeftCircle,
+      ChevronRightCircle,
+      ChevronLeft,
+      ChevronRight,
+      ChevronDown,
+      VolumeX,
+      Volume,
+      Volume1,
+      Volume2,
+      Maximize2,
+      Minimize2,
+      SlidersHorizontal,
+      Pencil,
+      PencilLine,
+      MinusCircle,
+      AudioLines,
+      History,
+      MoveUp
+    }),
+    MatFormFieldModule,
+    FormsModule
   ],
   providers: [
     InterfaceService,

@@ -8,8 +8,8 @@ import { SearchSongsComponent } from './pages/search-songs/search-songs.componen
 import { AlbumComponent } from './pages/album/album.component';
 import { HomeComponent } from './pages/home/home.component';
 import { WorshipProgramComponent } from './pages/worship-program/worship-program.component';
-import { MiniPreviewComponent } from './sidebar/mini-preview/mini-preview.component';
-import { MenuComponent } from './sidebar/menu/menu.component';
+import { RightMenuComponent } from './sidebar/right-menu/right-menu.component';
+import { MenuComponent } from './sidebar/left-menu/menu.component';
 import { SoundControlPanelComponent } from './sidebar/sound-control-panel/sound-control-panel.component';
 import {InterfaceService} from "./service/interface.service";
 import {WorshipService} from "./service/worship.service";
@@ -19,6 +19,10 @@ import {QueueService} from "./service/queue.service";
 import {SoundControlService} from "./service/sound-control.service";
 import {PlayerService} from "./service/player.service";
 import {UploadService} from "./service/upload.service";
+import { WorshipComponent } from './dialog/worship/worship.component';
+import { ChangeWorshipComponent } from './dialog/change-worship/change-worship.component';
+import { DeleteComponent } from './dialog/delete/delete.component';
+import {AlbumDialogComponent} from "./dialog/album-dialog/album-dialog.component";
 
 @NgModule({
   declarations: [
@@ -27,9 +31,13 @@ import {UploadService} from "./service/upload.service";
     AlbumComponent,
     HomeComponent,
     WorshipProgramComponent,
-    MiniPreviewComponent,
+    RightMenuComponent,
     MenuComponent,
     SoundControlPanelComponent,
+    WorshipComponent,
+    ChangeWorshipComponent,
+    DeleteComponent,
+    AlbumDialogComponent
   ],
   imports: [
     BrowserModule,

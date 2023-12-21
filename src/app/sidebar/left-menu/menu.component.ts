@@ -30,7 +30,7 @@ export class MenuComponent implements OnInit {
     this.historyService.historyEmitter.subscribe(
       id => {
         // TODO buscar musica por id
-        let music: Music = {name: "teste", id: 1, duration: 1, timesPlayed: 1, file: "re", number: 1}
+        let music: Music = {name: "Cristo já ressucitou", id: 1, duration: 1, timesPlayed: 1, file: "nature.jpg", number: 1}
         this.musics.push(music)
       }
     )

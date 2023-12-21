@@ -45,13 +45,9 @@
       <ul *ngIf="musics.length > 0" class="mt-4 flex pl-2 pr-2 flex-col list-none">
         <li *ngFor="let music of musics" class="hover:bg-slate-800 hover:rounded-md transition-colors pt-2 pb-2">
           <a routerLink="/album" class="flex items-center no-underline">
-            <div class="w-10 h-10 rounded-md bg-sky-600 ml-2">
-              <img ngSrc="https://s1.static.brasilescola.uol.com.br/be/conteudo/images/imagem-em-lente-convexa.jpg" fill>
-
-            </div>
-
+            <img src="assets/album-images/{{music.file}}" class="h-12 w-12 object-cover ml-2">
             <div class="pl-2 flex flex-col space-y-1">
-              <h4 class="text-md text-zinc-200">{{music}}</h4>
+              <h4 class="text-md text-zinc-200">{{music.name}}</h4>
               <h5 class="text-zinc-400">hinario Adventista</h5>
             </div>
           </a>

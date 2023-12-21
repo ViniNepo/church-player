@@ -7,22 +7,22 @@
         <div>
           <label for="song_name" class="control-label block text-sm font-medium text-zinc-200 pb-2">Song name</label>
           <input [(ngModel)]="this.music.name" formControlName="song_name" type="text" id="song_name" size="50"
-                 class="border text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500"
-                 placeholder="song name">
+                 class="outline-none text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                 placeholder="Song name">
         </div>
         <div class="">
           <label for="song_number" class="block text-sm font-medium text-zinc-200 pb-2">Song number</label>
           <input [(ngModel)]="this.music.number" formControlName="song_number" type="number" id="song_number"
-                 class="border text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none placeholder-zinc-400 text-zinc-200 focus:ring-blue-500 focus:border-blue-500"
-                 placeholder="number (optional)">
+                 class="outline-none text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none placeholder-zinc-400 text-zinc-200 focus:ring-blue-500 focus:border-blue-500"
+                 placeholder="Number (optional)">
         </div>
       </div>
       <div class="pt-5">
         <label class="block mb-2 text-sm font-medium text-zinc-200" for="song-file">Upload file</label>
         <input [(ngModel)]="this.music.file" formControlName="file" type="file" id="song-file"
-               class="border text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none text-zinc-400 placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500
-                  file:bg-sky-500 file:border-none file:rounded-md file:text-zinc-200 file:no-underline file:pr-4 file:pl-4 file:pt-1 file:pb-1 file:mr-2"
-               placeholder="song name">
+               class="outline-none text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none text-zinc-400 placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500
+                  file:cursor-pointer file:bg-sky-500 file:border-none file:rounded-md file:text-zinc-200 file:no-underline file:pr-4 file:pl-4 file:pt-1 file:pb-1 file:mr-2"
+               placeholder="No file chosen">
       </div>
     </form>
 

@@ -12,6 +12,10 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class AlbumComponent implements OnInit {
 
+  id: number;
+  editName = false;
+  nameAlbum: string;
+  originalText: string;
   musics: Music[] = [];
 
   constructor(
@@ -19,10 +23,20 @@ export class AlbumComponent implements OnInit {
     private historyService: HistoryService,
     private route: ActivatedRoute
   ) {
-    console.log(this.route);
+    console.log(this.route.params);
   }
 
   ngOnInit() {
+    this.route.params.subscribe(
+      (params: any) => {
+        this.id = params['id'];
+        console.log("id: " + this.id)
+      }
+      //load album
+    )
+
+    this.nameAlbum = "outro nume";
+
   }
 
 
@@ -31,7 +45,9 @@ export class AlbumComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: Music) => {
       console.log(result);
-      this.musics.push(result)
+      if (result !== undefined) {
+        this.musics.push(result)
+      }
     });
   }
 
@@ -44,6 +60,21 @@ export class AlbumComponent implements OnInit {
 
   playSong(id: number) {
     this.historyService.sendMusicToHistory(id)
+  }
+
+  editAlbumName() {
+    this.originalText = this.nameAlbum;
+    this.editName = !this.editName
+  }
+
+  saveAlbumName() {
+    //save
+    this.editAlbumName()
+  }
+
+  cancelEditAlbumName() {
+    this.nameAlbum = this.originalText;
+    this.editAlbumName()
   }
 
 }

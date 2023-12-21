@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LucideAngularModule, Home, Search, Library, SquareEqual, ListFilter, Play, PlusSquare, Shuffle, SkipBack, SkipForward, Repeat, ListVideo, ChevronLeftCircle, ChevronRightCircle, ChevronLeft, ChevronRight, ChevronDown, VolumeX, Volume, Volume1, Volume2, Maximize2, Minimize2, SlidersHorizontal, Pencil, PencilLine, MinusCircle, AudioLines, History, MoveUp, UploadCloud } from 'lucide-angular';
+import { LucideAngularModule, Home, Search, Library, SquareEqual, ListFilter, Play, PlusSquare, Shuffle, SkipBack, SkipForward, Repeat, ListVideo, ChevronLeftCircle, ChevronRightCircle, ChevronLeft, ChevronRight, ChevronDown, VolumeX, Volume, Volume1, Volume2, Maximize2, Minimize2, SlidersHorizontal, Pencil, PencilLine, MinusCircle, AudioLines, History, MoveUp, UploadCloud, Check, X } from 'lucide-angular';
 import { SearchSongsComponent } from './pages/search-songs/search-songs.component';
 import { AlbumComponent } from './pages/album/album.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -71,7 +71,9 @@ import { AddAlbumDialogComponent } from './dialog/add-album-dialog/add-album-dia
       AudioLines,
       History,
       MoveUp,
-      UploadCloud
+      UploadCloud,
+      Check,
+      X
     }),
     FormsModule,
     ReactiveFormsModule,

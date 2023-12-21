@@ -7,15 +7,15 @@
         <div>
           <label for="album_name" class="control-label block text-sm font-medium text-zinc-200 pb-2">Album name</label>
           <input [(ngModel)]="this.album.name" formControlName="album_name" type="text" id="album_name" size="50"
-                 class="border text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                 class="outline-none text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500"
                  placeholder="Album name">
         </div>
       </div>
       <div class="pt-5">
         <label class="block mb-2 text-sm font-medium text-zinc-200" for="image">Choose album cover</label>
         <input [(ngModel)]="this.album.image" formControlName="image" type="file" id="image"
-               class="border text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none text-zinc-400 placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500
-                  file:bg-sky-500 file:border-none file:rounded-md file:text-zinc-200 file:no-underline file:pr-4 file:pl-4 file:pt-1 file:pb-1 file:mr-2"
+               class="outline-none outline-none text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none text-zinc-400 placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500
+                   file:cursor-pointer file:bg-sky-500 file:border-none file:rounded-md file:text-zinc-200 file:no-underline file:pr-4 file:pl-4 file:pt-1 file:pb-1 file:mr-2"
                placeholder="Album cover">
       </div>
     </form>

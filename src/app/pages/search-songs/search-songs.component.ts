@@ -1,4 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+import {Music} from "../../model/music";
+import {HistoryService} from "../../service/history.service";
 
 @Component({
   selector: 'app-search-songs',
@@ -7,11 +9,19 @@ import {Component, OnInit} from '@angular/core';
 })
 export class SearchSongsComponent implements OnInit{
 
-  musics: string[] = ["","","","","","","","","","","","","Achei um grande amigo","Achei um grande amigo","Achei um grande amigo", "Alvo mais que a neve", "Vos sois o sal da terra", "Achei um grande amigo", "Alvo mais que a neve", "Vos sois o sal da terra"];
+  musics: Music[] = [
+    {name: "corajosos", id: 1, number: 2, file: "3.jpg", timesPlayed: 1, duration: 2},
+    {name: "fortes", id: 1, number: 2, file: "ja.jpeg", timesPlayed: 1, duration: 2},
+    {name: "vencedores", id: 1, number: 2, file: "nature.jpg", timesPlayed: 1, duration: 2}
+  ]
 
-  constructor() {
+  constructor(private historyService: HistoryService) {
   }
 
   ngOnInit() {
+  }
+
+  playSong(id: number) {
+    this.historyService.sendMusicToHistory(id)
   }
 }

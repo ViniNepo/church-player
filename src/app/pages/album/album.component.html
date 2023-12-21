@@ -1,17 +1,21 @@
 <div class="flex flex-col" style="height: 100%">
   <header>
     <div class="flex items-end h-72 bg-sky-900 rounded-t-lg">
-      <div class="flex pl-8 pb-8">
-        <div class="w-40 h-40 bg-sky-600"></div>
-      </div>
-
+      <img src="assets/album-images/ja.jpeg" class="flex pl-8 pb-8 h-48 w-48 object-cover ml-2">
       <div class="flex-1 pb-6 pl-4">
         <div>
           <h5 class="text-xl text-zinc-400">Album</h5>
-          <div class="flex items-end gap-2">
-            <h1 class="text-6xl text-zinc-200">Hinario Adventista</h1>
-            <button class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500">
-              <lucide-icon name="pencil-line" class="pencil-line"></lucide-icon>
+          <div class="flex items-end gap-2 mr-2">
+            <h1 *ngIf="!editName" class="text-4xl text-zinc-200">{{nameAlbum}}</h1>
+            <input *ngIf="editName" [(ngModel)]="nameAlbum" size="20" class="text-4xl text-zinc-200 pl-2 bg-transparent outline rounded-md outline-offset-2 outline-1 outline-sky-600">
+            <button *ngIf="!editName" (click)="editAlbumName()" class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500 pb-1">
+              <lucide-icon name="pencil-line" class="pencil-line pt-1"></lucide-icon>
+            </button>
+            <button *ngIf="editName" (click)="saveAlbumName()" class="no-underline text-green-500 bg-transparent border-none hover:text-green-700 pb-1">
+              <lucide-icon name="check" class="check pt-1"></lucide-icon>
+            </button>
+            <button *ngIf="editName" (click)="cancelEditAlbumName()" class="no-underline text-red-500 bg-transparent border-none hover:text-red-700 pb-1">
+              <lucide-icon name="x" class="x pt-1"></lucide-icon>
             </button>
           </div>
         </div>
@@ -59,7 +63,7 @@
         <div class="flex items-center pl-6 text-zinc-400">
           <h4 class="pr-5">{{i + 1}}</h4>
           <button (click)="playSong(i)"
-            class="cursor-pointer pt-1 no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
+            class="cursor-pointer no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
             <lucide-icon name="play" class="play" size="20"></lucide-icon>
           </button>
         </div>

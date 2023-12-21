@@ -30,12 +30,12 @@
   </header>
 
   <main class="flex-1 pr-5 pl-5 overflow-y-auto">
-    <a href="" *ngFor="let music of musics" class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline hover:bg-sky-900 rounded-sm">
+    <div *ngFor="let music of musics" class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline hover:bg-sky-900 rounded-sm">
       <div class="flex items-center pl-6">
         <h4 class="text-zinc-400">1</h4>
       </div>
       <div class="flex items-center col-span-8">
-        <div href="" class="flex items-center">
+        <div class="flex items-center">
           <div class="flex flex-col space-y-1">
             <h4 class="text-md text-zinc-200">teste</h4>
             <h5 class="text-zinc-400">hinario Adventista</h5>
@@ -48,6 +48,6 @@
       <div class="flex items-center justify-self-end col-span-2 pr-6 text-zinc-400">
         <h4 class="text-zinc-200">Duration</h4>
       </div>
-    </a>
+    </div>
   </main>
 </div>

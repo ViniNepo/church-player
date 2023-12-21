@@ -8,15 +8,13 @@ import {WorshipProgramComponent} from "./pages/worship-program/worship-program.c
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'home', component: HomeComponent},
-  {path: 'album', component: AlbumComponent},
+  {path: 'album/:id', component: AlbumComponent},
   {path: 'search-songs', component: SearchSongsComponent},
-  {path: 'search-songs/id', component: SearchSongsComponent},
   {path: 'worship-program', component: WorshipProgramComponent},
-  {path: 'worship-program/id', component: WorshipProgramComponent},
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  // exports: [RouterModule]
 })
 export class AppRoutingModule { }

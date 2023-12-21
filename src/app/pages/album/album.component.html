@@ -18,7 +18,7 @@
       </div>
 
       <div class="flex pr-8 pb-8 gap-2">
-        <button (click)="toggleModal()" class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700" type="button">
+        <button (click)="openDialog()" class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700" type="button">
           <div class="flex items-center text-zinc-200">
             <h4 class="text-zinc-200">Add New Song</h4>
           </div>
@@ -53,52 +53,31 @@
   </header>
 
   <main class="flex-1 p-5 overflow-y-auto">
-    <div *ngFor="let music of musics"
-         class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm">
-      <div class="flex items-center pl-6 text-zinc-400">
-        <h4 class="visible group-hover:invisible">1</h4>
-        <button class="pt-1 no-underline border-none bg-transparent text-zinc-200 hover:text-sky-500 invisible group-hover:visible">
-          <lucide-icon name="play" class="play"></lucide-icon>
-        </button>
-      </div>
-      <div class="flex items-center col-span-7">
-        <div href="" class="flex items-center">
-          <div class="flex flex-col space-y-1">
-              <h4 class="text-md text-zinc-200">teste</h4>
-            <h5 class="text-zinc-400">hinario Adventista</h5>
-          </div>
+    <ul>
+      <li *ngFor="let music of musics; index as i;"
+           class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm">
+        <div class="flex items-center pl-6 text-zinc-400">
+          <h4 class="pr-5">{{i + 1}}</h4>
+          <button (click)="playSong(i)"
+            class="cursor-pointer pt-1 no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
+            <lucide-icon name="play" class="play" size="20"></lucide-icon>
+          </button>
         </div>
-      </div>
-      <div class="flex items-center justify-self-end text-zinc-400">
-        <h4 class="text-zinc-200">Played</h4>
-      </div>
-      <div class="flex items-center justify-self-end col-span-2 text-zinc-400">
-        <h4 class="text-zinc-200">Duration</h4>
-      </div>
-      <div class="flex items-center justify-self-end pr-6 pt-1">
-        <button href="" class="no-underline border-none bg-transparent text-red-400 hover:text-red-700">
-          <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
-        </button>
-      </div>
-    </div>
+        <div class="flex items-center col-span-7">
+          <h4 class="text-zinc-200">{{music.name}}</h4>
+        </div>
+        <div class="flex items-center justify-self-end text-zinc-400">
+          <h4 class="text-zinc-200">{{music.timesPlayed}}</h4>
+        </div>
+        <div class="flex items-center justify-self-end col-span-2 text-zinc-400">
+          <h4 class="text-zinc-200">{{music.duration}}</h4>
+        </div>
+        <div class="flex items-center justify-self-end pr-6 pt-1">
+          <button (click)="deleteSong(i)" class="no-underline border-none bg-transparent text-red-400 hover:text-red-700">
+            <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
+          </button>
+        </div>
+      </li>
+    </ul>
   </main>
 </div>
-
-<div *ngIf="showModal" class="fixed inset-0 z-50 justify-center items-center flex">
-  <div class="relative w-auto my-6 mx-auto max-w-6xl">
-    <!--content-->
-    <div class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-      <h4 class="text-md text-zinc-200">teste</h4>
-      <!--footer-->
-      <div class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
-        <button class="" type="button" (click)="toggleModal()">
-          Close
-        </button>
-        <button class="" type="button" (click)="toggleModal()">
-          Save Changes
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-<div *ngIf="showModal" class="opacity-50 fixed inset-0 z-40 bg-black"></div>`

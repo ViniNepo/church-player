@@ -1,4 +1,8 @@
 import {Component, OnInit} from '@angular/core';
+import {Album} from "../../model/album";
+import {WorshipProgram} from "../../model/worship-program";
+import {AlbumService} from "../../service/album.service";
+import {WorshipService} from "../../service/worship.service";
 
 @Component({
   selector: 'app-home',
@@ -7,11 +11,16 @@ import {Component, OnInit} from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  programs: string[] = ["Novo album","Novo album","Novo album","Novo album","Alvo mais que a neve", "Vos sois o sal da terra", "Achei um grande amigo","Alvo mais que a neve", "Vos sois o sal da terra", "Achei um grande amigo","Alvo mais que a neve", "Vos sois o sal da terra", "Achei um grande amigo", "Vos sois o sal da terra"];
+  time: string
+  albums: Album[] = [];
+  worships: WorshipProgram[] = [];
 
 
-  constructor() {
+  constructor(private albumService: AlbumService, private worshipService: WorshipService) {
+    this.time = "Good Afternoon!";
   }
   ngOnInit() {
+    //load album
+    //load worship
   }
 }

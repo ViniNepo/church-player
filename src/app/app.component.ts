@@ -1,6 +1,4 @@
-import {Component, OnInit, Output} from '@angular/core';
-import {InterfaceService} from "./service/interface.service";
-import {SoundControlService} from "./service/sound-control.service";
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -9,11 +7,8 @@ import {SoundControlService} from "./service/sound-control.service";
 })
 export class AppComponent implements OnInit {
 
-  title = 'church-player';
-
-  constructor(private _interfaceService: InterfaceService, private _soundControlService: SoundControlService) {}
+  constructor() {}
 
   ngOnInit() {
-    this._soundControlService
   }
 }

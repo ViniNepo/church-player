@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SearchSongsComponent } from './search-songs.component';
+import { AddAlbumDialogComponent } from './add-album-dialog.component';
 
-describe('SearchSongsComponent', () => {
-  let component: SearchSongsComponent;
-  let fixture: ComponentFixture<SearchSongsComponent>;
+describe('AddAlbumDialogComponent', () => {
+  let component: AddAlbumDialogComponent;
+  let fixture: ComponentFixture<AddAlbumDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SearchSongsComponent ]
+      declarations: [ AddAlbumDialogComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SearchSongsComponent);
+    fixture = TestBed.createComponent(AddAlbumDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

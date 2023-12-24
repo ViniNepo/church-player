@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Music} from "../../model/music";
 import {HistoryService} from "../../service/history.service";
+import {DBService} from "../../service/db.service";
+import {SongDTO} from "../../model/dto/songDTO";
 
 @Component({
   selector: 'app-search-songs',
@@ -9,16 +11,16 @@ import {HistoryService} from "../../service/history.service";
 })
 export class SearchSongsComponent implements OnInit{
 
-  musics: Music[] = [
-    {name: "corajosos", id: 1, number: 2, file: "3.jpg", timesPlayed: 1, duration: 2},
-    {name: "fortes", id: 1, number: 2, file: "ja.jpeg", timesPlayed: 1, duration: 2},
-    {name: "vencedores", id: 1, number: 2, file: "nature.jpg", timesPlayed: 1, duration: 2}
-  ]
+  musics: SongDTO[] = []
 
-  constructor(private historyService: HistoryService) {
+  constructor(private historyService: HistoryService, private dbService: DBService) {
   }
 
   ngOnInit() {
+    this.dbService.getSearchSongs()
+      .subscribe(data =>{
+        this.musics = data
+      })
   }
 
   playSong(id: number) {

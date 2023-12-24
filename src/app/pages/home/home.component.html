@@ -47,16 +47,16 @@
 
   <!-- Showing list -->
   <div *ngIf="worships.length > 0" class="grid grid-cols-3 gap-4 p-5">
-    <a routerLink="/search-songs"
-       class="bg-slate-800 flex items-center rounded-md no-underline group hover:bg-slate-700 transition-colors"
-       *ngFor="let worship of worships">
-      <div class="w-20 h-20 bg-sky-600 rounded-l-md"></div>
+    <a class="bg-slate-800 flex items-center rounded-md no-underline group hover:bg-slate-700 transition-colors"
+       *ngFor="let worship of worships"
+       [routerLink]="['/worship', worship.id]">
+      <img src="assets/album-images/{{worship.image}}" class="h-24 w-24 object-cover rounded-l-md">
       <h4 class="flex-1 pl-4 text-zinc-200">{{ worship.name }}</h4>
 
-      <button
-        class="bg-sky-500 w-10 h-10 flex pl-1 mr-4 rounded-full border-none items-center justify-center pt-0.5 invisible group-hover:visible hover:bg-sky-400 transition-colors">
-        <lucide-icon name="play" class="play"></lucide-icon>
-      </button>
+<!--      <button-->
+<!--        class="bg-sky-500 w-10 h-10 flex pl-1 mr-4 rounded-full border-none items-center justify-center pt-0.5 invisible group-hover:visible hover:bg-sky-400 transition-colors">-->
+<!--        <lucide-icon name="play" class="play"></lucide-icon>-->
+<!--      </button>-->
     </a>
   </div>
 
@@ -69,11 +69,11 @@
 
   <!-- Showing list -->
   <div class="flex flex-wrap justify-items-center p-5">
-    <a routerLink="/album"
-       class="p-3 w-44 h-60 m-1 bg-slate-800 flex flex-col rounded-lg no-underline hover:bg-slate-700 transition-colors"
-       *ngFor="let album of albums">
+    <a class="p-3 w-44 h-60 m-1 bg-slate-800 flex flex-col rounded-lg no-underline hover:bg-slate-700 transition-colors"
+       *ngFor="let album of albums"
+       [routerLink]="['/album', album.id]">
       <div class="flex items-center justify-center">
-        <div class="w-full h-44 bg-sky-600 rounded-md"></div>
+        <img src="assets/album-images/{{album.image}}" class="h-40 w-40 object-cover rounded-md">
       </div>
       <div class="pt-2">
         <div class="space-y-2">

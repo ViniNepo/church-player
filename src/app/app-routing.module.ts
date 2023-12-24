@@ -10,7 +10,7 @@ const routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'album/:id', component: AlbumComponent},
   {path: 'search-songs', component: SearchSongsComponent},
-  {path: 'worship-program', component: WorshipProgramComponent},
+  {path: 'worship/:id', component: WorshipProgramComponent},
 ];
 
 @NgModule({

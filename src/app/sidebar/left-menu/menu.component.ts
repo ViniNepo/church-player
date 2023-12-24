@@ -2,13 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import {Music} from "../../model/music";
 import {HistoryService} from "../../service/history.service";
 import {MatDialog} from "@angular/material/dialog";
-import {AddSongDialogComponent} from "../../dialog/add-song-dialog/add-song-dialog.component";
 import {AddAlbumDialogComponent} from "../../dialog/add-album-dialog/add-album-dialog.component";
 import {Album} from "../../model/album";
-import {AlbumService} from "../../service/album.service";
-import {WorshipService} from "../../service/worship.service";
 import {AddWorshipDialogComponent} from "../../dialog/add-worship-dialog/add-worship-dialog.component";
-import {WorshipProgram} from "../../model/worship-program";
+import {Worship} from "../../model/worship";
+import {DBService} from "../../service/db.service";
+import {SongDTO} from "../../model/dto/songDTO";
 
 @Component({
   selector: 'app-left-menu',
@@ -16,24 +15,27 @@ import {WorshipProgram} from "../../model/worship-program";
   styleUrls: ['./menu.component.scss']
 })
 export class MenuComponent implements OnInit {
-  musics: Music[] = [];
+  songs: SongDTO[] = [];
 
   constructor(
     private historyService: HistoryService,
     private dialog: MatDialog,
-    private albumService: AlbumService,
-    private worshipService: WorshipService
+    private dbService: DBService
   ) {
   }
 
   ngOnInit() {
     this.historyService.historyEmitter.subscribe(
-      id => {
-        // TODO buscar musica por id
-        let music: Music = {name: "Cristo já ressucitou", id: 1, duration: 1, timesPlayed: 1, file: "nature.jpg", number: 1}
-        this.musics.push(music)
+      song => {
+        for (let i = 0; i < this.songs.length; i++) {
+          if (this.songs[i].id === song.id) {
+            this.songs.splice(i, 1);
+          }
+        }
+        this.songs.unshift(song)
       }
     )
+    this.historyService.getHistory()
   }
 
   addAlbum(): void {
@@ -43,7 +45,7 @@ export class MenuComponent implements OnInit {
       if (result !== undefined) {
         console.log(result);
 
-        this.albumService.post(result);
+        // this.albumService.post(result);
       }
     });
   }
@@ -51,11 +53,11 @@ export class MenuComponent implements OnInit {
   addWorship(): void {
     const dialogRef = this.dialog.open(AddWorshipDialogComponent);
 
-    dialogRef.afterClosed().subscribe((result: WorshipProgram) => {
+    dialogRef.afterClosed().subscribe((result: Worship) => {
       if (result !== undefined) {
         console.log(result);
 
-        this.worshipService.post(result);
+        // this.worshipService.post(result);
       }
     });
   }

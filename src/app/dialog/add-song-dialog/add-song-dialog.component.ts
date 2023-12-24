@@ -10,7 +10,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 })
 export class AddSongDialogComponent implements OnInit {
 
-  music: Music = {id: 0, name: "", number: 0, timesPlayed: 0, duration: 0, file: ""}
+  music: Music = {id: 0, name: "", number: 0, times_played: 0, file: "", albumId: 1}
 
   form: FormGroup;
   constructor(

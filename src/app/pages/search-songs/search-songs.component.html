@@ -19,10 +19,10 @@
         <h4 class="text-zinc-200">Music</h4>
       </div>
       <div class="flex items-center justify-self-end">
-        <h4 class="text-zinc-200">Played</h4>
+        <h4 class="text-zinc-200">Number</h4>
       </div>
       <div class="flex items-center justify-self-end col-span-2 pr-6">
-        <h4 class="text-zinc-200">Duration</h4>
+        <h4 class="text-zinc-200">Played</h4>
       </div>
     </div>
 
@@ -33,7 +33,7 @@
     <div *ngFor="let music of musics; index as i;"
          class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm">
       <div class="flex items-center pl-6">
-        <h4 class="pr-5">{{i + 1}}</h4>
+        <h4 class="pr-2">{{i + 1}}</h4>
         <button (click)="playSong(i)"
                 class="cursor-pointer no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
           <lucide-icon name="play" class="play" size="20"></lucide-icon>
@@ -41,18 +41,21 @@
       </div>
       <div class="flex items-center col-span-8">
         <div class="flex items-center gap-3">
-          <img src="assets/album-images/{{music.file}}" class="h-12 w-12 object-cover">
+          <img src="assets/album-images/{{music.album.image}}" class="h-12 w-12 object-cover">
           <div class="flex flex-col space-y-1">
             <h4 class="text-md text-zinc-200">{{music.name}}</h4>
-            <h5 class="text-zinc-400">hinario Adventista</h5>
+            <h5 class="text-zinc-400">{{music.album.name}}</h5>
           </div>
         </div>
       </div>
-      <div class="flex items-center justify-self-end text-zinc-400">
-        <h4 class="text-zinc-200">Played</h4>
+      <div *ngIf="music.number === null" class="flex items-center justify-self-end text-zinc-400">
+        <h4 class="text-zinc-200">-</h4>
+      </div>
+      <div *ngIf="music.number !== null" class="flex items-center justify-self-end text-zinc-400">
+        <h4 class="text-zinc-200">{{music.number}}</h4>
       </div>
       <div class="flex items-center justify-self-end col-span-2 pr-6 text-zinc-400">
-        <h4 class="text-zinc-200">Duration</h4>
+        <h4 class="text-zinc-200">{{music.times_played}}</h4>
       </div>
     </div>
   </main>

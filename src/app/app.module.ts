@@ -12,8 +12,6 @@ import { RightMenuComponent } from './sidebar/right-menu/right-menu.component';
 import { MenuComponent } from './sidebar/left-menu/menu.component';
 import { SoundControlPanelComponent } from './sidebar/sound-control-panel/sound-control-panel.component';
 import {HistoryService} from "./service/history.service";
-import {WorshipService} from "./service/worship.service";
-import {AlbumService} from "./service/album.service";
 import {SoundControlService} from "./service/sound-control.service";
 import {UploadService} from "./service/upload.service";
 import { AddSongDialogComponent } from './dialog/add-song-dialog/add-song-dialog.component';
@@ -21,6 +19,8 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { AddWorshipDialogComponent } from './dialog/add-worship-dialog/add-worship-dialog.component';
 import { AddAlbumDialogComponent } from './dialog/add-album-dialog/add-album-dialog.component';
+import {DBService} from "./service/db.service";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -77,10 +77,10 @@ import { AddAlbumDialogComponent } from './dialog/add-album-dialog/add-album-dia
     }),
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [
-    WorshipService,
-    AlbumService,
+    DBService,
     SoundControlService,
     HistoryService,
     UploadService

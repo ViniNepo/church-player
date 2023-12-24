@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {Album} from "../../model/album";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatDialogRef} from "@angular/material/dialog";
-import {WorshipProgram} from "../../model/worship-program";
+import {Worship} from "../../model/worship";
 
 @Component({
   selector: 'app-add-worship-dialog',
@@ -11,7 +11,7 @@ import {WorshipProgram} from "../../model/worship-program";
 })
 export class AddWorshipDialogComponent {
 
-  worship: WorshipProgram = {id: 0, name: "", image: ""}
+  worship: Worship = {id: 0, name: "", image: ""}
 
   form: FormGroup;
   constructor(
@@ -24,7 +24,7 @@ export class AddWorshipDialogComponent {
     })
   }
 
-  onSubmit(worship: WorshipProgram): void {
+  onSubmit(worship: Worship): void {
     this.dialogRef.close(worship);
   }
 

@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Album} from "../../model/album";
-import {WorshipProgram} from "../../model/worship-program";
-import {AlbumService} from "../../service/album.service";
-import {WorshipService} from "../../service/worship.service";
+import {Worship} from "../../model/worship";
+import {DBService} from "../../service/db.service";
 
 @Component({
   selector: 'app-home',
@@ -13,14 +12,22 @@ export class HomeComponent implements OnInit {
 
   time: string
   albums: Album[] = [];
-  worships: WorshipProgram[] = [];
+  worships: Worship[] = [];
 
 
-  constructor(private albumService: AlbumService, private worshipService: WorshipService) {
+  constructor(private dbService: DBService) {
     this.time = "Good Afternoon!";
   }
+
   ngOnInit() {
-    //load album
-    //load worship
+    this.dbService.getAlbums()
+      .subscribe(data => {
+        this.albums = data
+      })
+
+    this.dbService.getWorship()
+      .subscribe(data =>{
+        this.worships = data
+      })
   }
 }

@@ -38,20 +38,19 @@
 
   <main class="flex-1 overflow-y-auto bg-slate-900 rounded-b-lg">
     <div class="overflow-y-auto">
-      <div *ngIf="musics.length == 0" class="p-5">
+      <div *ngIf="songs.length == 0" class="p-5">
         <h4 class="text-zinc-400">Nothing to show</h4>
       </div>
 
-      <ul *ngIf="musics.length > 0" class="mt-4 flex pl-2 pr-2 flex-col list-none">
-        <li *ngFor="let music of musics" class="hover:bg-slate-800 hover:rounded-md transition-colors pt-2 pb-2">
+      <ul *ngIf="songs.length > 0" class="mt-4 flex pl-2 pr-2 flex-col list-none">
+        <li *ngFor="let song of songs" class="hover:bg-slate-800 hover:rounded-md transition-colors pt-2 pb-2">
           <a routerLink="/album" class="flex items-center no-underline">
-            <img src="assets/album-images/{{music.file}}" class="h-12 w-12 object-cover ml-2">
+            <img src="assets/album-images/{{song.album.image}}" class="h-12 w-12 object-cover ml-2">
             <div class="pl-2 flex flex-col space-y-1">
-              <h4 class="text-md text-zinc-200">{{music.name}}</h4>
-              <h5 class="text-zinc-400">hinario Adventista</h5>
+              <h4 class="text-md text-zinc-200">{{song.name}}</h4>
+              <h5 class="text-zinc-400">{{song.album.name}}</h5>
             </div>
           </a>
-
         </li>
       </ul>
     </div>

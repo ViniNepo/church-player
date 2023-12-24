@@ -4,6 +4,8 @@ import {AddSongDialogComponent} from "../../dialog/add-song-dialog/add-song-dial
 import {Music} from "../../model/music";
 import {HistoryService} from "../../service/history.service";
 import {ActivatedRoute} from "@angular/router";
+import {DBService} from "../../service/db.service";
+import {AlbumDTO} from "../../model/dto/albumDTO";
 
 @Component({
   selector: 'app-album',
@@ -16,23 +18,27 @@ export class AlbumComponent implements OnInit {
   editName = false;
   nameAlbum: string;
   originalText: string;
-  musics: Music[] = [];
+  album: AlbumDTO = null;
 
   constructor(
     private dialog: MatDialog,
     private historyService: HistoryService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dbService: DBService,
   ) {
-    console.log(this.route.params);
   }
 
   ngOnInit() {
     this.route.params.subscribe(
       (params: any) => {
         this.id = params['id'];
-        console.log("id: " + this.id)
+
+        this.dbService.getAlbumByID(this.id)
+          .subscribe(data => {
+            this.album = data
+            console.log(data)
+          })
       }
-      //load album
     )
 
     this.nameAlbum = "outro nume";
@@ -46,7 +52,7 @@ export class AlbumComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: Music) => {
       console.log(result);
       if (result !== undefined) {
-        this.musics.push(result)
+        // this.musics.push(result)
       }
     });
   }
@@ -55,7 +61,7 @@ export class AlbumComponent implements OnInit {
 
   deleteSong(val: number) {
     console.log(val);
-    this.musics.splice(val, 1);
+    // this.musics.splice(val, 1);
   }
 
   playSong(id: number) {

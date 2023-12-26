@@ -5,9 +5,9 @@
         <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
           <lucide-icon name="search" class="search" size="20" class="pt-0.5 text-zinc-200"></lucide-icon>
         </div>
-        <input type="text" id="input-group-1"
+        <input (keyup)="searchSong($event)" type="text" id="input-group-1"
                class="bg-slate-700 border-solid border-zinc-400 text-zinc-200 text-sm rounded-full focus:ring-zinc-400 focus:border-zinc-400 w-64 ps-10 p-3"
-               placeholder="name@flowbite.com">
+               placeholder="Search">
       </div>
     </form>
 
@@ -34,7 +34,7 @@
          class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm">
       <div class="flex items-center pl-6">
         <h4 class="pr-2">{{i + 1}}</h4>
-        <button (click)="playSong(i)"
+        <button (click)="playSong(music.id)"
                 class="cursor-pointer no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
           <lucide-icon name="play" class="play" size="20"></lucide-icon>
         </button>

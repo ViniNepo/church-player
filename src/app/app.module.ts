@@ -14,11 +14,8 @@ import { SoundControlPanelComponent } from './sidebar/sound-control-panel/sound-
 import {HistoryService} from "./service/history.service";
 import {SoundControlService} from "./service/sound-control.service";
 import {UploadService} from "./service/upload.service";
-import { AddSongDialogComponent } from './dialog/add-song-dialog/add-song-dialog.component';
 import {MatDialogModule} from "@angular/material/dialog";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import { AddWorshipDialogComponent } from './dialog/add-worship-dialog/add-worship-dialog.component';
-import { AddAlbumDialogComponent } from './dialog/add-album-dialog/add-album-dialog.component';
 import {DBService} from "./service/db.service";
 import {HttpClientModule} from "@angular/common/http";
 
@@ -32,9 +29,6 @@ import {HttpClientModule} from "@angular/common/http";
     RightMenuComponent,
     MenuComponent,
     SoundControlPanelComponent,
-    AddSongDialogComponent,
-    AddWorshipDialogComponent,
-    AddAlbumDialogComponent,
   ],
   imports: [
     BrowserModule,

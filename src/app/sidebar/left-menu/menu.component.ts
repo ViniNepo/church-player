@@ -1,13 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {Music} from "../../model/music";
 import {HistoryService} from "../../service/history.service";
 import {MatDialog} from "@angular/material/dialog";
-import {AddAlbumDialogComponent} from "../../dialog/add-album-dialog/add-album-dialog.component";
 import {Album} from "../../model/album";
-import {AddWorshipDialogComponent} from "../../dialog/add-worship-dialog/add-worship-dialog.component";
 import {Worship} from "../../model/worship";
 import {DBService} from "../../service/db.service";
 import {SongDTO} from "../../model/dto/songDTO";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-left-menu',
@@ -16,11 +15,16 @@ import {SongDTO} from "../../model/dto/songDTO";
 })
 export class MenuComponent implements OnInit {
   songs: SongDTO[] = [];
+  showAlbumModal = false;
+  showWorshipModal = false;
+  form: FormGroup;
 
   constructor(
     private historyService: HistoryService,
     private dialog: MatDialog,
-    private dbService: DBService
+    private dbService: DBService,
+    private formBuilder: FormBuilder,
+    private router: Router
   ) {
   }
 
@@ -36,30 +40,61 @@ export class MenuComponent implements OnInit {
       }
     )
     this.historyService.getHistory()
+
+    this.form = this.formBuilder.group({
+      id: [null],
+      name: [null],
+      image: [null],
+    })
   }
 
   addAlbum(): void {
-    const dialogRef = this.dialog.open(AddAlbumDialogComponent);
-
-    dialogRef.afterClosed().subscribe((result: Album) => {
-      if (result !== undefined) {
-        console.log(result);
-
-        // this.albumService.post(result);
+    this.dbService.getAlbums().subscribe(data => {
+      let id = 0
+      if (data.length > 0) {
+        id = data.pop().id
       }
-    });
+
+      this.form.controls['id'].setValue(id + 1);
+      this.dbService.postAlbum(this.form.value).subscribe(data => {
+        this.toggleAlbumModal()
+        this.router.navigate(['/album', data.id])
+      })
+    })
   }
 
   addWorship(): void {
-    const dialogRef = this.dialog.open(AddWorshipDialogComponent);
-
-    dialogRef.afterClosed().subscribe((result: Worship) => {
-      if (result !== undefined) {
-        console.log(result);
-
-        // this.worshipService.post(result);
+    this.dbService.getWorship().subscribe(data => {
+      let id = 0
+      if (data.length > 0) {
+        id = data.pop().id
       }
-    });
+
+      this.form.controls['id'].setValue(id + 1);
+
+      this.dbService.postWorship(this.form.value).subscribe(data => {
+        this.toggleWorshipModal()
+        this.router.navigate(['/worship', data.id])
+      })
+    })
+  }
+
+  onAlbumCancel(): void {
+    this.toggleAlbumModal()
+  }
+
+  onWorshipCancel(): void {
+    this.toggleWorshipModal()
+  }
+
+  toggleAlbumModal() {
+    this.form.reset()
+    this.showAlbumModal = !this.showAlbumModal;
+  }
+
+  toggleWorshipModal() {
+    this.form.reset()
+    this.showWorshipModal = !this.showWorshipModal;
   }
 
 }

@@ -1,6 +1,4 @@
 import {Component, EventEmitter, Input} from '@angular/core';
-import {AppComponent} from "../../app.component";
-import {AppModule} from "../../app.module";
 import {SoundControlService} from "../../service/sound-control.service";
 
 @Component({

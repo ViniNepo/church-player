@@ -14,19 +14,16 @@ export class HistoryService {
   }
 
   sendMusicToHistory(id: number) {
-    let song: SongDTO;
     let history: IdDTO[];
     this.dbService.getHistory()
       .subscribe(data => {
         history = data;
-
         for (const h of history) {
           if (h.id === id) {
             this.dbService.deleteHistoryByID(h.id)
               .subscribe()
           }
         }
-
         this.dbService.postHistory(id)
           .subscribe(data => {
             this.dbService.getSongByID(data.id)

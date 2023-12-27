@@ -1,10 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {Song} from "../../model/song";
 import {HistoryService} from "../../service/history.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DBService} from "../../service/db.service";
 import {AlbumDTO} from "../../model/dto/albumDTO";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SongDTO} from "../../model/dto/songDTO";
 import {Album} from "../../model/album";
 
@@ -20,8 +19,9 @@ export class AlbumComponent implements OnInit {
   showDeleteModal = false
   showAddSongModal = false
   originalName: string;
-  album: AlbumDTO = null;
+  album: AlbumDTO;
   form: FormGroup;
+  file: Array<File>
 
   constructor(
     private historyService: HistoryService,
@@ -33,30 +33,35 @@ export class AlbumComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(
-      (params: any) => {
-        this.id = params['id'];
-
-        this.dbService.getAlbumByID(this.id)
-          .subscribe(data => {
-            this.album = data
-            this.originalName = this.album.name
-          })
-      })
+    this.route.data.subscribe(
+      (data: { album: AlbumDTO }) => {
+        this.album = data.album
+        this.originalName = this.album.name
+      }
+    )
 
     this.form = this.formBuilder.group({
       id: [null],
-      name: [null],
+      name: [null, Validators.required],
       number: [null],
       times_played: [null],
-      file: [null],
-      albumId: [null]
+      file: [null, Validators.required],
+      albumId: [null],
     })
   }
 
-  playSong(id: number) {
-    //open
-    this.historyService.sendMusicToHistory(id)
+  playSong(song: SongDTO) {
+    this.dbService.openFile(song.file).subscribe()
+    song.times_played = song.times_played + 1
+    this.dbService.patchSongTime(song.id, song.times_played).subscribe(response => {
+      this.album.songs.forEach(x => {
+        if (x.id == response.id) {
+          x.times_played = response.times_played
+        }
+      })
+    })
+
+    this.historyService.sendMusicToHistory(song)
   }
 
   toggleAddMusic() {
@@ -74,9 +79,10 @@ export class AlbumComponent implements OnInit {
 
   saveAlbumName() {
     let album: Album = {id: this.album.id, name: this.album.name, image: this.album.image}
-    this.dbService.putAlbumName(album).subscribe()
-    this.originalName = this.album.name
-    // this.historyService.sendMusicToHistory()
+    this.dbService.putAlbumName(album).subscribe(a => {
+      this.originalName = this.album.name
+      this.historyService.updateHistory()
+    })
     this.editAlbumName()
   }
 
@@ -86,7 +92,13 @@ export class AlbumComponent implements OnInit {
     this.editAlbumName()
   }
 
+  onChange(event) {
+    this.file = event.target.files
+    this.form.controls['file'].setValue(this.file[0].name)
+  }
+
   addSong() {
+    this.dbService.uploadFile(this.file)
     this.dbService.getSongs().subscribe(data => {
       let id = 0
       if (data.length > 0) {
@@ -96,6 +108,9 @@ export class AlbumComponent implements OnInit {
       this.form.controls['id'].setValue(id + 1)
       this.form.controls['albumId'].setValue(this.album.id)
       this.form.controls['times_played'].setValue(0)
+      if (this.form.get('number').value == null) {
+        this.form.controls['number'].setValue('-')
+      }
 
       this.dbService.postSong(this.form.value).subscribe(music => {
         let dto: SongDTO = {
@@ -104,6 +119,7 @@ export class AlbumComponent implements OnInit {
           file: music.file,
           number: music.number,
           times_played: music.times_played,
+          albumId: music.albumId,
           album: null
         }
         this.album.songs.push(dto)
@@ -113,29 +129,33 @@ export class AlbumComponent implements OnInit {
   }
 
   deleteSong(id: number, index: number) {
-    this.dbService.deleteSong(id).subscribe()
-    this.dbService.getHistory().subscribe(list => {
-      list.forEach(next => {
-        if (id === next.id) {
-          this.dbService.deleteHistoryByID(id).subscribe()
-        }
+    this.dbService.deleteSongBtID(id).subscribe(() => {
+      this.dbService.getHistory().subscribe(history => {
+        history.forEach(h => {
+          if (id == h.songId) {
+            this.dbService.deleteHistoryByID(h.id).subscribe()
+          }
+        })
+        this.historyService.updateHistory()
       })
     })
     this.album.songs.splice(index, 1);
   }
 
   deleteAlbum() {
-    this.dbService.getHistory().subscribe(list => {
-      for (let i = 0; i < list.length; i++) {
-        if (this.album.songs[i].id === list[i].id) {
-          this.dbService.deleteHistoryByID(list[i].id).subscribe()
-        }
-      }
+    this.dbService.getHistory().subscribe(history => {
+      history.forEach(h => {
+        this.album.songs.forEach(s => {
+          if (h.songId == s.id) {
+            this.dbService.deleteHistoryByID(h.id).subscribe(() => {
+              this.historyService.updateHistory()
+            })
+            this.dbService.deleteSongBtID(s.id).subscribe()
+          }
+        })
+      })
+      this.dbService.deleteAlbum(this.album.id).subscribe()
     })
-    this.album.songs.forEach(song => {
-      this.dbService.deleteSong(song.id).subscribe()
-    })
-    this.dbService.deleteAlbum(this.album.id).subscribe()
     this.toggleDeleteAlbum()
     this.router.navigate(['/home'])
   }

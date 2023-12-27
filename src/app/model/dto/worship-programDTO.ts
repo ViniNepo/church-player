@@ -1,8 +1,12 @@
 import {MomentDTO} from "./momentDTO";
 
-export interface WorshipDTO {
-  id: number;
-  name: string;
-  image: string;
-  moments: MomentDTO[];
+export class WorshipDTO {
+
+  constructor(
+    public id: number,
+    public name: string,
+    public image: string,
+    public moments: MomentDTO[]
+  ) {
+  }
 }

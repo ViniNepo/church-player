@@ -1,10 +1,15 @@
 import {Album} from "../album";
 
-export interface SongDTO {
-  id: number;
-  name: string;
-  number: number;
-  times_played: number;
-  file: string;
-  album: Album;
+export class SongDTO {
+
+  constructor(
+    public id: number,
+    public name: string,
+    public number: string,
+    public times_played: number,
+    public file: string,
+    public albumId: number,
+    public album: Album
+  ) {}
+
 }

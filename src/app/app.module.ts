@@ -14,10 +14,13 @@ import { SoundControlPanelComponent } from './sidebar/sound-control-panel/sound-
 import {HistoryService} from "./service/history.service";
 import {SoundControlService} from "./service/sound-control.service";
 import {UploadService} from "./service/upload.service";
-import {MatDialogModule} from "@angular/material/dialog";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DBService} from "./service/db.service";
 import {HttpClientModule} from "@angular/common/http";
+import {AlbumResolver} from "./guards/album-detail.resolver";
+import {WorshipResolver} from "./guards/worship-detail.resolver";
+import {NgSelectModule} from "@ng-select/ng-select";
+import {SearchSongsDetailResolver} from "./guards/search-songs-detail.resolver";
 
 @NgModule({
   declarations: [
@@ -30,54 +33,57 @@ import {HttpClientModule} from "@angular/common/http";
     MenuComponent,
     SoundControlPanelComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    MatDialogModule,
-    LucideAngularModule.pick({
-      Home,
-      Search,
-      Library,
-      Play,
-      SquareEqual,
-      ListFilter,
-      PlusSquare,
-      Shuffle,
-      SkipBack,
-      SkipForward,
-      Repeat,
-      ListVideo,
-      ChevronLeftCircle,
-      ChevronRightCircle,
-      ChevronLeft,
-      ChevronRight,
-      ChevronDown,
-      VolumeX,
-      Volume,
-      Volume1,
-      Volume2,
-      Maximize2,
-      Minimize2,
-      SlidersHorizontal,
-      Pencil,
-      PencilLine,
-      MinusCircle,
-      AudioLines,
-      History,
-      MoveUp,
-      UploadCloud,
-      Check,
-      X
-    }),
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        LucideAngularModule.pick({
+            Home,
+            Search,
+            Library,
+            Play,
+            SquareEqual,
+            ListFilter,
+            PlusSquare,
+            Shuffle,
+            SkipBack,
+            SkipForward,
+            Repeat,
+            ListVideo,
+            ChevronLeftCircle,
+            ChevronRightCircle,
+            ChevronLeft,
+            ChevronRight,
+            ChevronDown,
+            VolumeX,
+            Volume,
+            Volume1,
+            Volume2,
+            Maximize2,
+            Minimize2,
+            SlidersHorizontal,
+            Pencil,
+            PencilLine,
+            MinusCircle,
+            AudioLines,
+            History,
+            MoveUp,
+            UploadCloud,
+            Check,
+            X
+        }),
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        NgSelectModule
+    ],
   providers: [
     DBService,
     SoundControlService,
     HistoryService,
-    UploadService
+    UploadService,
+    AlbumResolver,
+    WorshipResolver,
+    SearchSongsDetailResolver
   ],
   bootstrap: [AppComponent]
 })

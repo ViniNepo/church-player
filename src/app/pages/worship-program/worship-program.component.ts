@@ -1,12 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {MatDialog} from "@angular/material/dialog";
 import {DBService} from "../../service/db.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WorshipDTO} from "../../model/dto/worship-programDTO";
 import {HistoryService} from "../../service/history.service";
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {SongDTO} from "../../model/dto/songDTO";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MomentDTO} from "../../model/dto/momentDTO";
+import {Worship} from "../../model/worship";
+import {SongDTO} from "../../model/dto/songDTO";
+import {Moment} from "../../model/moment";
 
 @Component({
   selector: 'app-worship-program',
@@ -18,8 +19,15 @@ export class WorshipProgramComponent implements OnInit {
   id: number;
   showDeleteModal = false
   showAddLabelModal = false
+  showUpdateLabelModal = false
+  showOptions = false
+  editName = false
   originalName: string;
-  worshipProgram: WorshipDTO = null;
+  worshipProgram: WorshipDTO
+  songs: SongDTO[]
+  momentSelected: MomentDTO
+  labelSelected: MomentDTO
+  filteredData: SongDTO[]
   form: FormGroup;
 
   constructor(
@@ -29,39 +37,46 @@ export class WorshipProgramComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router
   ) {
+    this.route.data.subscribe(
+      (data: { worship: WorshipDTO, songs: SongDTO[] }) => {
+        this.worshipProgram = data.worship
+        this.originalName = this.worshipProgram.name
+
+        this.worshipProgram.moments.forEach(moment => {
+          if (moment.songId != null) {
+            this.dbService.getSongByMomentID(moment.songId).subscribe(song => {
+              moment.song = song
+            })
+          }
+        })
+
+        this.songs = data.songs
+        this.filteredData = [...this.songs];
+      }
+    )
   }
 
   ngOnInit() {
-    this.route.params.subscribe(
-      (params: any) => {
-        this.id = params['id'];
-
-        this.dbService.getWorshipByID(this.id)
-          .subscribe(data => {
-            this.worshipProgram = data
-            this.originalName = this.worshipProgram.name
-
-            this.worshipProgram.moments.forEach(value => {
-              if (value.songId !== null) {
-                this.dbService.getSongByMomentID(value.songId)
-                  .subscribe(data2 => {
-                    value.song = data2
-                  })
-              }
-            })
-          })
-      })
-
     this.form = this.formBuilder.group({
       id: [null],
-      label: [null],
+      label: [null, Validators.required],
       songId: [null],
       worshipId: [null],
     })
   }
 
-  sentToHistory(id: number): void {
-    this.historyService.sendMusicToHistory(id)
+  playSong(song: SongDTO): void {
+    this.dbService.openFile(song.file).subscribe()
+    song.times_played = song.times_played + 1
+    this.dbService.patchSongTime(song.id, song.times_played).subscribe(response => {
+      this.worshipProgram.moments.forEach(moment => {
+        if (moment.songId == response.id) {
+          moment.song.times_played = response.times_played
+        }
+      })
+    })
+
+    this.historyService.sendMusicToHistory(song)
   }
 
   toggleDeleteWorship() {
@@ -72,8 +87,22 @@ export class WorshipProgramComponent implements OnInit {
     this.showAddLabelModal = !this.showAddLabelModal
   }
 
+  toggleShowOption(moment: MomentDTO) {
+    this.momentSelected = moment
+    this.showOptions = !this.showOptions
+  }
+
+  toggleUpdateLabelName(moment: MomentDTO) {
+    this.labelSelected = moment
+    this.showUpdateLabelModal = !this.showUpdateLabelModal
+  }
+
+  saveUpdateLabelName() {
+    this.dbService.putMoment(this.labelSelected).subscribe()
+    this.toggleUpdateLabelName(null)
+  }
+
   addLabel() {
-    console.log(this.form.value)
     this.dbService.getMoments().subscribe(data => {
       let id = 0
       if (data.length > 0) {
@@ -82,12 +111,11 @@ export class WorshipProgramComponent implements OnInit {
 
       this.form.controls['id'].setValue(id + 1);
       this.form.controls['worshipId'].setValue(this.worshipProgram.id)
-      console.log(this.form.value)
       this.dbService.postMoment(this.form.value).subscribe(moment => {
         let dto: MomentDTO = {
           id: moment.id,
           label: moment.label,
-          songId: moment.songID,
+          songId: moment.songId,
           worshipId: moment.worshipId,
           song: null,
         }
@@ -111,4 +139,49 @@ export class WorshipProgramComponent implements OnInit {
     this.dbService.deleteMomentByID(id).subscribe()
     this.worshipProgram.moments.splice(index, 1);
   }
+
+  editAlbumName() {
+    this.editName = !this.editName
+  }
+
+  saveAlbumName() {
+    let worship: Worship = {
+      id: this.worshipProgram.id,
+      name: this.worshipProgram.name,
+      image: this.worshipProgram.image
+    }
+    this.dbService.putWorshipName(worship).subscribe()
+    this.originalName = this.worshipProgram.name
+    this.editAlbumName()
+  }
+
+  cancelEditAlbumName() {
+    this.worshipProgram.name = this.originalName
+    this.editAlbumName()
+  }
+
+  selectOption(song: SongDTO) {
+    this.worshipProgram.moments.forEach(moment => {
+      if (moment == this.momentSelected) {
+        moment.songId = song.id
+        moment.song = song
+        let m: Moment = {id: moment.id, label: moment.label, songId: moment.songId, worshipId: this.worshipProgram.id}
+        this.dbService.putMoment(m).subscribe()
+      }
+    })
+    this.toggleShowOption(null)
+  }
+
+  searchSong(x) {
+    if (x.target.value == '') {
+      this.dbService.getSearchSongs().subscribe(song => {
+        this.songs = song
+      })
+    } else {
+      this.dbService.getSearchSongsByQuery(x.target.value).subscribe(song => {
+        this.songs = song
+      })
+    }
+  }
+
 }

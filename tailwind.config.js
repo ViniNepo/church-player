@@ -7,7 +7,7 @@ module.exports = {
     extend: {
       fontFamily: {
         body: ['Nunito']
-      }
+      },
     },
   },
   plugins: [

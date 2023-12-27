@@ -1,9 +1,13 @@
 import {SongDTO} from "./songDTO";
 
-export interface MomentDTO {
-  id: number;
-  label: string
-  songId: number;
-  worshipId: number;
-  song: SongDTO;
+export class MomentDTO {
+
+  constructor(
+    public id: number,
+    public label: string,
+    public songId: number,
+    public worshipId: number,
+    public song: SongDTO
+  ) {
+  }
 }

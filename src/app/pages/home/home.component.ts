@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Album} from "../../model/album";
 import {Worship} from "../../model/worship";
 import {DBService} from "../../service/db.service";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-home',
@@ -11,8 +12,8 @@ import {DBService} from "../../service/db.service";
 export class HomeComponent implements OnInit {
 
   time: string
-  albums: Album[] = [];
-  worships: Worship[] = [];
+  albums$: Observable<Album[]>;
+  worships$: Observable<Worship[]>;
 
 
   constructor(private dbService: DBService) {
@@ -20,14 +21,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dbService.getAlbums()
-      .subscribe(data => {
-        this.albums = data
-      })
-
-    this.dbService.getWorship()
-      .subscribe(data =>{
-        this.worships = data
-      })
+    this.albums$ = this.dbService.getAlbums()
+    this.worships$ = this.dbService.getWorship()
   }
 }

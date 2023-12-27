@@ -1,52 +1,47 @@
-import {EventEmitter, Injectable} from '@angular/core';
+import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
 import {DBService} from "./db.service";
 import {SongDTO} from "../model/dto/songDTO";
-import {IdDTO} from "../model/dto/id";
+import {HistoryDTO, IdDTO} from "../model/dto/historyDTO";
+import {delay, Observable, Subscription} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class HistoryService {
 
-  historyEmitter = new EventEmitter<SongDTO>();
+  historyEmitter = new EventEmitter<Observable<HistoryDTO[]>>();
 
   constructor(private dbService: DBService) {
   }
 
-  sendMusicToHistory(id: number) {
-    let history: IdDTO[];
-    this.dbService.getHistory()
-      .subscribe(data => {
-        history = data;
-        for (const h of history) {
-          if (h.id === id) {
-            this.dbService.deleteHistoryByID(h.id)
-              .subscribe()
+  async sendMusicToHistory(song: SongDTO) {
+    await this.dbService.getSongByID(song.id).subscribe(music => {
+      this.dbService.getHistory().subscribe(histories => {
+        if (histories.length > 19) {
+          this.dbService.deleteHistoryByID(histories.shift().id).subscribe()
+        }
+
+        histories.forEach(h => {
+          if (music.id == h.songId) {
+            this.dbService.deleteHistoryByID(h.id).subscribe()
           }
+        })
+
+        let id = 0
+        if (histories.length > 0) {
+          id = histories.pop().id
         }
-        this.dbService.postHistory(id)
-          .subscribe(data => {
-            this.dbService.getSongByID(data.id)
-              .subscribe(data => {
-                this.historyEmitter.emit(data);
-              })
-          })
+
+        let dto = {id: id + 1, songId: song.id, albumId: song.albumId}
+        this.dbService.postHistory(dto).subscribe(() => {
+          this.historyEmitter.emit(this.dbService.getHistoryDesc())
+        })
       })
-  }
-
-  getHistory() {
-    let history: IdDTO[];
-    this.dbService.getHistory()
-      .subscribe(data => {
-        history = data
-
-        for (const h of history) {
-          this.dbService.getSongByID(h.id)
-            .subscribe(data => {
-              this.historyEmitter.emit(data);
-            })
-        }
     })
-
   }
+
+  updateHistory() {
+    this.historyEmitter.emit(this.dbService.getHistoryDesc())
+  }
+
 }

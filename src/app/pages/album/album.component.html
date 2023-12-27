@@ -1,7 +1,7 @@
 <div class="flex flex-col" style="height: 100%">
   <header>
     <div class="flex items-end h-72 bg-sky-900 rounded-t-lg">
-      <img src="assets/album-images/{{album.image}}" class="flex pl-8 pb-8 h-48 w-48 object-cover ml-2">
+      <img src="assets/images/{{album.image}}" class="flex ml-8 mb-8 h-48 w-48 object-cover ml-2 bg-slate-800">
       <div class="flex-1 pb-6 pl-4">
         <div>
           <h5 class="text-xl text-zinc-400">Album</h5>
@@ -62,7 +62,7 @@
            class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm">
         <div class="flex items-center pl-6 text-zinc-400">
           <h4 class="pr-2">{{i + 1}}</h4>
-          <button (click)="playSong(song.id)"
+          <button (click)="playSong(song)"
             class="cursor-pointer no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
             <lucide-icon name="play" class="play" size="20"></lucide-icon>
           </button>
@@ -84,6 +84,9 @@
             <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
           </button>
         </div>
+      </li>
+      <li *ngIf="album.songs.length == 0">
+        <h3 class="p-5 mb-20 text-zinc-400">There are not songs in your album.</h3>
       </li>
     </ul>
   </main>
@@ -130,7 +133,7 @@
       </div>
       <div class="pt-5">
         <label class="block mb-2 text-sm font-medium text-zinc-200" for="file">Upload file</label>
-        <input formControlName="file" type="file" id="file"
+        <input type="file" id="file" (change)="onChange($event)" accept="audio/*, video/*, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.presentationml.slideshow, application/vnd.openxmlformats-officedocument.presentationml.presentation"
                class="outline-none text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none text-zinc-400 placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500
                   file:cursor-pointer file:bg-sky-500 file:border-none file:rounded-md file:text-zinc-200 file:no-underline file:pr-4 file:pl-4 file:pt-1 file:pb-1 file:mr-2"
                placeholder="No file chosen">
@@ -138,7 +141,7 @@
     </form>
 
     <div class="pt-8 flex items-center gap-2">
-      <button (click)="addSong()" class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700 w-20" type="button">
+      <button (click)="addSong()" [disabled]="!form.valid" class="bg-sky-500 p-2 rounded-md border-none disabled:bg-zinc-500 disabled:cursor-not-allowed hover:bg-sky-700 w-20" type="button">
         <div class="flex items-center justify-center text-zinc-200">
           <h4 class="text-zinc-200">Save</h4>
         </div>

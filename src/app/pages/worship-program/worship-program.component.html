@@ -1,17 +1,29 @@
 <div class="flex flex-col" style="height: 100%">
   <header>
     <div class="flex items-end h-72 bg-sky-900 rounded-t-lg">
-      <div class="flex pl-8 pb-8">
-        <img src="assets/album-images/{{worshipProgram.image}}" class="h-40 w-40 object-cover">
+      <div class="flex">
+        <img src="assets/images/{{worshipProgram.image}}"
+             class="flex ml-8 mb-8 h-48 w-48 object-cover ml-2 bg-slate-800">
       </div>
 
       <div class="flex-1 pb-6 pl-4">
         <div>
           <h5 class="text-xl text-zinc-400">Worship Program</h5>
           <div class="flex items-end gap-2">
-            <h1 class="text-6xl text-zinc-200">{{worshipProgram.name}}</h1>
-            <button class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500">
-              <lucide-icon name="pencil-line" class="pencil-line"></lucide-icon>
+            <h1 *ngIf="!editName" class="text-4xl text-zinc-200">{{worshipProgram.name}}</h1>
+            <input *ngIf="editName" [(ngModel)]="worshipProgram.name" size="20"
+                   class="text-4xl text-zinc-200 pl-2 bg-transparent outline rounded-md outline-offset-2 outline-1 outline-sky-600">
+            <button *ngIf="!editName" (click)="editAlbumName()"
+                    class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500 pb-1">
+              <lucide-icon name="pencil-line" class="pencil-line pt-1"></lucide-icon>
+            </button>
+            <button *ngIf="editName" (click)="saveAlbumName()"
+                    class="no-underline text-green-500 bg-transparent border-none hover:text-green-700 pb-1">
+              <lucide-icon name="check" class="check pt-1"></lucide-icon>
+            </button>
+            <button *ngIf="editName" (click)="cancelEditAlbumName()"
+                    class="no-underline text-red-500 bg-transparent border-none hover:text-red-700 pb-1">
+              <lucide-icon name="x" class="x pt-1"></lucide-icon>
             </button>
           </div>
         </div>
@@ -23,7 +35,8 @@
             <h4 class="text-zinc-200">Add New Song</h4>
           </div>
         </button>
-        <button (click)="toggleDeleteWorship()" class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700" type="button">
+        <button (click)="toggleDeleteWorship()" class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700"
+                type="button">
           <div class="flex items-center text-zinc-200">
             <h4 class="text-zinc-200">Delete Album</h4>
           </div>
@@ -38,7 +51,7 @@
       <div class="flex items-center col-span-3">
         <h4 class="text-zinc-200">Moment</h4>
       </div>
-      <div class="flex items-center col-span-3">
+      <div class="flex items-center col-span-2">
         <h4 class="text-zinc-200">Music</h4>
       </div>
       <div class="flex items-center col-span-2 justify-self-end">
@@ -47,7 +60,7 @@
       <div class="flex items-center col-span-2 justify-self-end">
         <h4 class="text-zinc-200">Times Played</h4>
       </div>
-      <div class="flex items-center justify-self-end pr-6">
+      <div class="flex items-center col-span-2 justify-self-end pr-6">
         <h4 class="text-zinc-200">Delete</h4>
       </div>
     </div>
@@ -56,33 +69,56 @@
   </header>
 
   <main class="flex-1 p-5 overflow-y-auto">
-    <div class="grid grid-cols-12 gap-4 pl-5 pr-5 pt-5">
-
-    </div>
-
-    <div *ngFor="let moment of worshipProgram.moments; index as i;" class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm">
+    <div *ngFor="let moment of worshipProgram.moments; index as i;"
+         class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm">
       <div class="flex items-center pl-6">
         <div class="flex items-center text-zinc-400">
-          <h4 class="pr-2">{{i + 1}}</h4>
-          <button (click)="sentToHistory(moment.song.id)"
-            class="cursor-pointer pt-1 no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
+          <h4 class="pr-2 pt-1">{{i + 1}}</h4>
+          <button (click)="playSong(moment.song)" *ngIf="moment.song != null"
+                  class="cursor-pointer pt-1 no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
             <lucide-icon name="play" class="play" size="20"></lucide-icon>
           </button>
         </div>
       </div>
       <div class="flex items-center col-span-3">
-        <h4 class="text-zinc-200">{{moment.label}}</h4>
+        <h4 *ngIf="!showUpdateLabelModal || moment.id != labelSelected.id" class="text-zinc-200">{{moment.label}}</h4>
+        <input *ngIf="showUpdateLabelModal && moment.id == labelSelected.id" [(ngModel)]="moment.label" size="20"
+               class="text-xl text-zinc-200 pl-2 bg-transparent outline rounded-md outline-offset-2 outline-1 outline-sky-600">
+        <button *ngIf="!showUpdateLabelModal && labelSelected == null" (click)="toggleUpdateLabelName(moment)"
+                class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500 pb-1 pl-1 ">
+          <lucide-icon name="pencil-line" class="pencil-line pt-1"></lucide-icon>
+        </button>
+        <button *ngIf="showUpdateLabelModal && moment.id == labelSelected.id" (click)="saveUpdateLabelName()"
+                class="no-underline text-green-500 bg-transparent border-none hover:text-green-700 pb-1 pl-2">
+          <lucide-icon name="check" class="check pt-1"></lucide-icon>
+        </button>
+        <button *ngIf="showUpdateLabelModal  && moment.id == labelSelected.id" (click)="toggleUpdateLabelName(null)"
+                class="no-underline text-red-500 bg-transparent border-none hover:text-red-700 pb-1">
+          <lucide-icon name="x" class="x pt-1"></lucide-icon>
+        </button>
       </div>
-      <div class="flex items-center col-span-3">
-        <div class="flex items-center">
-          <div *ngIf="moment.song != null" class="flex items-center gap-3">
-            <img src="assets/album-images/{{moment.song.album.image}}" class="h-12 w-12 object-cover">
-            <div class="flex flex-col space-y-1">
-              <h4 class="text-md text-zinc-200">{{moment.song.name}}</h4>
-              <h5 class="text-zinc-400">{{moment.song.album.name}}</h5>
+      <div class="flex items-center col-span-2 gap-2">
+        <div class="flex rounded-md">
+          <div *ngIf="moment.song != null" class="pt-1 pb-1 pl-2">
+            <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
+              <img src="assets/images/{{moment.song.album.image}}" class="h-12 w-12 object-cover">
+              <div class="pl-2 flex flex-col space-y-1">
+                <h4 class="text-md text-zinc-200 w-56">{{moment.song.name}}</h4>
+                <h5 class="text-zinc-400">{{moment.song.album.name}}</h5>
+              </div>
             </div>
           </div>
-          <h4>selecione um</h4>
+          <div *ngIf="moment.song == null" class="pt-1 pb-1 pl-2">
+            <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
+              <img src="assets/church-player-2.png" class="h-12 w-12 object-cover">
+              <div class="pl-2 flex flex-col space-y-1">
+                <h4 class="text-md text-zinc-200 w-56">Select song</h4>
+              </div>
+            </div>
+          </div>
+          <button (click)="toggleShowOption(moment)" class="flex pl-2 pr-2 ml-2 border-l border-zinc-700 hover:bg-sky-700 hover:rounded-r-md">
+            <lucide-icon name="pencil-line" class="pencil-line self-center"></lucide-icon>
+          </button>
         </div>
       </div>
       <div class="flex items-center col-span-2 justify-self-end text-zinc-400">
@@ -91,13 +127,17 @@
       </div>
       <div class="flex items-center col-span-2 justify-self-end">
         <h4 *ngIf="moment.song != null" class="text-zinc-200">{{moment.song.times_played}}</h4>
-        <h4 *ngIf="moment.song == null" class="text-zinc-200">times</h4>
+        <h4 *ngIf="moment.song == null" class="text-zinc-200">-</h4>
       </div>
-      <div class="flex items-center justify-self-end pr-6">
-        <button (click)="deleteLabel(moment.id, i)" class="no-underline border-none bg-transparent text-red-400 hover:text-red-700">
+      <div class="flex items-center col-span-2 justify-self-end pr-6">
+        <button (click)="deleteLabel(moment.id, i)"
+                class="no-underline border-none bg-transparent text-red-400 hover:text-red-700">
           <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
         </button>
       </div>
+    </div>
+    <div *ngIf="worshipProgram.moments.length == 0">
+      <h3 class="p-5 mb-20 text-zinc-400">There are not songs in your worships songs.</h3>
     </div>
   </main>
 </div>
@@ -107,12 +147,14 @@
     <h3 class="text-zinc-200">Are you sure that you want to delete this Worship Program?</h3>
 
     <div class="pt-8 flex items-center gap-2">
-      <button (click)="deleteWorship()" class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700 w-20" type="button">
+      <button (click)="deleteWorship()" class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700 w-20"
+              type="button">
         <div class="flex items-center justify-center text-zinc-200">
           <h4 class="text-zinc-200">Confirm</h4>
         </div>
       </button>
-      <button (click)="toggleDeleteWorship()" class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700 w-20" type="button">
+      <button (click)="toggleDeleteWorship()" class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700 w-20"
+              type="button">
         <div class="flex items-center justify-center text-zinc-200">
           <h4 class="text-zinc-200">Cancel</h4>
         </div>
@@ -138,12 +180,14 @@
     </form>
 
     <div class="pt-8 flex items-center gap-2">
-      <button (click)="addLabel()" class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700 w-20" type="button">
+      <button (click)="addLabel()" [disabled]="!form.valid"
+              class="bg-sky-500 p-2 rounded-md border-none disabled:bg-zinc-500 disabled:cursor-not-allowed hover:bg-sky-700 w-20"
+              type="button">
         <div class="flex items-center justify-center text-zinc-200">
           <h4 class="text-zinc-200">Save</h4>
         </div>
       </button>
-      <button  class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700 w-20" type="button">
+      <button class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700 w-20" type="button">
         <div (click)="toggleAddLabel()" class="flex items-center justify-center text-zinc-200">
           <h4 class="text-zinc-200">Cancel</h4>
         </div>
@@ -153,3 +197,69 @@
   </div>
 </div>
 <div *ngIf="showAddLabelModal" class="opacity-50 fixed inset-0 z-40 bg-black"></div>
+
+<div *ngIf="showOptions" class="fixed inset-0 z-50 justify-center items-center flex">
+  <div class="relative w-auto bg-sky-900 rounded-lg p-5">
+    <form class="flex items-center">
+      <div class="flex-1 relative">
+        <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+          <lucide-icon name="search" class="search" size="20" class="pt-0.5 text-zinc-200"></lucide-icon>
+        </div>
+        <input (keyup)="searchSong($event)" type="text" id="input-group-1"
+               class="bg-slate-700 border-solid border-zinc-400 text-zinc-200 text-sm rounded-full focus:ring-zinc-400 focus:border-zinc-400 w-64 ps-10 p-3"
+               placeholder="Search">
+      </div>
+      <div (click)="toggleShowOption(null)" class="items-center cursor-pointer hover:bg-sky-800 p-2 rounded-md">
+        <lucide-icon name="x" class="x" size="30" class="pt-0.5 text-zinc-200"></lucide-icon>
+      </div>
+    </form>
+
+    <div class="grid grid-cols-12 gap-4 pt-4 pb-5 pl-5 pr-4">
+      <div class="flex items-center pl-6">
+        <h4 class="text-zinc-200">#</h4>
+      </div>
+      <div class="flex items-center col-span-8">
+        <h4 class="text-zinc-200">Music</h4>
+      </div>
+      <div class="flex items-center justify-self-end">
+        <h4 class="text-zinc-200">Number</h4>
+      </div>
+      <div class="flex items-center justify-self-end col-span-2 pr-6">
+        <h4 class="text-zinc-200">Played</h4>
+      </div>
+    </div>
+
+    <div class="flex-1 pr-5 pl-5 pt-5 overflow-y-auto h-72 bg-sky-950 rounded-md">
+      <div (click)="selectOption(song)" *ngFor="let song of songs; index as i;"
+           class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm cursor-pointer">
+        <div class="flex items-center pl-6">
+          <h4 class="pr-2">{{i + 1}}</h4>
+        </div>
+        <div class="flex items-center col-span-8">
+          <div class="flex items-center gap-3">
+            <img src="assets/images/{{song.album.image}}" class="h-12 w-12 object-cover">
+            <div class="flex flex-col space-y-1">
+              <h4 class="text-md text-zinc-200">{{song.name}}</h4>
+              <h5 class="text-zinc-400">{{song.album.name}}</h5>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="song.number === null" class="flex items-center justify-self-end text-zinc-400">
+          <h4 class="text-zinc-200">-</h4>
+        </div>
+        <div *ngIf="song.number !== null" class="flex items-center justify-self-end text-zinc-400">
+          <h4 class="text-zinc-200">{{song.number}}</h4>
+        </div>
+        <div class="flex items-center justify-self-end col-span-2 pr-6 text-zinc-400">
+          <h4 class="text-zinc-200">{{song.times_played}}</h4>
+        </div>
+      </div>
+
+      <div *ngIf="songs.length == 0">
+        <h3 class="text-zinc-400">There are no songs to show.</h3>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div *ngIf="showOptions" class="opacity-50 fixed inset-0 z-40 bg-black"></div>

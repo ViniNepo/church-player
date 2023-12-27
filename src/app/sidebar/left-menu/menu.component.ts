@@ -1,12 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {HistoryService} from "../../service/history.service";
-import {MatDialog} from "@angular/material/dialog";
-import {Album} from "../../model/album";
-import {Worship} from "../../model/worship";
 import {DBService} from "../../service/db.service";
-import {SongDTO} from "../../model/dto/songDTO";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
+import {delay, Observable, Subscription} from "rxjs";
+import {HistoryDTO} from "../../model/dto/historyDTO";
 
 @Component({
   selector: 'app-left-menu',
@@ -14,14 +12,15 @@ import {Router} from "@angular/router";
   styleUrls: ['./menu.component.scss']
 })
 export class MenuComponent implements OnInit {
-  songs: SongDTO[] = [];
+  history$: Observable<HistoryDTO[]>;
+  file: Array<File>;
   showAlbumModal = false;
   showWorshipModal = false;
   form: FormGroup;
+  subscription: Subscription
 
   constructor(
     private historyService: HistoryService,
-    private dialog: MatDialog,
     private dbService: DBService,
     private formBuilder: FormBuilder,
     private router: Router
@@ -29,26 +28,26 @@ export class MenuComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.historyService.historyEmitter.subscribe(
-      song => {
-        for (let i = 0; i < this.songs.length; i++) {
-          if (this.songs[i].id === song.id) {
-            this.songs.splice(i, 1);
-          }
-        }
-        this.songs.unshift(song)
-      }
-    )
-    this.historyService.getHistory()
+    this.history$ = this.dbService.getHistoryDesc()
+
+    this.subscription = this.historyService.historyEmitter.subscribe(history => {
+      this.history$ = history
+    })
 
     this.form = this.formBuilder.group({
       id: [null],
-      name: [null],
-      image: [null],
+      name: [null, Validators.required],
+      image: [null, Validators.required],
     })
   }
 
+  onChange(event) {
+    this.file = event.target.files
+    this.form.controls['image'].setValue(this.file[0].name)
+  }
+
   addAlbum(): void {
+    this.dbService.uploadImage(this.file)
     this.dbService.getAlbums().subscribe(data => {
       let id = 0
       if (data.length > 0) {
@@ -64,6 +63,7 @@ export class MenuComponent implements OnInit {
   }
 
   addWorship(): void {
+    this.dbService.uploadImage(this.file)
     this.dbService.getWorship().subscribe(data => {
       let id = 0
       if (data.length > 0) {

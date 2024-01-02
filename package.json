@@ -4,12 +4,13 @@
   "main": "app.js",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --proxy-config proxy.conf.json",
+    "start": "json-server --watch ./db.json & ng serve --proxy-config proxy.conf.json",
     "build": "ng build --proxy-config proxy.conf.json",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "electron": "electron .",
-    "electron-build": "ng build && electron ."
+    "watch": "ng build --proxy-config proxy.conf.json --watch --configuration development",
+    "test": "ng test --proxy-config proxy.conf.json",
+    "electron": "electron . & json-server --watch ./db.json",
+    "electron-build": "ng build && electron .",
+    "serve-json": "json-server --watch ./db.json"
   },
   "private": true,
   "dependencies": {

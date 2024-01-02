@@ -48,10 +48,10 @@
       <div class="flex items-center pl-6">
         <h4 class="text-zinc-200">#</h4>
       </div>
-      <div class="flex items-center col-span-3">
+      <div class="flex items-center col-span-2">
         <h4 class="text-zinc-200">Moment</h4>
       </div>
-      <div class="flex items-center col-span-2">
+      <div class="flex items-center col-span-3">
         <h4 class="text-zinc-200">Music</h4>
       </div>
       <div class="flex items-center col-span-2 justify-self-end">
@@ -80,7 +80,7 @@
           </button>
         </div>
       </div>
-      <div class="flex items-center col-span-3">
+      <div class="flex items-center col-span-2">
         <h4 *ngIf="!showUpdateLabelModal || moment.id != labelSelected.id" class="text-zinc-200">{{moment.label}}</h4>
         <input *ngIf="showUpdateLabelModal && moment.id == labelSelected.id" [(ngModel)]="moment.label" size="20"
                class="text-xl text-zinc-200 pl-2 bg-transparent outline rounded-md outline-offset-2 outline-1 outline-sky-600">
@@ -97,7 +97,7 @@
           <lucide-icon name="x" class="x pt-1"></lucide-icon>
         </button>
       </div>
-      <div class="flex items-center col-span-2 gap-2">
+      <div class="flex items-center col-span-3 gap-2">
         <div class="flex rounded-md">
           <div *ngIf="moment.song != null" class="pt-1 pb-1 pl-2">
             <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">

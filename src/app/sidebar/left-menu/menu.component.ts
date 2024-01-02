@@ -5,6 +5,8 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {delay, Observable, Subscription} from "rxjs";
 import {HistoryDTO} from "../../model/dto/historyDTO";
+import {Song} from "../../model/song";
+import {SongDTO} from "../../model/dto/songDTO";
 
 @Component({
   selector: 'app-left-menu',
@@ -97,4 +99,13 @@ export class MenuComponent implements OnInit {
     this.showWorshipModal = !this.showWorshipModal;
   }
 
+  playSong(song: Song) {
+    let songDTO: SongDTO
+    this.dbService.openFile(song.file).subscribe()
+    song.times_played = song.times_played + 1
+    this.dbService.patchSongTime(song.id, song.times_played).subscribe(res => {
+      songDTO = {id: res.id, name: res.name, file: res.file, number: res.number, times_played: res.times_played, albumId: res.albumId, album: null}
+      this.historyService.sendMusicToHistory(songDTO)
+    })
+  }
 }

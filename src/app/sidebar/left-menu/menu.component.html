@@ -42,13 +42,13 @@
 
         <ul class="mt-4 flex ml-2 mr-2 flex-col list-none">
           <li *ngFor="let h of history" class="hover:bg-slate-800 hover:rounded-md transition-colors pt-2 pb-2">
-            <a routerLink="/album" class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
+            <button (click)="playSong(h.song)" class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
               <img src="assets/images/{{h.album.image}}" class="h-12 w-12 object-cover ml-2">
               <div class="pl-2 flex flex-col space-y-1">
                 <h4 class="text-md text-zinc-200">{{h.song.name}}</h4>
                 <h5 class="text-zinc-400">{{h.album.name}}</h5>
               </div>
-            </a>
+            </button>
           </li>
           <li *ngIf="history.length == 0" class="pl-2 pt-2 pb-2">
             <h3 class="text-zinc-400">There are no songs in your history</h3>

@@ -6,6 +6,8 @@ import {AlbumDTO} from "../../model/dto/albumDTO";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SongDTO} from "../../model/dto/songDTO";
 import {Album} from "../../model/album";
+import {HttpEvent, HttpEventType} from "@angular/common/http";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-album',
@@ -28,7 +30,8 @@ export class AlbumComponent implements OnInit {
     private route: ActivatedRoute,
     private dbService: DBService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {
   }
 
@@ -98,41 +101,50 @@ export class AlbumComponent implements OnInit {
   }
 
   addSong() {
-    this.dbService.uploadFile(this.file)
-    this.dbService.getSongs().subscribe(data => {
-      let id = 0
-      if (data.length > 0) {
-        id = data.pop().id
-      }
+    this.dbService.uploadFile(this.file).subscribe((event: HttpEvent<Object>) => {
+        if (event.type == HttpEventType.Response) {
+          this.dbService.getSongs().subscribe(data => {
+            let id = 0
+            if (data.length > 0) {
+              id = data.pop().id
+            }
 
-      this.form.controls['id'].setValue(id + 1)
-      this.form.controls['albumId'].setValue(this.album.id)
-      this.form.controls['times_played'].setValue(0)
-      if (this.form.get('number').value == null) {
-        this.form.controls['number'].setValue('-')
-      }
+            this.form.controls['id'].setValue(id + 1)
+            this.form.controls['albumId'].setValue(this.album.id)
+            this.form.controls['times_played'].setValue(0)
+            if (this.form.get('number').value == null) {
+              this.form.controls['number'].setValue('-')
+            }
 
-      this.dbService.postSong(this.form.value).subscribe(music => {
-        let dto: SongDTO = {
-          id: music.id,
-          name: music.name,
-          file: music.file,
-          number: music.number,
-          times_played: music.times_played,
-          albumId: music.albumId,
-          album: null
+            this.dbService.postSong(this.form.value).subscribe(music => {
+              let dto: SongDTO = {
+                id: music.id,
+                name: music.name,
+                file: music.file,
+                number: music.number,
+                times_played: music.times_played,
+                albumId: music.albumId,
+                album: null
+              }
+              this.album.songs.push(dto)
+            })
+            this.toggleAddMusic()
+          })
         }
-        this.album.songs.push(dto)
+      },
+      error => {
+        console.log(error)
+        this.toggleAddMusic()
+        this.toastr.error('This song is already being used!', 'Error');
       })
-      this.toggleAddMusic()
-    })
   }
 
-  deleteSong(id: number, index: number) {
-    this.dbService.deleteSongBtID(id).subscribe(() => {
+  deleteSong(song: SongDTO, index: number) {
+    this.dbService.deleteSongBtID(song.id).subscribe(() => {
+      this.dbService.deleteFile(song.file, 'files').subscribe()
       this.dbService.getHistory().subscribe(history => {
         history.forEach(h => {
-          if (id == h.songId) {
+          if (song.id == h.songId) {
             this.dbService.deleteHistoryByID(h.id).subscribe()
           }
         })
@@ -154,9 +166,11 @@ export class AlbumComponent implements OnInit {
           }
         })
       })
-      this.dbService.deleteAlbum(this.album.id).subscribe()
+      this.dbService.deleteAlbum(this.album.id).subscribe(() => {
+        this.dbService.deleteFile(this.album.image, 'images').subscribe()
+        this.toggleDeleteAlbum()
+        this.router.navigate(['/home'])
+      })
     })
-    this.toggleDeleteAlbum()
-    this.router.navigate(['/home'])
   }
 }

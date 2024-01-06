@@ -7,7 +7,7 @@
           <h5 class="text-xl text-zinc-400">Album</h5>
           <div class="flex items-end gap-2 mr-2">
             <h1 *ngIf="!editName" class="text-4xl text-zinc-200">{{album.name}}</h1>
-            <input *ngIf="editName" [(ngModel)]="album.name" size="20" class="text-4xl text-zinc-200 pl-2 bg-transparent outline rounded-md outline-offset-2 outline-1 outline-sky-600">
+            <input *ngIf="editName" [(ngModel)]="album.name" size="10" class="text-4xl text-zinc-200 pl-2 bg-transparent outline rounded-md outline-offset-2 outline-1 outline-sky-600">
             <button *ngIf="!editName" (click)="editAlbumName()" class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500 pb-1">
               <lucide-icon name="pencil-line" class="pencil-line pt-1"></lucide-icon>
             </button>
@@ -80,7 +80,7 @@
           <h4 class="text-zinc-200">{{song.times_played}}</h4>
         </div>
         <div class="flex items-center justify-self-end pr-6 pt-1">
-          <button (click)="deleteSong(song.id, i)" class="no-underline border-none bg-transparent text-red-400 hover:text-red-700">
+          <button (click)="deleteSong(song, i)" class="no-underline border-none bg-transparent text-red-400 hover:text-red-700">
             <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
           </button>
         </div>

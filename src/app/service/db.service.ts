@@ -128,42 +128,31 @@ export class DBService {
     let formData = new FormData();
     formData.append("file", files[0]);
 
-    return this.http.post('/api/uploadImage', formData)
-      .subscribe((response) => {
-        console.log('response received is ', response);
-      })
+    return this.http.post('http://localhost:8000/api/uploadImage', formData, {
+      observe: 'events',
+      reportProgress: true
+    })
   }
 
   uploadFile(files: Array<File>) {
     let formData = new FormData();
     formData.append("file", files[0]);
 
-    this.http.post('/api/uploadFile', formData)
-      .subscribe((response) => {
-        console.log('response received is ', response);
-      })
+    return this.http.post('http://localhost:8000/api/uploadFile', formData, {
+      observe: 'events',
+      reportProgress: true
+    })
   }
 
   openFile(fileName: string): Observable<any> {
-    console.log('aqui')
-    return this.http.get(`/api/open-file?fileName=${fileName}`)
+    return this.http.get(`http://localhost:8000/api/open-file?fileName=${fileName}`)
   }
 
-  // openFile() {
-  //   if (!this.fileName) {
-  //     console.error('Nome do arquivo não fornecido.');
-  //     return;
-  //   }
-  //
-  //   this.fileService.openFile(this.fileName).subscribe(
-  //     (data) => {
-  //       this.response = data;
-  //     },
-  //     (error) => {
-  //       console.error('Erro ao abrir o arquivo:', error);
-  //       this.response = 'Erro ao abrir o arquivo';
-  //     }
-  //   );
-  // }
+  deleteFile(fileName: string, directoryName: string) {
+    const options = {
+      body: {"fileName": fileName, "directoryName": directoryName},
+    };
 
+    return this.http.delete('http://localhost:8000/api/deleteFile', options);
+  }
 }

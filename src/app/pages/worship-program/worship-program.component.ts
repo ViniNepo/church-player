@@ -130,7 +130,9 @@ export class WorshipProgramComponent implements OnInit {
     this.worshipProgram.moments.forEach(moment => {
       this.dbService.deleteMomentByID(moment.id).subscribe()
     })
-    this.dbService.deleteWorshipByID(this.worshipProgram.id).subscribe()
+    this.dbService.deleteWorshipByID(this.worshipProgram.id).subscribe(() => {
+      this.dbService.deleteFile(this.worshipProgram.image, 'images').subscribe()
+    })
     this.toggleDeleteWorship()
     this.router.navigate(['/home'])
   }

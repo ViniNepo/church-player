@@ -7,6 +7,8 @@ import {delay, Observable, Subscription} from "rxjs";
 import {HistoryDTO} from "../../model/dto/historyDTO";
 import {Song} from "../../model/song";
 import {SongDTO} from "../../model/dto/songDTO";
+import {HttpEvent, HttpEventType} from "@angular/common/http";
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-left-menu',
@@ -25,7 +27,8 @@ export class MenuComponent implements OnInit {
     private historyService: HistoryService,
     private dbService: DBService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {
   }
 
@@ -49,36 +52,52 @@ export class MenuComponent implements OnInit {
   }
 
   addAlbum(): void {
-    this.dbService.uploadImage(this.file)
-    this.dbService.getAlbums().subscribe(data => {
-      let id = 0
-      if (data.length > 0) {
-        id = data.pop().id
-      }
+    this.dbService.uploadImage(this.file).subscribe((event: HttpEvent<object>) => {
+        if (event.type === HttpEventType.Response) {
+          this.dbService.getAlbums().subscribe(data => {
+            let id = 0
+            if (data.length > 0) {
+              id = data.pop().id
+            }
 
-      this.form.controls['id'].setValue(id + 1);
-      this.dbService.postAlbum(this.form.value).subscribe(data => {
+            this.form.controls['id'].setValue(id + 1);
+            this.dbService.postAlbum(this.form.value).subscribe(data => {
+              this.toggleAlbumModal()
+              this.router.navigate(['/album', data.id])
+            })
+          })
+        }
+      },
+      error => {
+        console.log(error)
         this.toggleAlbumModal()
-        this.router.navigate(['/album', data.id])
+        this.toastr.error('This image is already being used!', 'Error');
       })
-    })
   }
 
   addWorship(): void {
-    this.dbService.uploadImage(this.file)
-    this.dbService.getWorship().subscribe(data => {
-      let id = 0
-      if (data.length > 0) {
-        id = data.pop().id
-      }
+    this.dbService.uploadImage(this.file).subscribe((event: HttpEvent<object>) => {
+        if (event.type === HttpEventType.Response) {
+          this.dbService.getWorship().subscribe(data => {
+            let id = 0
+            if (data.length > 0) {
+              id = data.pop().id
+            }
 
-      this.form.controls['id'].setValue(id + 1);
+            this.form.controls['id'].setValue(id + 1);
 
-      this.dbService.postWorship(this.form.value).subscribe(data => {
+            this.dbService.postWorship(this.form.value).subscribe(data => {
+              this.toggleWorshipModal()
+              this.router.navigate(['/worship', data.id])
+            })
+          })
+        }
+      },
+      error => {
+        console.log(error)
         this.toggleWorshipModal()
-        this.router.navigate(['/worship', data.id])
+        this.toastr.error('This image is already being used!', 'Error');
       })
-    })
   }
 
   onAlbumCancel(): void {
@@ -104,7 +123,15 @@ export class MenuComponent implements OnInit {
     this.dbService.openFile(song.file).subscribe()
     song.times_played = song.times_played + 1
     this.dbService.patchSongTime(song.id, song.times_played).subscribe(res => {
-      songDTO = {id: res.id, name: res.name, file: res.file, number: res.number, times_played: res.times_played, albumId: res.albumId, album: null}
+      songDTO = {
+        id: res.id,
+        name: res.name,
+        file: res.file,
+        number: res.number,
+        times_played: res.times_played,
+        albumId: res.albumId,
+        album: null
+      }
       this.historyService.sendMusicToHistory(songDTO)
     })
   }

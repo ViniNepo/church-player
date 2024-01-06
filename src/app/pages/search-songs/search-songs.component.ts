@@ -22,6 +22,7 @@ export class SearchSongsComponent implements OnInit {
   }
 
   playSong(song: SongDTO) {
+    this.dbService.openFile(song.file).subscribe()
     song.times_played = song.times_played + 1
     this.dbService.patchSongTime(song.id, song.times_played).subscribe(response => {
       this.musics$.subscribe(musics => {

@@ -17,6 +17,8 @@ import {ToastrService} from "ngx-toastr";
 export class AlbumComponent implements OnInit {
 
   id: number;
+  deleteText: string;
+  deleteTextConfirm: string;
   editName = false;
   showDeleteModal = false
   showAddSongModal = false
@@ -40,6 +42,8 @@ export class AlbumComponent implements OnInit {
       (data: { album: AlbumDTO }) => {
         this.album = data.album
         this.originalName = this.album.name
+        this.deleteText = `I want to delete ${this.album.name} album`
+        this.deleteTextConfirm = ''
       }
     )
 
@@ -74,6 +78,7 @@ export class AlbumComponent implements OnInit {
 
   toggleDeleteAlbum() {
     this.showDeleteModal = !this.showDeleteModal
+    this.deleteTextConfirm = ''
   }
 
   editAlbumName() {
@@ -115,6 +120,9 @@ export class AlbumComponent implements OnInit {
             if (this.form.get('number').value == null) {
               this.form.controls['number'].setValue('-')
             }
+            const name = this.form.get('name').value
+            const str2 = name.charAt(0).toUpperCase() + name.slice(1);
+            this.form.controls['name'].setValue(str2);
 
             this.dbService.postSong(this.form.value).subscribe(music => {
               let dto: SongDTO = {
@@ -140,6 +148,23 @@ export class AlbumComponent implements OnInit {
   }
 
   deleteSong(song: SongDTO, index: number) {
+    this.dbService.getMoments().subscribe(moments => {
+      if (moments.length > 0) {
+        moments.forEach(moment => {
+          if (moment.song_Id == song.id) {
+            moment.song_Id = null
+            this.dbService.putMoment(moment).subscribe(moment => {
+              this.delete(song, index)
+            })
+          }
+        })
+      } else {
+        this.delete(song, index)
+      }
+    })
+  }
+
+  delete(song: SongDTO, index: number) {
     this.dbService.deleteSongBtID(song.id).subscribe(() => {
       this.dbService.deleteFile(song.file, 'files').subscribe()
       this.dbService.getHistory().subscribe(history => {
@@ -156,21 +181,47 @@ export class AlbumComponent implements OnInit {
 
   deleteAlbum() {
     this.dbService.getHistory().subscribe(history => {
-      history.forEach(h => {
-        this.album.songs.forEach(s => {
-          if (h.songId == s.id) {
-            this.dbService.deleteHistoryByID(h.id).subscribe(() => {
+      history.forEach(history => {
+        this.album.songs.forEach(song => {
+          if (history.songId == song.id) {
+            this.dbService.deleteHistoryByID(history.id).subscribe(() => {
               this.historyService.updateHistory()
             })
-            this.dbService.deleteSongBtID(s.id).subscribe()
           }
         })
       })
-      this.dbService.deleteAlbum(this.album.id).subscribe(() => {
-        this.dbService.deleteFile(this.album.image, 'images').subscribe()
-        this.toggleDeleteAlbum()
-        this.router.navigate(['/home'])
-      })
+
+      let count = this.album.songs.length
+      console.log(count)
+      if (this.album.songs.length > 0) {
+        this.album.songs.forEach(song => {
+          this.dbService.deleteFile(song.file, 'files').subscribe()
+          this.dbService.getMoments().subscribe(moments => {
+            moments.forEach(moment => {
+              if (moment.song_Id == song.id) {
+                moment.song_Id = null
+                this.dbService.putMoment(moment).subscribe()
+              }
+            })
+          })
+
+          count--
+        })
+
+        if (count == 0) {
+          this.dbService.deleteAlbum(this.album.id).subscribe(() => {
+            this.dbService.deleteFile(this.album.image, 'images').subscribe()
+            this.toggleDeleteAlbum()
+            this.router.navigate(['/home'])
+          })
+        }
+      } else {
+        this.dbService.deleteAlbum(this.album.id).subscribe(() => {
+          this.dbService.deleteFile(this.album.image, 'images').subscribe()
+          this.toggleDeleteAlbum()
+          this.router.navigate(['/home'])
+        })
+      }
     })
   }
 }

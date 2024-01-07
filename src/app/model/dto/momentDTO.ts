@@ -5,7 +5,7 @@ export class MomentDTO {
   constructor(
     public id: number,
     public label: string,
-    public songId: number,
+    public song_Id: number,
     public worshipId: number,
     public song: SongDTO
   ) {

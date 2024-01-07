@@ -1,6 +1,6 @@
 export interface Moment {
   id: number;
   label: string
-  songId: number;
+  song_Id: number;
   worshipId: number;
 }

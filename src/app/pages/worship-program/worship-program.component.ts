@@ -17,6 +17,8 @@ import {Moment} from "../../model/moment";
 export class WorshipProgramComponent implements OnInit {
 
   id: number;
+  deleteText: string;
+  deleteTextConfirm: string;
   showDeleteModal = false
   showAddLabelModal = false
   showUpdateLabelModal = false
@@ -41,10 +43,11 @@ export class WorshipProgramComponent implements OnInit {
       (data: { worship: WorshipDTO, songs: SongDTO[] }) => {
         this.worshipProgram = data.worship
         this.originalName = this.worshipProgram.name
+        this.deleteText = `I want to delete ${this.worshipProgram.name} worship program`
 
         this.worshipProgram.moments.forEach(moment => {
-          if (moment.songId != null) {
-            this.dbService.getSongByMomentID(moment.songId).subscribe(song => {
+          if (moment.song_Id != null) {
+            this.dbService.getSongByMomentID(moment.song_Id).subscribe(song => {
               moment.song = song
             })
           }
@@ -70,7 +73,7 @@ export class WorshipProgramComponent implements OnInit {
     song.times_played = song.times_played + 1
     this.dbService.patchSongTime(song.id, song.times_played).subscribe(response => {
       this.worshipProgram.moments.forEach(moment => {
-        if (moment.songId == response.id) {
+        if (moment.song_Id == response.id) {
           moment.song.times_played = response.times_played
         }
       })
@@ -81,6 +84,7 @@ export class WorshipProgramComponent implements OnInit {
 
   toggleDeleteWorship() {
     this.showDeleteModal = !this.showDeleteModal
+    this.deleteTextConfirm = ''
   }
 
   toggleAddLabel() {
@@ -111,11 +115,14 @@ export class WorshipProgramComponent implements OnInit {
 
       this.form.controls['id'].setValue(id + 1);
       this.form.controls['worshipId'].setValue(this.worshipProgram.id)
+      const name = this.form.get('label').value
+      const str2 = name.charAt(0).toUpperCase() + name.slice(1);
+      this.form.controls['label'].setValue(str2);
       this.dbService.postMoment(this.form.value).subscribe(moment => {
         let dto: MomentDTO = {
           id: moment.id,
           label: moment.label,
-          songId: moment.songId,
+          song_Id: moment.song_Id,
           worshipId: moment.worshipId,
           song: null,
         }
@@ -165,9 +172,9 @@ export class WorshipProgramComponent implements OnInit {
   selectOption(song: SongDTO) {
     this.worshipProgram.moments.forEach(moment => {
       if (moment == this.momentSelected) {
-        moment.songId = song.id
+        moment.song_Id = song.id
         moment.song = song
-        let m: Moment = {id: moment.id, label: moment.label, songId: moment.songId, worshipId: this.worshipProgram.id}
+        let m: Moment = {id: moment.id, label: moment.label, song_Id: moment.song_Id, worshipId: this.worshipProgram.id}
         this.dbService.putMoment(m).subscribe()
       }
     })

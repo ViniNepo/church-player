@@ -7,11 +7,11 @@
   ],
   "scripts": {
     "ng": "ng",
-    "start": "concurrently -k \"ng serve\" \"node file-control.js\" \"npm run electron\"",
+    "start": "concurrently -k \"ng serve\" \"node file-control.js\"",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "electron": "wait-on http://localhost:8000 && wait-on http://localhost:3000 && electron .",
+    "electron": "electron .",
     "electron-build": "ng build && electron .",
     "serve-json": "json-server --watch ./db.json"
   },

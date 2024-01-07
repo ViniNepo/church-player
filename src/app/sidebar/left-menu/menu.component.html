@@ -75,7 +75,7 @@
       <div class="pt-5">
         <label class="block mb-2 text-sm font-medium text-zinc-200" for="album_file">Choose album cover</label>
         <input type="file" id="album_file" (change)="onChange($event)" accept="image/*"
-               class="outline-none outline-none text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none text-zinc-400 placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500
+               class="outline-none text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none text-zinc-400 placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500
                    file:cursor-pointer file:bg-sky-500 file:border-none file:rounded-md file:text-zinc-200 file:no-underline file:pr-4 file:pl-4 file:pt-1 file:pb-1 file:mr-2"
                placeholder="Album cover">
       </div>
@@ -83,7 +83,7 @@
 
     <div class="pt-8 flex items-center gap-2">
       <button (click)="addAlbum()" [disabled]="!form.valid"
-              class="bg-sky-500 p-2 rounded-md border-none disabled:bg-zinc-500 disabled:cursor-not-allowed hover:bg-sky-700 w-20"
+              class="outline-none bg-sky-500 p-2 rounded-md border-none disabled:bg-zinc-500 disabled:cursor-not-allowed hover:bg-sky-700 w-20"
               type="button">
         <div class="flex items-center justify-center text-zinc-200">
           <h4 class="text-zinc-200">Save</h4>
@@ -111,7 +111,7 @@
           <label for="name" class="control-label block text-sm font-medium text-zinc-200 pb-2">Worship program
             name</label>
           <input formControlName="name" type="text" id="name" size="50"
-                 class="border text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                 class="outline-none border text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500"
                  placeholder="Worship program name">
         </div>
       </div>
@@ -119,7 +119,7 @@
         <label class="block mb-2 text-sm font-medium text-zinc-200" for="worship-file">Choose worship program
           cover</label>
         <input type="file" id="worship-file" (change)="onChange($event)" accept="image/*"
-               class="border text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none text-zinc-400 placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500
+               class="outline-none border text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none text-zinc-400 placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500
                   file:bg-sky-500 file:border-none file:rounded-md file:text-zinc-200 file:no-underline file:pr-4 file:pl-4 file:pt-1 file:pb-1 file:mr-2"
                placeholder="Worship program cover">
       </div>

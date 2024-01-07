@@ -78,7 +78,7 @@ fileControl.get('/api/open-file', (req, res) => {
     return;
   }
 
-  const pathToFile = path.join(__dirname,`./dist/church-player/assets/images/${fileName}`);
+  const pathToFile = path.join(__dirname,`./dist/church-player/assets/files/${fileName}`);
 
   fs.readFile(pathToFile, 'utf8', (err, data) => {
     if (err) {
@@ -153,14 +153,14 @@ function createWindow() {
     height: 800,
     minWidth: 1200,
     minHeight: 800,
-    icon: './src/assets/church-player-2.png',
+    icon: path.join(__dirname, '/dist/church-player/assets/church-player-2.png'),
     webPreferences: {
       nodeIntegration: true
     }
   })
 
   appWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'dist/church-player/index.html'),
+    pathname: path.join(__dirname, '/dist/church-player/index.html'),
     protocol: 'file',
     slashes: true
   }));

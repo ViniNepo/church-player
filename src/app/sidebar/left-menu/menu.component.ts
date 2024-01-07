@@ -61,6 +61,9 @@ export class MenuComponent implements OnInit {
             }
 
             this.form.controls['id'].setValue(id + 1);
+            const name = this.form.get('name').value
+            const str2 = name.charAt(0).toUpperCase() + name.slice(1);
+            this.form.controls['name'].setValue(str2);
             this.dbService.postAlbum(this.form.value).subscribe(data => {
               this.toggleAlbumModal()
               this.router.navigate(['/album', data.id])
@@ -85,6 +88,9 @@ export class MenuComponent implements OnInit {
             }
 
             this.form.controls['id'].setValue(id + 1);
+            const name = this.form.get('name').value
+            const str2 = name.charAt(0).toUpperCase() + name.slice(1);
+            this.form.controls['name'].setValue(str2);
 
             this.dbService.postWorship(this.form.value).subscribe(data => {
               this.toggleWorshipModal()

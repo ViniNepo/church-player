@@ -51,10 +51,12 @@
       <div class="flex items-center col-span-4">
         <h4 class="text-zinc-200">Moment</h4>
       </div>
-      <div class="flex items-center col-span-6">
+      <div class="flex items-center col-span-4">
         <h4 class="text-zinc-200">Music</h4>
       </div>
-
+      <div class="flex items-center col-span-2 justify-self-end pr-6">
+        <h4 class="text-zinc-200">Change Song</h4>
+      </div>
       <div class="flex items-center col-span-1 justify-self-end pr-6">
         <h4 class="text-zinc-200">Delete</h4>
       </div>
@@ -64,65 +66,75 @@
   </header>
 
   <main class="flex-1 p-5 overflow-y-auto">
-    <div *ngFor="let moment of worshipProgram.moments; index as i;"
-         class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm">
-      <div class="flex items-center pl-6">
-        <div class="flex items-center text-zinc-400">
-          <h4 class="pr-2 pt-1">{{i + 1}}</h4>
-          <button (click)="playSong(moment.song)" *ngIf="moment.song != null"
-                  class="cursor-pointer pt-1 no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
-            <lucide-icon name="play" class="play" size="20"></lucide-icon>
-          </button>
-        </div>
-      </div>
-      <div class="flex items-center col-span-4">
-        <h4 *ngIf="!showUpdateLabelModal || moment.id != labelSelected.id" class="text-zinc-200 truncate text-ellipsis overflow-hidden">{{moment.label}}</h4>
-        <input *ngIf="showUpdateLabelModal && moment.id == labelSelected.id" [(ngModel)]="moment.label" size="10"
-               class="text-xl text-zinc-200 pl-2 bg-transparent outline rounded-md outline-offset-2 outline-1 outline-sky-600">
-        <button *ngIf="!showUpdateLabelModal && labelSelected == null" (click)="toggleUpdateLabelName(moment)"
-                class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500 pb-1 pl-1 ">
-          <lucide-icon name="pencil-line" class="pencil-line pt-1"></lucide-icon>
-        </button>
-        <button *ngIf="showUpdateLabelModal && moment.id == labelSelected.id" (click)="saveUpdateLabelName()"
-                class="no-underline text-green-500 bg-transparent border-none hover:text-green-700 pb-1 pl-2">
-          <lucide-icon name="check" class="check pt-1"></lucide-icon>
-        </button>
-        <button *ngIf="showUpdateLabelModal  && moment.id == labelSelected.id" (click)="toggleUpdateLabelName(null)"
-                class="no-underline text-red-500 bg-transparent border-none hover:text-red-700 pb-1">
-          <lucide-icon name="x" class="x pt-1"></lucide-icon>
-        </button>
-      </div>
-      <div class="flex items-center col-span-6 gap-2">
-        <div class="flex rounded-md">
-          <div *ngIf="moment.song != null" class="pt-1 pb-1 pl-2">
-            <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
-              <img src="assets/images/{{moment.song.album.image}}" class="h-12 w-12 object-cover">
-              <div class="pl-2 flex flex-col space-y-1">
-                <h4 class="text-md text-zinc-200 w-56 truncate text-ellipsis overflow-hidden">{{moment.song.name}}</h4>
-                <h5 class="text-zinc-400 truncate text-ellipsis overflow-hidden">{{moment.song.album.name}}</h5>
-              </div>
+    <div cdkDropListGroup>
+      <div cdkDropList [cdkDropListData]="worshipProgram.moments" (cdkDropListDropped)="drop($event)">
+        <div *ngFor="let moment of worshipProgram.moments; index as i;"
+             class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm" cdkDrag>
+          <div class="flex items-center pl-6">
+            <div class="flex items-center text-zinc-400">
+              <h4 class="pr-2 pt-1">{{i + 1}}</h4>
+              <button (click)="playSong(moment.song)" *ngIf="moment.song != null"
+                      class="cursor-pointer pt-1 no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
+                <lucide-icon name="play" class="play" size="20"></lucide-icon>
+              </button>
             </div>
           </div>
-          <div *ngIf="moment.song == null" class="pt-1 pb-1 pl-2">
-            <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
-              <img src="assets/church-player-2.png" class="h-12 w-12 object-cover">
-              <div class="pl-2 flex flex-col space-y-1">
-                <h4 class="text-md text-zinc-200 w-56">Select song</h4>
-              </div>
-            </div>
+          <div class="flex items-center col-span-4">
+            <h4 *ngIf="!showUpdateLabelModal || moment.id != labelSelected.id" class="text-zinc-200 truncate text-ellipsis overflow-hidden">{{moment.label}}</h4>
+            <input *ngIf="showUpdateLabelModal && moment.id == labelSelected.id" [(ngModel)]="moment.label" size="10"
+                   class="text-xl text-zinc-200 pl-2 bg-transparent outline rounded-md outline-offset-2 outline-1 outline-sky-600">
+            <button *ngIf="!showUpdateLabelModal && labelSelected == null" (click)="toggleUpdateLabelName(moment)"
+                    class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500 pb-1 pl-1 invisible group-hover:visible">
+              <lucide-icon name="pencil-line" class="pencil-line pt-1"></lucide-icon>
+            </button>
+            <button *ngIf="showUpdateLabelModal && moment.id == labelSelected.id" (click)="saveUpdateLabelName()"
+                    class="no-underline text-green-500 bg-transparent border-none hover:text-green-700 pb-1 pl-2">
+              <lucide-icon name="check" class="check pt-1"></lucide-icon>
+            </button>
+            <button *ngIf="showUpdateLabelModal  && moment.id == labelSelected.id" (click)="toggleUpdateLabelName(null)"
+                    class="no-underline text-red-500 bg-transparent border-none hover:text-red-700 pb-1">
+              <lucide-icon name="x" class="x pt-1"></lucide-icon>
+            </button>
           </div>
-          <button (click)="toggleShowOption(moment)" class="flex pl-2 pr-2 ml-2 border-l border-zinc-700 hover:bg-sky-700 hover:rounded-r-md">
-            <lucide-icon name="pencil-line" class="pencil-line self-center"></lucide-icon>
-          </button>
+          <div class="flex items-center col-span-4 gap-2">
+              <div *ngIf="moment.song != null" class="flex flex-row pt-1 pb-1 pl-2 bg-slate-800 rounded-md">
+                <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
+                  <img src="assets/images/{{moment.song.album.image}}" class="h-12 w-12 object-cover">
+                  <div class="pl-2 flex flex-col space-y-1">
+                    <h4 class="text-md text-zinc-200 w-96 truncate text-ellipsis overflow-hidden">xdfgsduijfnsdjg dsfg dfshijg dsfhjg</h4>
+                    <h5 class="text-zinc-400 truncate text-ellipsis overflow-hidden">{{moment.song.album.name}}</h5>
+                  </div>
+                </div>
+                <button (click)="deleteLabel(moment.id, i)"
+                        class="pl-2 pr-2 no-underline border-none bg-transparent text-red-400 invisible group-hover:visible hover:text-red-700">
+                  <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
+                </button>
+              </div>
+              <div *ngIf="moment.song == null" class="pt-1 pb-1 pl-2">
+                <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
+                  <button (click)="toggleShowOption(moment)" class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700" type="button">
+                    <div class="flex items-center text-zinc-200">
+                      <h4 class="text-zinc-200">Select Song</h4>
+                    </div>
+                  </button>
+                </div>
+              </div>
+          </div>
+          <div class="flex items-center col-span-2 justify-self-end pr-6">
+            <button *ngIf="moment.song != null" (click)="toggleShowOption(moment)" class="flex pl-2 pr-2 ml-2 text-zinc-400 hover:text-zinc-200">
+              <lucide-icon name="pencil-line" class="pencil-line self-center"></lucide-icon>
+            </button>
+          </div>
+          <div class="flex items-center col-span-1 justify-self-end pr-6">
+            <button (click)="deleteLabel(moment.id, i)"
+                    class="no-underline border-none bg-transparent text-red-400 hover:text-red-700">
+              <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="flex items-center col-span-1 justify-self-end pr-6">
-        <button (click)="deleteLabel(moment.id, i)"
-                class="no-underline border-none bg-transparent text-red-400 hover:text-red-700">
-          <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
-        </button>
       </div>
     </div>
+
     <div *ngIf="worshipProgram.moments.length == 0">
       <h3 class="p-5 mb-20 text-zinc-400">There are not songs in your worships songs.</h3>
     </div>

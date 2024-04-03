@@ -9,6 +9,8 @@ import {Album} from "../../model/album";
 import {HttpEvent, HttpEventType} from "@angular/common/http";
 import {ToastrService} from "ngx-toastr";
 import {Song} from "../../model/song";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {MomentDTO} from "../../model/dto/momentDTO";
 
 @Component({
   selector: 'app-album',
@@ -107,7 +109,7 @@ export class AlbumComponent implements OnInit {
       const name = this.files[0].name
       const songName = name.charAt(0).toUpperCase() + name.slice(1);
 
-      let song: Song = {id: 2, name: songName, number: "1", albumId: this.album.id, file: songName, times_played: 1}
+      let song: Song = {id: 1, name: songName, number: "1", albumId: this.album.id, file: songName, times_played: 1}
       this.dbService.postSong(song).subscribe(music => {
         let dto: SongDTO = {
           id: music.id,
@@ -200,5 +202,13 @@ export class AlbumComponent implements OnInit {
         })
       }
     })
+  }
+
+  drop(event: CdkDragDrop<MomentDTO[]>): void {
+    moveItemInArray(
+      event.container.data,
+      event.previousIndex,
+      event.currentIndex
+    );
   }
 }

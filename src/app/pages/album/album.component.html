@@ -56,30 +56,34 @@
   </header>
 
   <main class="flex-1 p-5 overflow-y-auto">
-    <ul>
-      <li *ngFor="let song of album.songs; index as i;"
-          class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm">
-        <div class="flex items-center pl-6 text-zinc-400">
-          <h4 class="pr-2">{{i + 1}}</h4>
-          <button (click)="playSong(song)"
-                  class="cursor-pointer no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
-            <lucide-icon name="play" class="play" size="20"></lucide-icon>
-          </button>
+    <div cdkDropListGroup>
+      <div cdkDropList [cdkDropListData]="album.songs" (cdkDropListDropped)="drop($event)">
+
+        <div *ngFor="let song of album.songs; index as i;"
+             class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm" cdkDrag>
+          <div class="flex items-center pl-6 text-zinc-400">
+            <h4 class="pr-2">{{i + 1}}</h4>
+            <button (click)="playSong(song)"
+                    class="cursor-pointer no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
+              <lucide-icon name="play" class="play" size="20"></lucide-icon>
+            </button>
+          </div>
+          <div class="flex items-center col-span-10">
+            <h4 class="text-zinc-200">{{song.name}}</h4>
+          </div>
+          <div class="flex items-center justify-self-end pr-6 pt-1">
+            <button (click)="toggleDeleteSong()"
+                    class="no-underline border-none bg-transparent text-red-400 hover:text-red-700">
+              <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
+            </button>
+          </div>
         </div>
-        <div class="flex items-center col-span-10">
-          <h4 class="text-zinc-200">{{song.name}}</h4>
+        <div *ngIf="album.songs.length == 0">
+          <h3 class="p-5 mb-20 text-zinc-400">There are not songs in your album.</h3>
         </div>
-        <div class="flex items-center justify-self-end pr-6 pt-1">
-          <button (click)="toggleDeleteSong()"
-                  class="no-underline border-none bg-transparent text-red-400 hover:text-red-700">
-            <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
-          </button>
-        </div>
-      </li>
-      <li *ngIf="album.songs.length == 0">
-        <h3 class="p-5 mb-20 text-zinc-400">There are not songs in your album.</h3>
-      </li>
-    </ul>
+      </div>
+    </div>
+
   </main>
 </div>
 

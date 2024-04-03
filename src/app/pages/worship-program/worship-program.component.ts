@@ -8,6 +8,7 @@ import {MomentDTO} from "../../model/dto/momentDTO";
 import {Worship} from "../../model/worship";
 import {SongDTO} from "../../model/dto/songDTO";
 import {Moment} from "../../model/moment";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
   selector: 'app-worship-program',
@@ -187,6 +188,14 @@ export class WorshipProgramComponent implements OnInit {
         this.songs = song
       })
     }
+  }
+
+  drop(event: CdkDragDrop<MomentDTO[]>): void {
+    moveItemInArray(
+      event.container.data,
+      event.previousIndex,
+      event.currentIndex
+    );
   }
 
 }

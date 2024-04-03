@@ -15,14 +15,8 @@
       <div class="flex items-center pl-6">
         <h4 class="text-zinc-200">#</h4>
       </div>
-      <div class="flex items-center col-span-8">
+      <div class="flex items-center col-span-11">
         <h4 class="text-zinc-200">Music</h4>
-      </div>
-      <div class="flex items-center justify-self-end">
-        <h4 class="text-zinc-200">Number</h4>
-      </div>
-      <div class="flex items-center justify-self-end col-span-2 pr-6">
-        <h4 class="text-zinc-200">Played</h4>
       </div>
     </div>
 
@@ -39,7 +33,7 @@
             <lucide-icon name="play" class="play" size="20"></lucide-icon>
           </button>
         </div>
-        <div class="flex items-center col-span-8">
+        <div class="flex items-center col-span-11">
           <div class="flex items-center gap-3">
             <img src="assets/images/{{music.album.image}}" class="h-12 w-12 object-cover">
             <div class="flex flex-col space-y-1">
@@ -47,15 +41,6 @@
               <h5 class="text-zinc-400">{{music.album.name}}</h5>
             </div>
           </div>
-        </div>
-        <div *ngIf="music.number === null" class="flex items-center justify-self-end text-zinc-400">
-          <h4 class="text-zinc-200">-</h4>
-        </div>
-        <div *ngIf="music.number !== null" class="flex items-center justify-self-end text-zinc-400">
-          <h4 class="text-zinc-200">{{music.number}}</h4>
-        </div>
-        <div class="flex items-center justify-self-end col-span-2 pr-6 text-zinc-400">
-          <h4 class="text-zinc-200">{{music.times_played}}</h4>
         </div>
       </div>
 

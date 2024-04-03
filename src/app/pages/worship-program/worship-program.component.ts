@@ -17,8 +17,6 @@ import {Moment} from "../../model/moment";
 export class WorshipProgramComponent implements OnInit {
 
   id: number;
-  deleteText: string;
-  deleteTextConfirm: string;
   showDeleteModal = false
   showAddLabelModal = false
   showUpdateLabelModal = false
@@ -43,7 +41,6 @@ export class WorshipProgramComponent implements OnInit {
       (data: { worship: WorshipDTO, songs: SongDTO[] }) => {
         this.worshipProgram = data.worship
         this.originalName = this.worshipProgram.name
-        this.deleteText = `I want to delete ${this.worshipProgram.name} worship program`
 
         this.worshipProgram.moments.forEach(moment => {
           if (moment.song_Id != null) {
@@ -84,7 +81,6 @@ export class WorshipProgramComponent implements OnInit {
 
   toggleDeleteWorship() {
     this.showDeleteModal = !this.showDeleteModal
-    this.deleteTextConfirm = ''
   }
 
   toggleAddLabel() {

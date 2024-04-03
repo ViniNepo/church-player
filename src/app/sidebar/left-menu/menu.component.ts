@@ -42,7 +42,7 @@ export class MenuComponent implements OnInit {
     this.form = this.formBuilder.group({
       id: [null],
       name: [null, Validators.required],
-      image: [null, Validators.required],
+      image: [null],
     })
   }
 

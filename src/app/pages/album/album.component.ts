@@ -8,6 +8,7 @@ import {SongDTO} from "../../model/dto/songDTO";
 import {Album} from "../../model/album";
 import {HttpEvent, HttpEventType} from "@angular/common/http";
 import {ToastrService} from "ngx-toastr";
+import {Song} from "../../model/song";
 
 @Component({
   selector: 'app-album',
@@ -17,15 +18,13 @@ import {ToastrService} from "ngx-toastr";
 export class AlbumComponent implements OnInit {
 
   id: number;
-  deleteText: string;
-  deleteTextConfirm: string;
   editName = false;
   showDeleteModal = false
+  showDeleteSongModal = false
   showAddSongModal = false
   originalName: string;
   album: AlbumDTO;
-  form: FormGroup;
-  file: Array<File>
+  files: Array<File>
 
   constructor(
     private historyService: HistoryService,
@@ -42,19 +41,8 @@ export class AlbumComponent implements OnInit {
       (data: { album: AlbumDTO }) => {
         this.album = data.album
         this.originalName = this.album.name
-        this.deleteText = `I want to delete ${this.album.name} album`
-        this.deleteTextConfirm = ''
       }
     )
-
-    this.form = this.formBuilder.group({
-      id: [null],
-      name: [null, Validators.required],
-      number: [null],
-      times_played: [null],
-      file: [null, Validators.required],
-      albumId: [null],
-    })
   }
 
   playSong(song: SongDTO) {
@@ -72,13 +60,16 @@ export class AlbumComponent implements OnInit {
   }
 
   toggleAddMusic() {
-    this.form.reset()
+    this.files = []
     this.showAddSongModal = !this.showAddSongModal
   }
 
   toggleDeleteAlbum() {
     this.showDeleteModal = !this.showDeleteModal
-    this.deleteTextConfirm = ''
+  }
+
+  toggleDeleteSong() {
+    this.showDeleteSongModal = !this.showDeleteSongModal
   }
 
   editAlbumName() {
@@ -101,50 +92,36 @@ export class AlbumComponent implements OnInit {
   }
 
   onChange(event) {
-    this.file = event.target.files
-    this.form.controls['file'].setValue(this.file[0].name)
+    this.files = event.target.files
+    console.log(this.files)
   }
 
   addSong() {
-    this.dbService.uploadFile(this.file).subscribe((event: HttpEvent<Object>) => {
-        if (event.type == HttpEventType.Response) {
-          this.dbService.getSongs().subscribe(data => {
-            let id = 0
-            if (data.length > 0) {
-              id = data.pop().id
-            }
+    console.log(this.files)
+    this.dbService.getSongs().subscribe(data => {
+      let id = 0
+      if (data.length > 0) {
+        id = data.pop().id
+      }
 
-            this.form.controls['id'].setValue(id + 1)
-            this.form.controls['albumId'].setValue(this.album.id)
-            this.form.controls['times_played'].setValue(0)
-            if (this.form.get('number').value == null) {
-              this.form.controls['number'].setValue('-')
-            }
-            const name = this.form.get('name').value
-            const str2 = name.charAt(0).toUpperCase() + name.slice(1);
-            this.form.controls['name'].setValue(str2);
+      const name = this.files[0].name
+      const songName = name.charAt(0).toUpperCase() + name.slice(1);
 
-            this.dbService.postSong(this.form.value).subscribe(music => {
-              let dto: SongDTO = {
-                id: music.id,
-                name: music.name,
-                file: music.file,
-                number: music.number,
-                times_played: music.times_played,
-                albumId: music.albumId,
-                album: null
-              }
-              this.album.songs.push(dto)
-            })
-            this.toggleAddMusic()
-          })
+      let song: Song = {id: 2, name: songName, number: "1", albumId: this.album.id, file: songName, times_played: 1}
+      this.dbService.postSong(song).subscribe(music => {
+        let dto: SongDTO = {
+          id: music.id,
+          name: music.name,
+          file: music.file,
+          number: music.number,
+          times_played: music.times_played,
+          albumId: music.albumId,
+          album: null
         }
-      },
-      error => {
-        console.log(error)
-        this.toggleAddMusic()
-        this.toastr.error('This song is already being used!', 'Error');
+        this.album.songs.push(dto)
       })
+      this.toggleAddMusic()
+    })
   }
 
   deleteSong(song: SongDTO, index: number) {

@@ -1,4 +1,5 @@
 import {MomentDTO} from "./momentDTO";
+import {SubgroupDTO} from "./subgroupDTO";
 
 export class WorshipDTO {
 
@@ -6,7 +7,7 @@ export class WorshipDTO {
     public id: number,
     public name: string,
     public image: string,
-    public moments: MomentDTO[]
+    public subgroup: SubgroupDTO[]
   ) {
   }
 }

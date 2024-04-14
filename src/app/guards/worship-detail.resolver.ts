@@ -33,8 +33,8 @@ export class WorshipResolver implements Resolve<WorshipDTO> {
       // flatMap(data => data.moments.forEach(moment => )),
       // )
 
-    this.dbService.getWorshipByID(id).pipe()
-
+    // this.dbService.getWorshipByID(id).pipe()
+    //
     return this.dbService.getWorshipByID(id)
       // next: (worship) => {
       //   console.log(worship)

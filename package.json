@@ -33,7 +33,7 @@
     "electron": "^27.1.2",
     "electron-packager": "^15.5.2",
     "express": "^4.18.2",
-    "lucide-angular": "^0.294.0",
+    "lucide-angular": "^0.352.0",
     "ngx-toastr": "^16.2.0",
     "rxjs": "~7.8.0",
     "tailwind-scrollbar-hide": "^1.1.7",

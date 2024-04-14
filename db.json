@@ -41,7 +41,19 @@
     {
       "id": 3,
       "label": "Teste 3",
-      "songId": null,
+      "song_Id": 2,
+      "worshipId": 1
+    },
+    {
+      "id": 4,
+      "label": "Fdfd",
+      "song_Id": 2,
+      "worshipId": 1
+    },
+    {
+      "id": 5,
+      "label": "Dfdff",
+      "song_Id": 1,
       "worshipId": 1
     }
   ],

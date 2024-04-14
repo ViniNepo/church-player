@@ -204,7 +204,7 @@ export class AlbumComponent implements OnInit {
     })
   }
 
-  drop(event: CdkDragDrop<MomentDTO[]>): void {
+  drop(event: CdkDragDrop<any[]>): void {
     moveItemInArray(
       event.container.data,
       event.previousIndex,

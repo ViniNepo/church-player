@@ -37,7 +37,12 @@ import {
   MoveUp,
   UploadCloud,
   Check,
-  X, Trash2, LockKeyhole, LockKeyholeOpen,
+  X,
+  Trash2,
+  LockKeyhole,
+  LockKeyholeOpen,
+  RefreshCcw,
+  GripVertical,
 } from 'lucide-angular';
 import {SearchSongsComponent} from './pages/search-songs/search-songs.component';
 import {AlbumComponent} from './pages/album/album.component';
@@ -111,6 +116,8 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
       Trash2,
       LockKeyhole,
       LockKeyholeOpen,
+      RefreshCcw,
+      GripVertical,
     }),
     FormsModule,
     ReactiveFormsModule,

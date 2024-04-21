@@ -1,4 +1,3 @@
-import {SongDTO} from "./songDTO";
 import {MomentDTO} from "./momentDTO";
 
 export class SubgroupDTO {

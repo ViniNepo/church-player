@@ -13,7 +13,7 @@
       "number": "1",
       "albumId": 1,
       "file": "Oi.pptx",
-      "times_played": 1
+      "times_played": 2
     },
     {
       "id": 1,
@@ -21,7 +21,7 @@
       "number": "1",
       "albumId": 1,
       "file": "Oi2 - Copia.pptx",
-      "times_played": 1
+      "times_played": 2
     }
   ],
   "worships": [
@@ -33,29 +33,30 @@
   ],
   "moments": [
     {
-      "id": 1,
-      "label": "Teste",
-      "song_Id": 2,
-      "worshipId": 1
-    },
-    {
-      "id": 3,
-      "label": "Teste 3",
-      "song_Id": 2,
-      "worshipId": 1
-    },
-    {
       "id": 4,
       "label": "Fdfd",
+      "subgroup": 2,
       "song_Id": 2,
       "worshipId": 1
     },
     {
       "id": 5,
       "label": "Dfdff",
+      "subgroup": 3,
       "song_Id": 1,
       "worshipId": 1
     }
   ],
-  "history": []
+  "history": [
+    {
+      "id": 12,
+      "songId": 2,
+      "albumId": 1
+    },
+    {
+      "id": 17,
+      "songId": 1,
+      "albumId": 1
+    }
+  ]
 }

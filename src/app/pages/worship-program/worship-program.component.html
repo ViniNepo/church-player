@@ -40,21 +40,16 @@
         </button>
       </div>
     </div>
-  </header>
 
-  <main class="flex-1 p-5 overflow-y-auto">
-    <div class="grid grid-cols-12 gap-4 pl-1 pr-1 pt-2">
+    <div class="grid grid-cols-12 gap-4 pl-1 pr-1 pt-5">
       <div class="flex items-center pl-6">
         <h4 class="text-zinc-200">#</h4>
       </div>
-      <div class="flex items-center col-span-4">
+      <div class="flex items-center col-span-5">
         <h4 class="text-zinc-200">Moment</h4>
       </div>
-      <div class="flex items-center col-span-4">
+      <div class="flex items-center col-span-5">
         <h4 class="text-zinc-200">Music</h4>
-      </div>
-      <div class="flex items-center col-span-2 justify-self-end pr-6">
-        <h4 class="text-zinc-200">Change Song</h4>
       </div>
       <div class="flex items-center col-span-1 justify-self-end pr-6">
         <h4 class="text-zinc-200">Delete</h4>
@@ -62,25 +57,46 @@
     </div>
 
     <hr class="h-px mt-4 mb-4 bg-zinc-700 border-0">
+  </header>
 
-    <div cdkDropListGroup>
-      <div *ngFor="let subgroup of worshipProgram.subgroup; index as i;">
+  <main class="flex-1 pl-2 pr-2 overflow-y-auto">
+    <div cdkDropListGroup class="area">
+      <div class="border-l border-r border-b border-sky-950 rounded-md mb-2" *ngFor="let subgroup of worshipProgram.subgroup; index as i;">
 
+        <div class="flex flex-row mb-1 bg-sky-950 rounded-t-md">
+          <h3 class="flex-1 pl-2 pt-2 pb-2 text-xl text-zinc-200">{{subgroup.label}}</h3>
+          <div class="flex">
+            <button (click)="toggleDeleteWorship()" class="pr-2 border-none text-zinc-400 hover:text-zinc-200"
+                    type="button">
+              <lucide-icon name="plus-square" class="plus-square pt-1"></lucide-icon>
+            </button>
+            <button (click)="toggleDeleteWorship()" class="pr-2 border-none text-red-500 hover:text-red-700"
+                    type="button">
+              <lucide-icon name="trash-2" class="trash-2 pt-1"></lucide-icon>
+            </button>
+          </div>
+        </div>
 
         <div cdkDropList [cdkDropListData]="subgroup.moments" (cdkDropListDropped)="drop($event)">
           <div *ngFor="let moment of subgroup.moments; index as i;"
-               class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm border-b-2 border-b-amber-200" cdkDrag cdkDragDisabled>
+               class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm border-b border-sky-950"
+               cdkDrag cdkDragLockAxis="y" cdkDragBoundary=".area" [cdkDragData]="moment">
             <div class="flex items-center pl-6">
-              <div class="flex items-center text-zinc-400">
+              <div class="flex items-center text-zinc-400 gap-2">
                 <h4 class="pr-2 pt-1">{{i + 1}}</h4>
+                <button cdkDragHandle (click)="playSong(moment.song)" *ngIf="moment.song != null"
+                        class="cursor-move pt-1 no-underline border-none bg-transparent text-zinc-200 hover:text-sky-500 invisible group-hover:visible">
+                  <lucide-icon name="grip-vertical" class="grip-vertical" size="20"></lucide-icon>
+                </button>
                 <button (click)="playSong(moment.song)" *ngIf="moment.song != null"
-                        class="cursor-pointer pt-1 no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
+                        class="cursor-pointer pt-1 no-underline border-none bg-transparent text-zinc-200 hover:text-sky-500 invisible group-hover:visible">
                   <lucide-icon name="play" class="play" size="20"></lucide-icon>
                 </button>
               </div>
             </div>
-            <div class="flex items-center col-span-4">
-              <h4 *ngIf="!showUpdateLabelModal || moment.id != labelSelected.id" class="text-zinc-200 truncate text-ellipsis overflow-hidden">{{moment.label}}</h4>
+            <div class="flex items-center col-span-5">
+              <h4 *ngIf="!showUpdateLabelModal || moment.id != labelSelected.id"
+                  class="text-zinc-200 truncate text-ellipsis overflow-hidden">{{moment.label}}</h4>
               <input *ngIf="showUpdateLabelModal && moment.id == labelSelected.id" [(ngModel)]="moment.label" size="10"
                      class="text-xl text-zinc-200 pl-2 bg-transparent outline rounded-md outline-offset-2 outline-1 outline-sky-600">
               <button *ngIf="!showUpdateLabelModal && labelSelected == null" (click)="toggleUpdateLabelName(moment)"
@@ -91,55 +107,68 @@
                       class="no-underline text-green-500 bg-transparent border-none hover:text-green-700 pb-1 pl-2">
                 <lucide-icon name="check" class="check pt-1"></lucide-icon>
               </button>
-              <button *ngIf="showUpdateLabelModal  && moment.id == labelSelected.id" (click)="toggleUpdateLabelName(null)"
+              <button *ngIf="showUpdateLabelModal  && moment.id == labelSelected.id"
+                      (click)="toggleUpdateLabelName(null)"
                       class="no-underline text-red-500 bg-transparent border-none hover:text-red-700 pb-1">
                 <lucide-icon name="x" class="x pt-1"></lucide-icon>
               </button>
             </div>
-            <div class="flex items-center col-span-4 gap-2">
-              <div *ngIf="moment.song != null" class="flex flex-row pt-1 pb-1 pl-2 bg-slate-800 rounded-md">
-                <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
-                  <img src="assets/images/{{moment.song.album.image}}" class="h-12 w-12 object-cover">
-                  <div class="pl-2 flex flex-col space-y-1">
-                    <h4 class="text-md text-zinc-200 w-96 truncate text-ellipsis overflow-hidden">xdfgsduijfnsdjg dsfg dfshijg dsfhjg</h4>
-                    <h5 class="text-zinc-400 truncate text-ellipsis overflow-hidden">{{moment.song.album.name}}</h5>
+            <div class="items-center col-span-5 gap-2 bg-slate-900 rounded-md">
+              <div class="grid grid-cols-12">
+                <div class="flex items-center col-span-11">
+                  <div *ngIf="moment.song != null" class="flex-1 flex-row pt-1 pb-1 pl-2">
+                    <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
+                      <img src="assets/church-player-2.png" class="h-12 w-12 object-cover">
+                      <div class="pl-2 flex flex-col space-y-1">
+                        <h4 class="text-md text-zinc-200 truncate text-ellipsis overflow-hidden">{{moment.song.name}}</h4>
+                        <h5 class="text-zinc-400 truncate text-ellipsis overflow-hidden">{{moment.song.album.name}}</h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="moment.song == null" class="pt-1 pb-1 pl-2">
+                    <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
+                      <button (click)="toggleShowOption(moment)"
+                              class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700" type="button">
+                        <div class="flex items-center text-zinc-200">
+                          <h4 class="text-zinc-200">Select Song</h4>
+                        </div>
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <button (click)="deleteLabel(moment.id, i)"
-                        class="pl-2 pr-2 no-underline border-none bg-transparent text-red-400 invisible group-hover:visible hover:text-red-700">
-                  <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
-                </button>
-              </div>
-              <div *ngIf="moment.song == null" class="pt-1 pb-1 pl-2">
-                <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
-                  <button (click)="toggleShowOption(moment)" class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700" type="button">
-                    <div class="flex items-center text-zinc-200">
-                      <h4 class="text-zinc-200">Select Song</h4>
+
+                <div class="flex items-center col-span-1">
+                  <div *ngIf="moment.song != null" class="flex">
+                    <div class="pl-2 flex flex-col space-y-1 ">
+                      <button (click)="deleteLabel(moment.id, i)"
+                              class="pl-2 pr-2 no-underline border-none bg-transparent text-zinc-200 invisible group-hover:visible hover:text-sky-500">
+                        <lucide-icon name="refresh-ccw" class="refresh-ccw"></lucide-icon>
+                      </button>
+                      <button (click)="deleteLabel(moment.id, i)"
+                              class="pl-2 pr-2 no-underline border-none bg-transparent text-red-400 invisible group-hover:visible hover:text-red-600">
+                        <lucide-icon name="trash-2" class="trash-2"></lucide-icon>
+                      </button>
                     </div>
-                  </button>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="flex items-center col-span-2 justify-self-end pr-6">
-              <button *ngIf="moment.song != null" (click)="toggleShowOption(moment)" class="flex pl-2 pr-2 ml-2 text-zinc-400 hover:text-zinc-200">
-                <lucide-icon name="search" class="search self-center"></lucide-icon>
-              </button>
             </div>
             <div class="flex items-center col-span-1 justify-self-end pr-6">
               <button (click)="deleteLabel(moment.id, i)"
-                      class="no-underline border-none bg-transparent text-red-400 hover:text-red-700">
+                      class="no-underline border-none bg-transparent text-red-400 hover:text-red-700 invisible group-hover:visible">
                 <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
               </button>
             </div>
           </div>
-          <div class="pl-2 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm">
-            <button (click)="toggleAddLabel()" class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700" type="button">
-              <div class="flex items-center text-zinc-200">
-                <h4 class="text-zinc-200">Add New Song</h4>
-              </div>
-            </button>
-          </div>
         </div>
+      </div>
+
+      <div class="pb-2">
+        <button (click)="toggleAddLabel()" class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700" type="button">
+          <div class="flex items-center text-zinc-200">
+            <h4 class="text-zinc-200">Add section</h4>
+          </div>
+        </button>
       </div>
     </div>
 
@@ -154,7 +183,8 @@
     <h3 class="text-zinc-200">Are you sure that you want to delete this Worship Program?</h3>
 
     <div class="pt-8 flex items-center gap-2">
-      <button (click)="deleteWorship()" class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700 w-20 disabled:bg-zinc-500 disabled:cursor-not-allowed"
+      <button (click)="deleteWorship()"
+              class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700 w-20 disabled:bg-zinc-500 disabled:cursor-not-allowed"
               type="button">
         <div class="flex items-center justify-center text-zinc-200">
           <h4 class="text-zinc-200">Confirm</h4>

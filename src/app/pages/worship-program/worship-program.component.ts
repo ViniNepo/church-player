@@ -8,7 +8,9 @@ import {MomentDTO} from "../../model/dto/momentDTO";
 import {Worship} from "../../model/worship";
 import {SongDTO} from "../../model/dto/songDTO";
 import {Moment} from "../../model/moment";
-import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
+import {SubgroupDTO} from "../../model/dto/subgroupDTO";
+import {Album} from "../../model/album";
 
 @Component({
   selector: 'app-worship-program',
@@ -28,7 +30,6 @@ export class WorshipProgramComponent implements OnInit {
   songs: SongDTO[]
   momentSelected: MomentDTO
   labelSelected: MomentDTO
-  filteredData: SongDTO[]
   form: FormGroup;
 
   constructor(
@@ -39,22 +40,78 @@ export class WorshipProgramComponent implements OnInit {
     private router: Router
   ) {
     this.route.data.subscribe(
-      (data: { worship: WorshipDTO, songs: SongDTO[] }) => {
+      (data: { worship: WorshipDTO}) => {
         this.worshipProgram = data.worship
         this.originalName = this.worshipProgram.name
 
-        console.log(this.worshipProgram)
-        console.log(this.songs)
-        // this.worshipProgram.subgroup.forEach(moment => {
-          // if (moment.song_Id != null) {
-          //   this.dbService.getSongByMomentID(moment.song_Id).subscribe(song => {
-          //     moment.song = song
-          //   })
-          // }
-        // })
+        let al1: Album = {id: 1, name: "linda playlist", image: "assest/church-player-2.png"}
+        let al2: Album = {id: 1, name: "linda  maravilhosa", image: "assest/church-player-2.png"}
+        let al3: Album = {id: 1, name: "linda d+", image: "assest/church-player-2.png"}
 
-        this.songs = data.songs
-        this.filteredData = [...this.songs];
+        let song: SongDTO = {id: 1, name: "cancao", file: "", times_played: 1, number: "1", albumId: 1, album: al1}
+        let song2: SongDTO = {id: 2, name: "cancao2", file: "", times_played: 1, number: "2", albumId: 1, album: al2}
+        let song3: SongDTO = {id: 3, name: "cancao3", file: "", times_played: 1, number: "3", albumId: 1, album: al3}
+        let song4: SongDTO = {id: 4, name: "cancao4", file: "", times_played: 1, number: "4", albumId: 1, album: al1}
+        let song5: SongDTO = {id: 5, name: "cancao5", file: "", times_played: 1, number: "5", albumId: 1, album: al3}
+
+        let m1: MomentDTO = {id: 1, label: "primeiro hino", subgroup: 1, song_Id: 1, worshipId:this.worshipProgram.id, song: song}
+        let m2: MomentDTO = {id: 2, label: "escola sabatina", subgroup: 1, song_Id: 1, worshipId:this.worshipProgram.id, song: song2}
+        let m3: MomentDTO = {id: 3, label: "culto", subgroup: 2, song_Id: 1, worshipId:this.worshipProgram.id, song: song3}
+        let m4: MomentDTO = {id: 4, label: "mensagem esoecial", subgroup: 2, song_Id: 1, worshipId:this.worshipProgram.id, song: null}
+        let m5: MomentDTO = {id: 5, label: "fim", subgroup: 3, song_Id: 1, worshipId:this.worshipProgram.id, song: song5}
+
+        let ml1: MomentDTO[] = []
+        let ml2: MomentDTO[] = []
+        let ml3: MomentDTO[] = []
+        let ml4: MomentDTO[] = []
+        let ml5: MomentDTO[] = []
+        let ml6: MomentDTO[] = []
+        let ml7: MomentDTO[] = []
+        ml1.push(m1)
+        ml1.push(m1)
+        ml1.push(m1)
+        ml2.push(m2)
+        ml2.push(m5)
+        ml2.push(m2)
+        ml2.push(m3)
+        ml3.push(m2)
+        ml3.push(m2)
+        ml3.push(m2)
+        ml4.push(m3)
+        ml5.push(m3)
+        ml5.push(m3)
+        ml6.push(m4)
+        ml6.push(m4)
+        ml6.push(m4)
+        ml7.push(m5)
+        ml7.push(m5)
+
+        let s1: SubgroupDTO = {id: 1, label: "inicio culto", moments: ml1}
+        let s2: SubgroupDTO = {id: 2, label: "parte do meio", moments: ml2}
+        let s3: SubgroupDTO = {id: 3, label: "fim do culto", moments: ml3}
+        let s4: SubgroupDTO = {id: 3, label: "fim do culto", moments: ml4}
+        let s5: SubgroupDTO = {id: 3, label: "fim do culto", moments: ml5}
+        let s6: SubgroupDTO = {id: 3, label: "fim do culto", moments: ml6}
+        let s7: SubgroupDTO = {id: 3, label: "fim do culto", moments: ml7}
+
+        let sl: SubgroupDTO[] = []
+        sl.push(s1)
+        sl.push(s2)
+        sl.push(s3)
+        sl.push(s4)
+        sl.push(s5)
+        sl.push(s6)
+        sl.push(s7)
+
+        this.worshipProgram.subgroup = sl
+        console.log(this.worshipProgram)
+        // this.worshipProgram.subgroup.forEach(moment => {
+        //   if (moment.song_Id != null) {
+        //     this.dbService.getSongByMomentID(moment.song_Id).subscribe(song => {
+        //       moment.song = song
+        //     })
+        //   }
+        // })
       }
     )
   }
@@ -193,12 +250,17 @@ export class WorshipProgramComponent implements OnInit {
     }
   }
 
-  drop(event: CdkDragDrop<MomentDTO[]>): void {
-    moveItemInArray(
-      event.container.data,
-      event.previousIndex,
-      event.currentIndex
-    );
+  drop(event: CdkDragDrop<MomentDTO[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+    }
   }
 
 }

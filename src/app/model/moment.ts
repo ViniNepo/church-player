@@ -1,7 +1,8 @@
 export interface Moment {
   id: number;
-  label: string
-  subgroup: number;
-  song_Id: number;
+  name: string
+  subgroupName: string;
+  order: number;
+  songId: number;
   worshipId: number;
 }

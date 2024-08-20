@@ -44,8 +44,8 @@
       <a class="bg-slate-800 flex items-center rounded-md no-underline group hover:bg-slate-700 transition-colors"
          *ngFor="let worship of worships"
          [routerLink]="['/worship', worship.id]">
-        <img src="assets/images/{{worship.image}}" class="h-20 w-20 object-cover rounded-l-md">
-        <h4 class="flex-1 pl-4 text-zinc-200">{{ worship.name }}</h4>
+        <img src="assets/images/{{worship.image_url}}" class="h-20 w-20 object-cover rounded-l-md">
+        <h4 class="flex-1 pl-4 text-zinc-200">{{ worship.title }}</h4>
       </a>
     </div>
     <h3 class="text-zinc-400" *ngIf="worships.length == 0">There are no worship program to show. Create your first
@@ -62,11 +62,11 @@
         *ngFor="let album of albums"
         [routerLink]="['/album', album.id]">
         <div class="flex items-center justify-center">
-          <img src="assets/images/{{album.image}}" class="h-40 w-40 object-cover rounded-md">
+          <img src="assets/images/{{album.image_url}}" class="h-40 w-40 object-cover rounded-md">
         </div>
         <div class="pt-2">
           <div class="space-y-2">
-            <h4 class="text-zinc-200">{{ album.name }}</h4>
+            <h4 class="text-zinc-200">{{ album.title }}</h4>
           </div>
         </div>
       </a>

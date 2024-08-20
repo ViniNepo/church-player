@@ -1,15 +1,11 @@
-import {Album} from "../album";
-
 export class SongDTO {
 
   constructor(
     public id: number,
-    public name: string,
+    public title: string,
     public number: string,
-    public times_played: number,
     public file: string,
-    public albumId: number,
-    public album: Album
+    public order_song: number
   ) {}
 
 }

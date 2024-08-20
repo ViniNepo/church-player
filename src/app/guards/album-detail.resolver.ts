@@ -15,6 +15,6 @@ export class AlbumResolver implements Resolve<AlbumDTO> {
 
     let id = route.params['id'];
 
-    return this.dbService.getAlbumByID(id);
+    return this.dbService.findAlbumByID(id);
   }
 }

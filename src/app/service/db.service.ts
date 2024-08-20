@@ -1,15 +1,10 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpRequest} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {SongDTO} from "../model/dto/songDTO";
 import {Album} from "../model/album";
 import {Worship} from "../model/worship";
 import {WorshipDTO} from "../model/dto/worship-programDTO";
-import {AlbumDTO} from "../model/dto/albumDTO";
-import {HistoryDTO, IdDTO} from "../model/dto/historyDTO";
-import {Song} from "../model/song";
-import {Moment} from "../model/moment";
-import {Observable, take, tap} from "rxjs";
-import {History} from "../model/history";
+import {catchError, Observable, take, tap, throwError} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -23,136 +18,36 @@ export class DBService {
     return this.http.get<SongDTO[]>("http://localhost:3000/songs?_expand=album&_sort=name")
   }
 
-  getSearchSongsByQuery(query: string) {
-    return this.http.get<SongDTO[]>(`http://localhost:3000/songs?_expand=album&_sort=name&q=${query}`)
-  }
-
-  getAlbums() {
-    return this.http.get<Album[]>("http://localhost:3000/albums").pipe(take(1))
-  }
-
-  getWorship() {
-    return this.http.get<Worship[]>("http://localhost:3000/worships").pipe(take(1))
-  }
-
-  getSongs() {
-    return this.http.get<Song[]>(`http://localhost:3000/songs`).pipe(take(1))
-  }
-
-  getHistory() {
-    return this.http.get<HistoryDTO[]>(`http://localhost:3000/history?_expand=song&_expand=album`).pipe(take(1))
-  }
-
-  getHistoryDesc() {
-    return this.http.get<HistoryDTO[]>(`http://localhost:3000/history?_expand=song&_expand=album&_sort=id&_order=desc`).pipe(take(1))
-  }
-
-  getMoments() {
-    return this.http.get<Moment[]>(`http://localhost:3000/moments`).pipe(take(1))
-  }
-
   getWorshipByID(id: number) {
     return this.http.get<WorshipDTO>(`http://localhost:3000/worships/${id}?_embed=moments`)
   }
 
-  getSongByMomentID(id: number) {
-    return this.http.get<SongDTO>(`http://localhost:3000/songs/${id}?_expand=album`)
+  //ALBUMS
+  findAllAlbums(): Observable<Album[]> {
+    return this.http.get<Album[]>('/api/albums');
+  }
+  findAlbumByID(id: string): Observable<Album> {
+    return this.http.get<Album>(`/api/albums/${id}`);
+  }
+  updateAlbum(album: Album) {
+    return this.http.patch<Album>('/api/albums', album).pipe(
+      catchError(error => {
+        console.error('Update failed', error);
+        return throwError(error);
+      })
+    );
+  }
+  deleteAlbum(id: string) {
+    return this.http.delete<Album>(`/api/albums/${id}`).pipe(
+      catchError(error => {
+        console.error('Delete failed', error);
+        return throwError(error);
+      })
+    );
   }
 
-  getAlbumByID(id: number) {
-    return this.http.get<AlbumDTO>(`http://localhost:3000/albums/${id}?_embed=songs`).pipe(take(1))
-  }
-
-  getSongByID(id: number) {
-    return this.http.get<SongDTO>(`http://localhost:3000/songs/${id}?_expand=album`).pipe(take(1))
-  }
-
-  postHistory(dto: IdDTO) {
-    return this.http.post<History>(`http://localhost:3000/history`, dto).pipe(take(1))
-  }
-
-  postWorship(worship: Worship) {
-    return this.http.post<Worship>(`http://localhost:3000/worships`, worship).pipe(take(1))
-  }
-
-  postAlbum(album: Album) {
-    return this.http.post<Album>(`http://localhost:3000/albums`, album).pipe(take(1))
-  }
-
-  postSong(song: Song) {
-    return this.http.post<Song>(`http://localhost:3000/songs`, song).pipe(take(1))
-  }
-
-  postMoment(moment: Moment) {
-    return this.http.post<Moment>(`http://localhost:3000/moments`, moment).pipe(take(1))
-  }
-
-  putMoment(moment: Moment) {
-    return this.http.put<Moment>(`http://localhost:3000/moments/${moment.id}`, moment).pipe(take(1))
-  }
-
-  putAlbumName(album: Album) {
-    return this.http.put<Album>(`http://localhost:3000/albums/${album.id}`, album).pipe(take(1))
-  }
-
-  putWorshipName(worship: Worship) {
-    return this.http.put<Worship>(`http://localhost:3000/worships/${worship.id}`, worship).pipe(take(1))
-  }
-
-  patchSongTime(id, times) {
-    let time = {"times_played": times}
-    return this.http.patch<Song>(`http://localhost:3000/songs/${id}`, time).pipe(take(1))
-  }
-
-  deleteSongBtID(id: number) {
-    return this.http.delete(`http://localhost:3000/songs/${id}`).pipe(take(1))
-  }
-
-  deleteAlbum(id: number) {
-    return this.http.delete(`http://localhost:3000/albums/${id}`).pipe(take(1))
-  }
-
-  deleteHistoryByID(id: number) {
-    return this.http.delete(`http://localhost:3000/history/${id}`).pipe(take(1))
-  }
-
-  deleteMomentByID(id: number) {
-    return this.http.delete(`http://localhost:3000/moments/${id}`).pipe(take(1))
-  }
-
-  deleteWorshipByID(id: number) {
-    return this.http.delete(`http://localhost:3000/worships/${id}`).pipe(take(1))
-  }
-
-  uploadImage(files: Array<File>) {
-    let formData = new FormData();
-    formData.append("file", files[0]);
-
-    return this.http.post('http://localhost:8000/api/uploadImage', formData, {
-      observe: 'events',
-      reportProgress: true
-    })
-  }
-
-  uploadFile(files: Array<File>) {
-    let formData = new FormData();
-    formData.append("file", files[0]);
-
-    return this.http.post('http://localhost:8000/api/uploadFile', formData, {
-      observe: 'events',
-      reportProgress: true
-    })
-  }
-
-  openFile(fileName: string): Observable<any> {
-    return this.http.get(`http://localhost:8000/api/open-file?fileName=${fileName}`)
-  }
-
-  deleteFile(fileName: string, directoryName: string) {
-    const options = {
-      body: {"fileName": fileName, "directoryName": directoryName},
-    };
-
-    return this.http.delete('http://localhost:8000/api/deleteFile', options);
+  //WORSHIP
+  findAllWorships(): Observable<Worship[]> {
+    return this.http.get<Worship[]>('/api/worships');
   }
 }

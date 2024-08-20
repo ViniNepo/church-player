@@ -7,13 +7,12 @@
   ],
   "scripts": {
     "ng": "ng",
-    "start": "concurrently -k \"ng serve\" \"node file-control.js\"",
+    "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "electron": "electron .",
-    "electron-build": "ng build && electron .",
-    "serve-json": "json-server --watch ./db.json"
+    "electron-build": "ng build && electron ."
   },
   "private": true,
   "dependencies": {

@@ -51,9 +51,7 @@ import {WorshipProgramComponent} from './pages/worship-program/worship-program.c
 import {RightMenuComponent} from './sidebar/right-menu/right-menu.component';
 import {MenuComponent} from './sidebar/left-menu/menu.component';
 import {SoundControlPanelComponent} from './sidebar/sound-control-panel/sound-control-panel.component';
-import {HistoryService} from "./service/history.service";
 import {SoundControlService} from "./service/sound-control.service";
-import {UploadService} from "./service/upload.service";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {DBService} from "./service/db.service";
 import {HttpClientModule} from "@angular/common/http";
@@ -130,8 +128,6 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
   providers: [
     DBService,
     SoundControlService,
-    HistoryService,
-    UploadService,
     AlbumResolver,
     WorshipResolver,
     SearchSongsDetailResolver

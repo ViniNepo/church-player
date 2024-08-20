@@ -1,5 +1,7 @@
-export interface Album {
-  id: number;
-  name: string;
-  image: string;
+export class Album {
+  constructor(
+    public id: string,
+    public title: string,
+    public image_url: string,
+  ) {}
 }

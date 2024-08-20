@@ -1,13 +1,13 @@
 <div class="flex flex-col" style="height: 100%">
   <header>
     <div class="flex items-end bg-sky-900 rounded-t-lg">
-      <img src="assets/images/{{album.image}}" class="flex ml-8 mb-8 mt-6 h-48 w-48 object-cover ml-2 bg-slate-800">
+      <img src="assets/images/{{album.image_url}}" class="flex ml-8 mb-8 mt-6 h-48 w-48 object-cover ml-2 bg-slate-800">
       <div class="flex-1 pb-6 pl-4">
         <div>
           <h5 class="text-xl text-zinc-400">Album</h5>
           <div class="flex items-end gap-2 mr-2">
-            <h1 *ngIf="!editName" class="text-4xl text-zinc-200">{{album.name}}</h1>
-            <input *ngIf="editName" [(ngModel)]="album.name" size="10"
+            <h1 *ngIf="!editName" class="text-4xl text-zinc-200">{{album.title}}</h1>
+            <input *ngIf="editName" [(ngModel)]="album.title" size="10"
                    class="text-4xl text-zinc-200 pl-2 bg-transparent outline rounded-md outline-offset-2 outline-1 outline-sky-600">
             <button *ngIf="!editName" (click)="editAlbumName()"
                     class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500 pb-1">
@@ -69,7 +69,7 @@
             </button>
           </div>
           <div class="flex items-center col-span-10">
-            <h4 class="text-zinc-200">{{song.name}}</h4>
+            <h4 class="text-zinc-200">{{song.title}}</h4>
           </div>
           <div class="flex items-center justify-self-end pr-6 pt-1">
             <button (click)="toggleDeleteSong()"

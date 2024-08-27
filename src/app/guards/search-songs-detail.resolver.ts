@@ -13,6 +13,6 @@ export class SearchSongsDetailResolver implements Resolve<WorshipDTO> {
     state: RouterStateSnapshot
   ): Observable<any>|Promise<any>|any {
 
-    return this.dbService.getSearchSongs()
+    return this.dbService.findAll()
   }
 }

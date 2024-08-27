@@ -1,13 +1,19 @@
-export class MomentDTO {
+import {SongWithAlbumDTO} from "./songDTO";
 
+export class MomentDTO {
   constructor(
-    public id: number,
-    public label: string,
-    public subgroup: string,
-    public worshipId: number,
-    public song_Id: number,
-    public song_name: string,
-    public album_name: string,
+    public id: string,
+    public title: string,
+    public song_order: number,
+    public song: SongWithAlbumDTO,
+  ) {
+  }
+}
+
+export class CreateMomentDTO {
+  constructor(
+    public title: string,
+    public section_id: string,
   ) {
   }
 }

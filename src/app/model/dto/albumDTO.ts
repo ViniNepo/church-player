@@ -6,6 +6,7 @@ export class AlbumDTO {
   public id: string,
   public title: string,
   public image_url: string,
+  public has_numbered_songs: boolean,
   public songs: SongDTO[]
 ){}
 }

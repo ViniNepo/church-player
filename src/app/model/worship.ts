@@ -1,5 +1,8 @@
-export interface Worship {
-  id: number;
-  title: string;
-  image_url: string;
+export class Worship {
+  constructor(
+    public id: string,
+    public title: string,
+    public image_url: string,
+  ) {
+  }
 }

@@ -16,6 +16,6 @@ export class WorshipResolver implements Resolve<WorshipDTO> {
 
     let id = route.params['id'];
 
-    return this.dbService.getWorshipByID(id).subscribe()
+    return this.dbService.getWorshipByID(id)
   }
 }

@@ -1,13 +1,13 @@
 import {MomentDTO} from "./momentDTO";
-import {SubgroupDTO} from "./subgroupDTO";
+import {SectionDTO} from "./sectionDTO";
 
 export class WorshipDTO {
 
   constructor(
-    public id: number,
-    public name: string,
-    public image: string,
-    public subgroup: SubgroupDTO[]
+    public id: string,
+    public title: string,
+    public image_url: string,
+    public sections: SectionDTO[]
   ) {
   }
 }

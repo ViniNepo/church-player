@@ -1,23 +1,24 @@
 <div class="flex flex-col" style="height: 100%">
   <header>
-    <div class="flex items-end h-72 bg-sky-900 rounded-t-lg">
-      <div class="flex">
-        <img src="assets/images/{{worshipProgram.image}}"
-             class="flex ml-8 mb-8 h-48 w-48 object-cover ml-2 bg-slate-800">
+    <div class="flex items-end bg-sky-900 rounded-t-lg">
+      <div class="relative group flex ml-6 mb-6 mt-6">
+        <div (click)="toggleEditCover()" class="absolute inset-0 flex cursor-pointer items-center justify-center bg-gray-700 bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <lucide-icon name="pencil-line" class="pencil-line text-white justify-center"></lucide-icon>
+        </div>
+        <img [src]="worshipImage || 'assets/church-player-2.png'" class="w-48 h-auto max-w-full lg:w-48 md:w-32 sm:w-16 object-cover bg-slate-800 cursor-pointer">
       </div>
-
       <div class="flex-1 pb-6 pl-4">
         <div>
           <h5 class="text-xl text-zinc-400">Worship Program</h5>
           <div class="flex items-end gap-2">
-            <h1 *ngIf="!editName" class="text-4xl text-zinc-200">{{worshipProgram.name}}</h1>
-            <input *ngIf="editName" [(ngModel)]="worshipProgram.name" size="12"
-                   class="text-4xl text-zinc-200 pl-2 bg-transparent outline rounded-md outline-offset-2 outline-1 outline-sky-600">
-            <button *ngIf="!editName" (click)="editAlbumName()"
+            <h1 *ngIf="!editName" class="text-4xl text-zinc-200">{{this.worship.title}}</h1>
+            <input *ngIf="editName" [(ngModel)]="this.worship.title" size="12"
+                   class="text-4xl rounded-md bg-gray-100 outline outline-offset-2 outline-1 outline-sky-600 border-0 pl-2 text-gray-900 placeholder:text-gray-400">
+            <button *ngIf="!editName" (click)="editWorshipName()"
                     class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500 pb-1">
               <lucide-icon name="pencil-line" class="pencil-line pt-1"></lucide-icon>
             </button>
-            <button *ngIf="editName" (click)="saveAlbumName()"
+            <button *ngIf="editName" (click)="updateWorshipTitle()"
                     class="no-underline text-green-500 bg-transparent border-none hover:text-green-700 pb-1">
               <lucide-icon name="check" class="check pt-1"></lucide-icon>
             </button>
@@ -40,45 +41,49 @@
         </button>
       </div>
     </div>
-
-    <div class="grid grid-cols-12 gap-4 pl-1 pr-1 pt-5">
-      <div class="flex items-center pl-6">
-        <h4 class="text-zinc-200">#</h4>
-      </div>
-      <div class="flex items-center col-span-5">
-        <h4 class="text-zinc-200">Moment</h4>
-      </div>
-      <div class="flex items-center col-span-5">
-        <h4 class="text-zinc-200">Music</h4>
-      </div>
-      <div class="flex items-center col-span-1 justify-self-end pr-6">
-        <h4 class="text-zinc-200">Delete</h4>
-      </div>
-    </div>
-
-    <hr class="h-px mt-4 mb-4 bg-zinc-700 border-0">
   </header>
 
-  <main class="flex-1 pl-2 pr-2 overflow-y-auto">
+  <main class="flex-1 pl-2 pr-2 pt-2 overflow-y-auto">
     <div cdkDropListGroup class="area">
-      <div class="border-l border-r border-b border-sky-950 rounded-md mb-2" *ngFor="let subgroup of worshipProgram.subgroup; index as i;">
+      <div class="border-l border-r border-b border-sky-950 rounded-md mb-2" *ngFor="let sections of this.worship.sections; index as i;">
 
-        <div class="flex flex-row mb-1 bg-sky-950 rounded-t-md">
-          <h3 class="flex-1 pl-2 pt-2 pb-2 text-xl text-zinc-200">{{subgroup.label}}</h3>
+        <div class="flex flex-row bg-sky-950 rounded-t-md">
+          <h3 class="flex-1 pl-2 pt-2 pb-2 text-xl text-zinc-200">{{sections.section_name}}</h3>
           <div class="flex">
-            <button (click)="toggleDeleteWorship()" class="pr-2 border-none text-zinc-400 hover:text-zinc-200"
+            <button (click)="toggleAddMoment(sections.id)" class="pr-2 border-none text-zinc-400 hover:text-zinc-200"
                     type="button">
               <lucide-icon name="plus-square" class="plus-square pt-1"></lucide-icon>
             </button>
-            <button (click)="toggleDeleteWorship()" class="pr-2 border-none text-red-500 hover:text-red-700"
+            <button (click)="toggleDeleteSection(sections.id)" class="pr-2 border-none text-red-500 hover:text-red-700"
                     type="button">
               <lucide-icon name="trash-2" class="trash-2 pt-1"></lucide-icon>
             </button>
           </div>
         </div>
 
-        <div cdkDropList [cdkDropListData]="subgroup.moments" (cdkDropListDropped)="drop($event)">
-          <div *ngFor="let moment of subgroup.moments; index as i;"
+        <hr class="h-px bg-zinc-700 border-0">
+
+        <div class="grid grid-cols-12 gap-4 pl-1 pr-1 pt-2 pb-2 bg-sky-950">
+          <div class="flex items-center pl-6">
+            <h4 class="text-zinc-200">#</h4>
+          </div>
+          <div class="flex items-center col-span-5">
+            <h4 class="text-zinc-200">Moment</h4>
+          </div>
+          <div class="flex items-center col-span-5">
+            <h4 class="text-zinc-200">Music</h4>
+          </div>
+          <div class="flex items-center col-span-1 justify-self-end pr-6">
+            <h4 class="text-zinc-200">Delete</h4>
+          </div>
+        </div>
+
+        <div *ngIf="sections.moments == null || sections.moments.length === 0">
+          <h3 class="p-5 text-zinc-400">There are not moments in your section.</h3>
+        </div>
+
+        <div cdkDropList [cdkDropListData]="sections.moments" (cdkDropListDropped)="drop($event)">
+          <div *ngFor="let moment of sections.moments; index as i;"
                class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm border-b border-sky-950"
                cdkDrag cdkDragLockAxis="y" cdkDragBoundary=".area" [cdkDragData]="moment">
             <div class="flex items-center pl-6">
@@ -95,20 +100,20 @@
               </div>
             </div>
             <div class="flex items-center col-span-5">
-              <h4 *ngIf="!showUpdateLabelModal || moment.id != labelSelected.id"
-                  class="text-zinc-200 truncate text-ellipsis overflow-hidden">{{moment.label}}</h4>
-              <input *ngIf="showUpdateLabelModal && moment.id == labelSelected.id" [(ngModel)]="moment.label" size="10"
+              <h4 *ngIf="editMomentIndex !== i"
+                  class="text-zinc-200 truncate text-ellipsis overflow-hidden">{{moment.title}}</h4>
+              <input *ngIf="editMomentIndex === i" [(ngModel)]="moment.title" size="10"
                      class="text-xl text-zinc-200 pl-2 bg-transparent outline rounded-md outline-offset-2 outline-1 outline-sky-600">
-              <button *ngIf="!showUpdateLabelModal && labelSelected == null" (click)="toggleUpdateLabelName(moment)"
+              <button *ngIf="editMomentIndex !== i" (click)="toggleUpdateLabelName(i, moment)"
                       class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500 pb-1 pl-1 invisible group-hover:visible">
                 <lucide-icon name="pencil-line" class="pencil-line pt-1"></lucide-icon>
               </button>
-              <button *ngIf="showUpdateLabelModal && moment.id == labelSelected.id" (click)="saveUpdateLabelName()"
+              <button *ngIf="editMomentIndex === i" (click)="updateMomentDetails(moment, sections.id)"
                       class="no-underline text-green-500 bg-transparent border-none hover:text-green-700 pb-1 pl-2">
                 <lucide-icon name="check" class="check pt-1"></lucide-icon>
               </button>
-              <button *ngIf="showUpdateLabelModal  && moment.id == labelSelected.id"
-                      (click)="toggleUpdateLabelName(null)"
+              <button *ngIf="editMomentIndex === i"
+                      (click)="cancelEditMomentDetails(moment)"
                       class="no-underline text-red-500 bg-transparent border-none hover:text-red-700 pb-1">
                 <lucide-icon name="x" class="x pt-1"></lucide-icon>
               </button>
@@ -120,8 +125,8 @@
                     <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
                       <img src="assets/church-player-2.png" class="h-12 w-12 object-cover">
                       <div class="pl-2 flex flex-col space-y-1">
-                        <h4 class="text-md text-zinc-200 truncate text-ellipsis overflow-hidden">{{moment.song.name}}</h4>
-                        <h5 class="text-zinc-400 truncate text-ellipsis overflow-hidden">{{moment.song.album.name}}</h5>
+                        <h4 class="text-md text-zinc-200 truncate text-ellipsis overflow-hidden">{{moment.song.title}}</h4>
+                        <h5 class="text-zinc-400 truncate text-ellipsis overflow-hidden">{{moment.song.album_name}}</h5>
                       </div>
                     </div>
                   </div>
@@ -154,7 +159,7 @@
               </div>
             </div>
             <div class="flex items-center col-span-1 justify-self-end pr-6">
-              <button (click)="deleteLabel(moment.id, i)"
+              <button (click)="toggleDeleteMoment(moment.id)"
                       class="no-underline border-none bg-transparent text-red-400 hover:text-red-700 invisible group-hover:visible">
                 <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
               </button>
@@ -163,17 +168,17 @@
         </div>
       </div>
 
+      <div *ngIf="this.worship.sections.length == 0">
+        <h3 class="p-5 mb-20 text-zinc-400">There are not songs in your worships songs.</h3>
+      </div>
+
       <div class="pb-2">
-        <button (click)="toggleAddLabel()" class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700" type="button">
-          <div class="flex items-center text-zinc-200">
-            <h4 class="text-zinc-200">Add section</h4>
+        <button (click)="toggleAddSection()" class="bg-sky-900 p-2 w-full rounded-md border-none hover:bg-sky-700" type="button">
+          <div class="flex items-center justify-center text-zinc-200">
+            <h4 class="text-zinc-200">Add new section</h4>
           </div>
         </button>
       </div>
-    </div>
-
-    <div *ngIf="worshipProgram.subgroup.length == 0">
-      <h3 class="p-5 mb-20 text-zinc-400">There are not songs in your worships songs.</h3>
     </div>
   </main>
 </div>
@@ -201,23 +206,68 @@
 </div>
 <div *ngIf="showDeleteModal" class="opacity-50 fixed inset-0 z-40 bg-black"></div>
 
-<div *ngIf="showAddLabelModal" class="fixed inset-0 z-50 justify-center items-center flex">
+<div *ngIf="showDeleteMoment" class="fixed inset-0 z-50 justify-center items-center flex">
+  <div class="relative w-auto bg-sky-900 rounded-lg p-5">
+    <h3 class="text-zinc-200">Are you sure that you want to delete this Moment?</h3>
+
+    <div class="pt-8 flex items-center gap-2">
+      <button (click)="deleteMoment()"
+              class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700 w-20 disabled:bg-zinc-500 disabled:cursor-not-allowed"
+              type="button">
+        <div class="flex items-center justify-center text-zinc-200">
+          <h4 class="text-zinc-200">Confirm</h4>
+        </div>
+      </button>
+      <button (click)="toggleDeleteMoment(null)" class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700 w-20"
+              type="button">
+        <div class="flex items-center justify-center text-zinc-200">
+          <h4 class="text-zinc-200">Cancel</h4>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div *ngIf="showDeleteMoment" class="opacity-50 fixed inset-0 z-40 bg-black"></div>
+
+<div *ngIf="showDeleteSection" class="fixed inset-0 z-50 justify-center items-center flex">
+  <div class="relative w-auto bg-sky-900 rounded-lg p-5">
+    <h3 class="text-zinc-200">Are you sure that you want to delete this Moment?</h3>
+
+    <div class="pt-8 flex items-center gap-2">
+      <button (click)="deleteSection()"
+              class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700 w-20 disabled:bg-zinc-500 disabled:cursor-not-allowed"
+              type="button">
+        <div class="flex items-center justify-center text-zinc-200">
+          <h4 class="text-zinc-200">Confirm</h4>
+        </div>
+      </button>
+      <button (click)="toggleDeleteSection(null)" class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700 w-20"
+              type="button">
+        <div class="flex items-center justify-center text-zinc-200">
+          <h4 class="text-zinc-200">Cancel</h4>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div *ngIf="showDeleteSection" class="opacity-50 fixed inset-0 z-40 bg-black"></div>
+
+<div *ngIf="showAddMomentModal" class="fixed inset-0 z-50 justify-center items-center flex">
   <div class="relative w-auto bg-sky-900 rounded-lg p-5">
     <h3 class="text-zinc-200">Add new Moment</h3>
 
-    <form class="pt-5" [formGroup]="form">
+    <div class="pt-5">
       <div class="flex items-center gap-5">
         <div>
-          <label for="label" class="control-label block text-sm font-medium text-zinc-200 pb-2">Moment name</label>
-          <input formControlName="label" type="text" id="label" size="50"
+          <input [(ngModel)]="this.newMomentName" type="text" size="50"
                  class="outline-none text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500"
                  placeholder="Moment name">
         </div>
       </div>
-    </form>
+    </div>
 
     <div class="pt-8 flex items-center gap-2">
-      <button (click)="addLabel()" [disabled]="!form.valid"
+      <button (click)="createMoment()"
               class="bg-sky-500 p-2 rounded-md border-none disabled:bg-zinc-500 disabled:cursor-not-allowed hover:bg-sky-700 w-20"
               type="button">
         <div class="flex items-center justify-center text-zinc-200">
@@ -225,7 +275,7 @@
         </div>
       </button>
       <button class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700 w-20" type="button">
-        <div (click)="toggleAddLabel()" class="flex items-center justify-center text-zinc-200">
+        <div (click)="toggleAddMoment(null)" class="flex items-center justify-center text-zinc-200">
           <h4 class="text-zinc-200">Cancel</h4>
         </div>
       </button>
@@ -233,7 +283,40 @@
 
   </div>
 </div>
-<div *ngIf="showAddLabelModal" class="opacity-50 fixed inset-0 z-40 bg-black"></div>
+<div *ngIf="showAddMomentModal" class="opacity-50 fixed inset-0 z-40 bg-black"></div>
+
+<div *ngIf="showAddSectionModal" class="fixed inset-0 z-50 justify-center items-center flex">
+  <div class="relative w-auto bg-sky-900 rounded-lg p-5">
+    <h3 class="text-zinc-200">Add new Section</h3>
+
+    <div class="pt-5">
+      <div class="flex items-center gap-5">
+        <div>
+          <input [(ngModel)]="this.newSectionName" type="text" size="50"
+                 class="outline-none text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                 placeholder="Section name">
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-8 flex items-center gap-2">
+      <button (click)="createSection()"
+              class="bg-sky-500 p-2 rounded-md border-none disabled:bg-zinc-500 disabled:cursor-not-allowed hover:bg-sky-700 w-20"
+              type="button">
+        <div class="flex items-center justify-center text-zinc-200">
+          <h4 class="text-zinc-200">Save</h4>
+        </div>
+      </button>
+      <button class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700 w-20" type="button">
+        <div (click)="toggleAddSection()" class="flex items-center justify-center text-zinc-200">
+          <h4 class="text-zinc-200">Cancel</h4>
+        </div>
+      </button>
+    </div>
+
+  </div>
+</div>
+<div *ngIf="showAddSectionModal" class="opacity-50 fixed inset-0 z-40 bg-black"></div>
 
 <div *ngIf="showOptions" class="fixed inset-0 z-50 justify-center items-center flex">
   <div class="relative w-auto bg-sky-900 rounded-lg p-5">
@@ -268,10 +351,10 @@
         </div>
         <div class="flex items-center col-span-11">
           <div class="flex items-center gap-3">
-            <img src="assets/images/{{song.album.image_url}}" class="h-12 w-12 object-cover">
+            <img src="assets/images/{{song.title}}" class="h-12 w-12 object-cover">
             <div class="flex flex-col space-y-1">
-              <h4 class="text-md text-zinc-200">{{song.name}}</h4>
-              <h5 class="text-zinc-400">{{song.album.title}}</h5>
+              <h4 class="text-md text-zinc-200">{{song.title}}</h4>
+              <h5 class="text-zinc-400">{{song.title}}</h5>
             </div>
           </div>
         </div>
@@ -285,3 +368,38 @@
   </div>
 </div>
 <div *ngIf="showOptions" class="opacity-50 fixed inset-0 z-40 bg-black"></div>
+
+<div *ngIf="showEditCover" class="fixed inset-0 z-50 justify-center items-center flex">
+  <div class="relative bg-sky-900 rounded-lg p-5">
+    <h3 class="text-zinc-200">Select the new album cover</h3>
+
+    <form class="pt-5">
+      <div class="pt-5">
+        <label class="block mb-2 text-sm font-medium text-zinc-200" for="file_cover">Upload file</label>
+        <input type="file" id="file_cover" (change)="onChangeCover($event)"
+               accept="image/*, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.presentationml.slideshow, application/vnd.openxmlformats-officedocument.presentationml.presentation"
+               class="outline-none text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none text-zinc-400 placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500
+                  file:cursor-pointer file:bg-sky-500 file:border-none file:rounded-md file:text-zinc-200 file:no-underline file:pr-4 file:pl-4 file:pt-1 file:pb-1 file:mr-2"
+               placeholder="No cover chosen">
+      </div>
+    </form>
+
+    <div class="pt-8 flex items-center gap-2">
+      <button (click)="editWorshipCover()"
+              class="bg-sky-500 p-2 rounded-md border-none disabled:bg-zinc-500 disabled:cursor-not-allowed hover:bg-sky-700 w-20"
+              type="button">
+        <div class="flex items-center justify-center text-zinc-200">
+          <h4 class="text-zinc-200">Save</h4>
+        </div>
+      </button>
+      <button (click)="toggleEditCover()" class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700 w-20"
+              type="button">
+        <div class="flex items-center justify-center text-zinc-200">
+          <h4 class="text-zinc-200">Cancel</h4>
+        </div>
+      </button>
+    </div>
+
+  </div>
+</div>
+<div *ngIf="showEditCover" class="opacity-50 fixed inset-0 z-40 bg-black"></div>

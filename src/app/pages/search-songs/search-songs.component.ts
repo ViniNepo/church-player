@@ -16,7 +16,7 @@ export class SearchSongsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.musics$ = this.dbService.getSearchSongs()
+    this.musics$ = this.dbService.findAll()
   }
 
   playSong(song: SongDTO) {

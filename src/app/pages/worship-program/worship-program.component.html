@@ -2,10 +2,12 @@
   <header>
     <div class="flex items-end bg-sky-900 rounded-t-lg">
       <div class="relative group flex ml-6 mb-6 mt-6">
-        <div (click)="toggleEditCover()" class="absolute inset-0 flex cursor-pointer items-center justify-center bg-gray-700 bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <div (click)="toggleEditCover()"
+             class="absolute inset-0 flex cursor-pointer items-center justify-center bg-gray-700 bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <lucide-icon name="pencil-line" class="pencil-line text-white justify-center"></lucide-icon>
         </div>
-        <img [src]="worshipImage || 'assets/church-player-2.png'" class="w-48 h-auto max-w-full lg:w-48 md:w-32 sm:w-16 object-cover bg-slate-800 cursor-pointer">
+        <img [src]="worshipImage || 'assets/church-player-2.png'"
+             class="w-48 h-auto max-w-full lg:w-48 md:w-32 sm:w-16 object-cover bg-slate-800 cursor-pointer">
       </div>
       <div class="flex-1 pb-6 pl-4">
         <div>
@@ -31,36 +33,39 @@
       </div>
 
       <div class="flex pr-8 pb-8 gap-2">
-        <button (click)="toggleDeleteWorship()" class="border-none text-zinc-200 hover:text-zinc-400"
+        <button (click)="toggleDeleteWorship()" class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700"
                 type="button">
-          <lucide-icon name="lock-keyhole" class="lock-keyhole pt-1"></lucide-icon>
-        </button>
-        <button (click)="toggleDeleteWorship()" class="border-none text-red-500 hover:text-red-700"
-                type="button">
-          <lucide-icon name="trash-2" class="trash-2 pt-1"></lucide-icon>
+          <div class="flex items-center text-zinc-200">
+            <h4 class="text-zinc-200">Delete Worship</h4>
+          </div>
         </button>
       </div>
     </div>
   </header>
 
   <main class="flex-1 pl-2 pr-2 pt-2 overflow-y-auto">
-    <div cdkDropListGroup class="area">
-      <div class="border-l border-r border-b border-sky-950 rounded-md mb-2" *ngFor="let sections of this.worship.sections; index as i;">
+    <div class="p-4">
+      <div *ngFor="let section of this.worship.sections; let i = index"
+           class="border-l border-r border-b border-sky-950 rounded-md mb-2" cdkDropList
+           [cdkDropListData]="section.moments" (cdkDropListDropped)="drop($event, i)"
+           [cdkDropListConnectedTo]="connectedTo[i]" id="session-{{i}}">
 
+        <!-- Section Header -->
         <div class="flex flex-row bg-sky-950 rounded-t-md">
-          <h3 class="flex-1 pl-2 pt-2 pb-2 text-xl text-zinc-200">{{sections.section_name}}</h3>
+          <h3 class="flex-1 pl-2 pt-2 pb-2 text-xl text-zinc-200">{{section.section_name}}</h3>
           <div class="flex">
-            <button (click)="toggleAddMoment(sections.id)" class="pr-2 border-none text-zinc-400 hover:text-zinc-200"
+            <button (click)="toggleAddMoment(section.id)" class="pr-2 border-none text-zinc-400 hover:text-zinc-200"
                     type="button">
               <lucide-icon name="plus-square" class="plus-square pt-1"></lucide-icon>
             </button>
-            <button (click)="toggleDeleteSection(sections.id)" class="pr-2 border-none text-red-500 hover:text-red-700"
+            <button (click)="toggleDeleteSection(section.id)" class="pr-2 border-none text-red-500 hover:text-red-700"
                     type="button">
               <lucide-icon name="trash-2" class="trash-2 pt-1"></lucide-icon>
             </button>
           </div>
         </div>
 
+        <!-- Moments Table Header -->
         <hr class="h-px bg-zinc-700 border-0">
 
         <div class="grid grid-cols-12 gap-4 pl-1 pr-1 pt-2 pb-2 bg-sky-950">
@@ -78,102 +83,92 @@
           </div>
         </div>
 
-        <div *ngIf="sections.moments == null || sections.moments.length === 0">
-          <h3 class="p-5 text-zinc-400">There are not moments in your section.</h3>
-        </div>
-
-        <div cdkDropList [cdkDropListData]="sections.moments" (cdkDropListDropped)="drop($event)">
-          <div *ngFor="let moment of sections.moments; index as i;"
-               class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm border-b border-sky-950"
-               cdkDrag cdkDragLockAxis="y" cdkDragBoundary=".area" [cdkDragData]="moment">
-            <div class="flex items-center pl-6">
-              <div class="flex items-center text-zinc-400 gap-2">
-                <h4 class="pr-2 pt-1">{{i + 1}}</h4>
-                <button cdkDragHandle (click)="playSong(moment.song)" *ngIf="moment.song != null"
-                        class="cursor-move pt-1 no-underline border-none bg-transparent text-zinc-200 hover:text-sky-500 invisible group-hover:visible">
-                  <lucide-icon name="grip-vertical" class="grip-vertical" size="20"></lucide-icon>
-                </button>
-                <button (click)="playSong(moment.song)" *ngIf="moment.song != null"
-                        class="cursor-pointer pt-1 no-underline border-none bg-transparent text-zinc-200 hover:text-sky-500 invisible group-hover:visible">
-                  <lucide-icon name="play" class="play" size="20"></lucide-icon>
-                </button>
-              </div>
-            </div>
-            <div class="flex items-center col-span-5">
-              <h4 *ngIf="editMomentIndex !== i"
-                  class="text-zinc-200 truncate text-ellipsis overflow-hidden">{{moment.title}}</h4>
-              <input *ngIf="editMomentIndex === i" [(ngModel)]="moment.title" size="10"
-                     class="text-xl text-zinc-200 pl-2 bg-transparent outline rounded-md outline-offset-2 outline-1 outline-sky-600">
-              <button *ngIf="editMomentIndex !== i" (click)="toggleUpdateLabelName(i, moment)"
-                      class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500 pb-1 pl-1 invisible group-hover:visible">
-                <lucide-icon name="pencil-line" class="pencil-line pt-1"></lucide-icon>
-              </button>
-              <button *ngIf="editMomentIndex === i" (click)="updateMomentDetails(moment, sections.id)"
-                      class="no-underline text-green-500 bg-transparent border-none hover:text-green-700 pb-1 pl-2">
-                <lucide-icon name="check" class="check pt-1"></lucide-icon>
-              </button>
-              <button *ngIf="editMomentIndex === i"
-                      (click)="cancelEditMomentDetails(moment)"
-                      class="no-underline text-red-500 bg-transparent border-none hover:text-red-700 pb-1">
-                <lucide-icon name="x" class="x pt-1"></lucide-icon>
-              </button>
-            </div>
-            <div class="items-center col-span-5 gap-2 bg-slate-900 rounded-md">
-              <div class="grid grid-cols-12">
-                <div class="flex items-center col-span-11">
-                  <div *ngIf="moment.song != null" class="flex-1 flex-row pt-1 pb-1 pl-2">
-                    <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
-                      <img src="assets/church-player-2.png" class="h-12 w-12 object-cover">
-                      <div class="pl-2 flex flex-col space-y-1">
-                        <h4 class="text-md text-zinc-200 truncate text-ellipsis overflow-hidden">{{moment.song.title}}</h4>
-                        <h5 class="text-zinc-400 truncate text-ellipsis overflow-hidden">{{moment.song.album_name}}</h5>
-                      </div>
-                    </div>
-                  </div>
-                  <div *ngIf="moment.song == null" class="pt-1 pb-1 pl-2">
-                    <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
-                      <button (click)="toggleShowOption(moment)"
-                              class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700" type="button">
-                        <div class="flex items-center text-zinc-200">
-                          <h4 class="text-zinc-200">Select Song</h4>
-                        </div>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="flex items-center col-span-1">
-                  <div *ngIf="moment.song != null" class="flex">
-                    <div class="pl-2 flex flex-col space-y-1 ">
-                      <button (click)="deleteLabel(moment.id, i)"
-                              class="pl-2 pr-2 no-underline border-none bg-transparent text-zinc-200 invisible group-hover:visible hover:text-sky-500">
-                        <lucide-icon name="refresh-ccw" class="refresh-ccw"></lucide-icon>
-                      </button>
-                      <button (click)="deleteLabel(moment.id, i)"
-                              class="pl-2 pr-2 no-underline border-none bg-transparent text-red-400 invisible group-hover:visible hover:text-red-600">
-                        <lucide-icon name="trash-2" class="trash-2"></lucide-icon>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center col-span-1 justify-self-end pr-6">
-              <button (click)="toggleDeleteMoment(moment.id)"
-                      class="no-underline border-none bg-transparent text-red-400 hover:text-red-700 invisible group-hover:visible">
-                <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
+        <!-- For moments list -->
+        <div *ngFor="let moment of section.moments; let j = index" cdkDrag
+             class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm border-b border-sky-950">
+          <div class="flex items-center pl-6">
+            <div class="flex items-center text-zinc-400 gap-2">
+              <h4 class="pr-2 pt-1">{{j + 1}}</h4>
+              <button (click)="playSong(moment.song)" *ngIf="moment.song != null"
+                      class="cursor-pointer pt-1 no-underline border-none bg-transparent text-zinc-200 hover:text-sky-500 invisible group-hover:visible">
+                <lucide-icon name="play" class="play" size="20"></lucide-icon>
               </button>
             </div>
           </div>
+          <div class="flex items-center col-span-5">
+            <h4 *ngIf="editMomentIndex !== i"
+                class="text-zinc-200 truncate text-ellipsis overflow-hidden">{{moment.title}}</h4>
+            <input *ngIf="editMomentIndex === i" [(ngModel)]="moment.title" size="10"
+                   class="text-xl text-zinc-200 pl-2 bg-transparent outline rounded-md outline-offset-2 outline-1 outline-sky-600">
+            <button *ngIf="editMomentIndex !== i" (click)="toggleUpdateLabelName(i, moment)"
+                    class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500 pb-1 pl-1 invisible group-hover:visible">
+              <lucide-icon name="pencil-line" class="pencil-line pt-1"></lucide-icon>
+            </button>
+            <button *ngIf="editMomentIndex === i" (click)="updateMomentDetails(moment, section.id)"
+                    class="no-underline text-green-500 bg-transparent border-none hover:text-green-700 pb-1 pl-2">
+              <lucide-icon name="check" class="check pt-1"></lucide-icon>
+            </button>
+            <button *ngIf="editMomentIndex === i"
+                    (click)="cancelEditMomentDetails(moment)"
+                    class="no-underline text-red-500 bg-transparent border-none hover:text-red-700 pb-1">
+              <lucide-icon name="x" class="x pt-1"></lucide-icon>
+            </button>
+          </div>
+          <div class="items-center col-span-5 gap-2 rounded-md">
+            <div class="grid grid-cols-12">
+              <div class="flex items-center col-span-11">
+                <div *ngIf="moment.song != null" class="flex-1 flex-row pt-1 pb-1 pl-2 outline rounded-md outline-offset-2 outline-1 outline-sky-800">
+                  <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
+                    <img src="assets/church-player-2.png" class="h-12 w-12 object-cover">
+                    <div class="pl-2 flex flex-col space-y-1">
+                      <h4
+                        class="text-md text-zinc-200 truncate text-ellipsis overflow-hidden">{{moment.song.title}}</h4>
+                      <h5 class="text-zinc-400 truncate text-ellipsis overflow-hidden">{{moment.song.album_name}}</h5>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="moment.song == null" class="pt-1 pb-1 pl-2">
+                  <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
+                    <button (click)="toggleShowOption(i, j)"
+                            class="bg-sky-800 p-2 rounded-md border-none hover:bg-sky-700" type="button">
+                      <div class="flex items-center text-zinc-200">
+                        <h4 class="text-zinc-200">Select Song</h4>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center col-span-1">
+                <div *ngIf="moment.song != null" class="flex">
+                  <div class="pl-2 flex flex-col space-y-1 ">
+                    <button (click)="toggleShowOption(i, j)"
+                            class="pl-2 pr-2 no-underline border-none bg-transparent text-zinc-200 invisible group-hover:visible hover:text-sky-500">
+                      <lucide-icon name="refresh-ccw" class="refresh-ccw"></lucide-icon>
+                    </button>
+                    <button (click)="deleteSongMoment(i, j)"
+                            class="pl-2 pr-2 no-underline border-none bg-transparent text-red-400 invisible group-hover:visible hover:text-red-600">
+                      <lucide-icon name="trash-2" class="trash-2"></lucide-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center col-span-1 justify-self-end pr-6">
+            <button (click)="toggleDeleteMoment(moment.id)"
+                    class="no-underline border-none bg-transparent text-red-400 hover:text-red-700 invisible group-hover:visible">
+              <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="section.moments == null || section.moments.length === 0">
+          <h3 class="p-5 text-zinc-400">There are not songs in your worships songs.</h3>
         </div>
       </div>
-
-      <div *ngIf="this.worship.sections.length == 0">
-        <h3 class="p-5 mb-20 text-zinc-400">There are not songs in your worships songs.</h3>
-      </div>
-
       <div class="pb-2">
-        <button (click)="toggleAddSection()" class="bg-sky-900 p-2 w-full rounded-md border-none hover:bg-sky-700" type="button">
+        <button (click)="toggleAddSection()" class="bg-sky-900 p-2 w-full rounded-md border-none hover:bg-sky-700"
+                type="button">
           <div class="flex items-center justify-center text-zinc-200">
             <h4 class="text-zinc-200">Add new section</h4>
           </div>
@@ -329,7 +324,7 @@
                class="outline-none bg-slate-700 border-solid border-zinc-400 text-zinc-200 text-sm rounded-full focus:ring-zinc-400 focus:border-zinc-400 w-64 ps-10 p-3"
                placeholder="Search">
       </div>
-      <div (click)="toggleShowOption(null)" class="items-center cursor-pointer hover:bg-sky-800 p-2 rounded-md">
+      <div (click)="toggleShowOption(null, null)" class="items-center cursor-pointer hover:bg-sky-800 p-2 rounded-md">
         <lucide-icon name="x" class="x" size="30" class="pt-0.5 text-zinc-200"></lucide-icon>
       </div>
     </form>
@@ -344,7 +339,7 @@
     </div>
 
     <div class="flex-1 pr-5 pl-5 pt-5 overflow-y-auto h-72 bg-sky-950 rounded-md">
-      <div (click)="selectOption(song)" *ngFor="let song of songs; index as i;"
+      <div (click)="selectOption(song)" *ngFor="let song of filteredSongs; index as i;"
            class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm cursor-pointer">
         <div class="flex items-center pl-6">
           <h4 class="pr-2">{{i + 1}}</h4>
@@ -360,7 +355,7 @@
         </div>
       </div>
 
-      <div *ngIf="songs.length == 0">
+      <div *ngIf="filteredSongs.length == 0">
         <h3 class="text-zinc-400">There are no songs to show.</h3>
       </div>
     </div>
@@ -368,6 +363,7 @@
   </div>
 </div>
 <div *ngIf="showOptions" class="opacity-50 fixed inset-0 z-40 bg-black"></div>
+
 
 <div *ngIf="showEditCover" class="fixed inset-0 z-50 justify-center items-center flex">
   <div class="relative bg-sky-900 rounded-lg p-5">

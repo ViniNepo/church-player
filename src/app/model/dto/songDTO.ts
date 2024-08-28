@@ -32,6 +32,7 @@ export class SongWithAlbumDTO {
     public id: string,
     public title: string,
     public file: string,
+    public song_number: number,
     public song_order: number,
     public album_id: string,
     public album_name: string,

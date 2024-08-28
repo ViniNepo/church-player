@@ -2,12 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {DBService} from "../../service/db.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WorshipDTO} from "../../model/dto/worship-programDTO";
-import {FormGroup} from "@angular/forms";
-import {CreateMomentDTO, MomentDTO} from "../../model/dto/momentDTO";
+import {CreateMomentDTO, MomentDTO, MomentOrderDTO} from "../../model/dto/momentDTO";
 import {SongDTO, SongWithAlbumDTO} from "../../model/dto/songDTO";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {Worship} from "../../model/worship";
-import {Song} from "../../model/song";
 import {Moment} from "../../model/moment";
 import {CreateSectionDTO} from "../../model/dto/sectionDTO";
 
@@ -37,9 +35,13 @@ export class WorshipProgramComponent implements OnInit {
   newMomentName: string | null = null;
   worshipImage: string | null = null
   worship: WorshipDTO
-  songs: SongDTO[]
-  momentSelected: MomentDTO
+  songs: SongWithAlbumDTO[]
+  filteredSongs: SongWithAlbumDTO[] = [];
+  searchTerm: string = '';
+  sectionIndex: number
+  momentIndex: number
   selectedCover: Array<File>
+  connectedTo: string[][] = [];
 
   constructor(
     private dbService: DBService,
@@ -50,14 +52,34 @@ export class WorshipProgramComponent implements OnInit {
       (data: { worship: WorshipDTO }) => {
         this.worship = data.worship
         this.worship.sections = this.worship.sections || []
+        for (const section of this.worship.sections) {
+          section.moments = section.moments || []
+        }
         this.worshipImage = this.worship.image_url
         this.originalName = this.worship.title
-        console.log(this.worship)
       }
     )
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.extracted();
+
+    this.dbService.findAll().subscribe({
+      next: (songDTO: SongWithAlbumDTO[]) => {
+        this.songs = songDTO || [];
+        this.filteredSongs = this.songs;
+      },
+      error: (error) => {
+        console.error('Error getting songs:', error);
+      }
+    });
+  }
+
+  extracted() {
+    this.connectedTo = this.worship.sections.map((_, i) =>
+      this.worship.sections.map((_, j) => i !== j ? 'session-' + j : '')
+        .filter(id => id !== '')
+    );
   }
 
   playSong(song: SongWithAlbumDTO): void {
@@ -86,8 +108,9 @@ export class WorshipProgramComponent implements OnInit {
     this.showAddSectionModal = !this.showAddSectionModal
   }
 
-  toggleShowOption(moment: MomentDTO) {
-    this.momentSelected = moment
+  toggleShowOption(sectionIndex: number, momentIndex: number) {
+    this.sectionIndex = sectionIndex
+    this.momentIndex = momentIndex
     this.showOptions = !this.showOptions
   }
 
@@ -149,6 +172,10 @@ export class WorshipProgramComponent implements OnInit {
         this.dbService.getWorshipByID(this.worship.id).subscribe({
           next: (worshipDTO: WorshipDTO) => {
             this.worship.sections = worshipDTO.sections
+            this.worship.sections = this.worship.sections || []
+            for (const section of this.worship.sections) {
+              section.moments = section.moments || []
+            }
           },
           error: (error) => {
             this.worship.title = this.originalName
@@ -171,13 +198,17 @@ export class WorshipProgramComponent implements OnInit {
   }
 
   createSection() {
-    console.log(this.newSectionName)
     let dto: CreateSectionDTO = new CreateSectionDTO(this.newSectionName, this.worship.id)
     this.dbService.createSection(dto).subscribe({
       next: () => {
         this.dbService.getWorshipByID(this.worship.id).subscribe({
           next: (worshipDTO: WorshipDTO) => {
             this.worship.sections = worshipDTO.sections
+            this.worship.sections = this.worship.sections || []
+            for (const section of this.worship.sections) {
+              section.moments = section.moments || []
+            }
+            this.extracted()
           },
           error: (error) => {
             this.worship.title = this.originalName
@@ -187,7 +218,7 @@ export class WorshipProgramComponent implements OnInit {
 
         this.newSectionName = null
         this.toggleAddSection()
-        console.log('Moment created:');
+        console.log('Section created:');
       },
       error: (error) => {
         this.newSectionName = null
@@ -216,6 +247,10 @@ export class WorshipProgramComponent implements OnInit {
         this.dbService.getWorshipByID(this.worship.id).subscribe({
           next: (worshipDTO: WorshipDTO) => {
             this.worship.sections = worshipDTO.sections
+            this.worship.sections = this.worship.sections || []
+            for (const section of this.worship.sections) {
+              section.moments = section.moments || []
+            }
           },
           error: (error) => {
             this.worship.title = this.originalName
@@ -239,6 +274,10 @@ export class WorshipProgramComponent implements OnInit {
         this.dbService.getWorshipByID(this.worship.id).subscribe({
           next: (worshipDTO: WorshipDTO) => {
             this.worship.sections = worshipDTO.sections
+            this.worship.sections = this.worship.sections || []
+            for (const section of this.worship.sections) {
+              section.moments = section.moments || []
+            }
           },
           error: (error) => {
             this.worship.title = this.originalName
@@ -279,26 +318,88 @@ export class WorshipProgramComponent implements OnInit {
     this.editWorshipName()
   }
 
-  selectOption(song: SongDTO) {
-    this.toggleShowOption(null)
+  selectOption(song: SongWithAlbumDTO) {
+    this.worship.sections[this.sectionIndex].moments[this.momentIndex].song = song
+
+    let moment: MomentDTO = new MomentDTO(
+      this.worship.sections[this.sectionIndex].moments[this.momentIndex].id,
+      this.worship.sections[this.sectionIndex].moments[this.momentIndex].title,
+      this.worship.sections[this.sectionIndex].moments[this.momentIndex].song_order,
+      this.worship.sections[this.sectionIndex].id, song)
+
+    this.updateMomentDetails(moment, this.worship.sections[this.sectionIndex].id)
+
+    this.toggleShowOption(null, null)
   }
 
-  searchSong(x) {
+  deleteSongMoment(sectionIndex: number, momentIndex: number) {
+    this.worship.sections[sectionIndex].moments[momentIndex].song = null
 
+    let moment: Moment = new Moment(
+      this.worship.sections[sectionIndex].moments[momentIndex].id,
+      this.worship.sections[sectionIndex].moments[momentIndex].title,
+      this.worship.sections[sectionIndex].moments[momentIndex].song_order,
+      "",
+      this.worship.sections[sectionIndex].id)
+
+    this.dbService.updateMoment(moment).subscribe({
+      next: () => {
+        console.log('Moment song updated:');
+      },
+      error: (error) => {
+        alert("deu ruim")
+        console.error('Error updating selected moment:', error);
+      }
+    });
   }
 
-  drop(event: CdkDragDrop<MomentDTO[]>) {
-    console.log(this.worship.sections)
+  searchSong(event: any): void {
+    this.searchTerm = event.target.value.toLowerCase();
+
+    // Se searchTerm estiver vazio, exibe todas as músicas, caso contrário, aplica o filtro
+    this.filteredSongs = this.searchTerm ?
+      this.songs.filter(song => song.title.toLowerCase().includes(this.searchTerm)) :
+      this.songs;
+  }
+
+  drop(event
+         :
+         CdkDragDrop<MomentDTO[]>, sessionIndex
+         :
+         number
+  ) {
+    // Verifica se o item foi movido dentro da mesma lista ou para outra lista
     if (event.previousContainer === event.container) {
+      // Reordena dentro da mesma sessão
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
+      // Transfere o item para uma nova sessão
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
-        event.currentIndex,
+        event.currentIndex
       );
     }
-  }
 
+    let momentsOrders: MomentOrderDTO[] = []
+
+    for (const section of this.worship.sections) {
+      let index: number = 0
+      for (const moment of section.moments) {
+        let momentOrder: MomentOrderDTO = new MomentOrderDTO(moment.id, index, section.id)
+        index++
+        momentsOrders.push(momentOrder)
+      }
+    }
+
+    this.dbService.updateMomentsOrder(momentsOrders).subscribe({
+      next: () => {
+        console.log('Moments order updated:');
+      },
+      error: (error) => {
+        console.error('Error updating moments order:', error);
+      }
+    });
+  }
 }

@@ -11,3 +11,11 @@ export class WorshipDTO {
   ) {
   }
 }
+
+export class CreateWorshipDTO {
+
+  constructor(
+    public title: string,
+    public image_url: string,
+  ){}
+}

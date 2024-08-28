@@ -243,7 +243,6 @@ export class AlbumComponent implements OnInit {
         console.log('Album order updated:');
       },
       error: (error) => {
-        this.album.title = this.originalName
         console.error('Error updating album:', error);
       }
     });

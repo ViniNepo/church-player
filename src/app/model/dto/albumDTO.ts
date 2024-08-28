@@ -10,3 +10,11 @@ export class AlbumDTO {
   public songs: SongDTO[]
 ){}
 }
+
+export class CreateAlbumDTO {
+
+  constructor(
+    public title: string,
+    public image_url: string,
+  ){}
+}

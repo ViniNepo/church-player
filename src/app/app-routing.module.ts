@@ -13,9 +13,10 @@ const routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'album/:id', component: AlbumComponent,
     resolve: {album: AlbumResolver}},
-  {path: 'search-songs', component: SearchSongsComponent},
+  {path: 'search-songs', component: SearchSongsComponent,
+    resolve: {songs: SearchSongsDetailResolver}},
   {path: 'worship/:id', component: WorshipProgramComponent,
-    resolve: {worship: WorshipResolver, songs: SearchSongsDetailResolver}},
+    resolve: {worship: WorshipResolver}},
 ];
 
 @NgModule({

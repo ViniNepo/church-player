@@ -5,12 +5,12 @@
         <a routerLink="/home" routerLinkActive="bg-slate-800 rounded-md"
            class="p-2 flex items-center gap-3 text-sm font-semibold text-zinc-200 no-underline hover:bg-slate-800 hover:rounded-md transition-colors">
           <lucide-icon name="home" class="home"></lucide-icon>
-          <h3>Home</h3>
+          <h3><strong>Home</strong></h3>
         </a>
         <a routerLink="/search-songs" routerLinkActive="bg-slate-800 rounded-md"
            class="p-2 flex items-center gap-3 text-sm font-semibold text-zinc-200 no-underline hover:bg-slate-800 hover:rounded-md transition-colors">
           <lucide-icon name="search" class="search"></lucide-icon>
-          <h3>Search</h3>
+          <h3><strong>Search</strong></h3>
         </a>
 
         <hr class="h-px my-8 bg-zinc-700 border-0">
@@ -18,43 +18,37 @@
         <a (click)="toggleWorshipModal()"
            class="p-2 flex items-center gap-3 text-sm font-semibold text-zinc-200 no-underline hover:bg-slate-800 hover:rounded-md transition-colors">
           <lucide-icon name="plus-square" class="plus-square"></lucide-icon>
-          <h3>Worship programs</h3>
+          <h3><strong>Worship programs</strong></h3>
         </a>
         <a (click)="toggleAlbumModal()"
            class="p-2 flex items-center gap-3 text-sm font-semibold text-zinc-200 no-underline hover:bg-slate-800 hover:rounded-md transition-colors">
           <lucide-icon name="plus-square" class="plus-square"></lucide-icon>
-          <h3>Album</h3>
+          <h3><strong>Album</strong></h3>
         </a>
       </nav>
     </aside>
 
     <div class="flex items-center mt-2 p-5 pb-2 text-zinc-200 bg-slate-900 rounded-t-lg">
-      <h3 class="flex-1">Played recently</h3>
-      <div class="no-underline text-zinc-400">
-        <lucide-icon name="history" class="history"></lucide-icon>
-      </div>
+      <h3 class="flex-1 text-xl"><strong>Albums</strong></h3>
     </div>
   </header>
 
   <main class="flex-1 overflow-y-auto bg-slate-900 rounded-b-lg">
     <div class="overflow-y-auto">
-<!--      <div  *ngIf="history$ | async as history; else loadingHistory">-->
-
-<!--        <ul class="mt-4 flex ml-2 mr-2 flex-col list-none">-->
-<!--          <li *ngFor="let h of history" class="hover:bg-slate-800 hover:rounded-md transition-colors pt-2 pb-2">-->
-<!--            <div (click)="playSong(h.song)" class="flex items-center cursor-pointer no-underline truncate text-ellipsis overflow-hidden">-->
-<!--              <img src="assets/images/{{h.album.image}}" class="h-12 w-12 object-cover ml-2">-->
-<!--              <div class="pl-2 flex flex-col space-y-1">-->
-<!--                <h4 class="text-md text-zinc-200">{{h.song.name}}</h4>-->
-<!--                <h5 class="text-zinc-400">{{h.album.name}}</h5>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </li>-->
-<!--          <li *ngIf="history.length == 0" class="pl-2 pt-2 pb-2">-->
-<!--            <h3 class="text-zinc-400">There are no songs in your history</h3>-->
-<!--          </li>-->
-<!--        </ul>-->
-<!--      </div>-->
+      <ul class="mt-4 flex ml-2 mr-2 flex-col list-none">
+        <li *ngFor="let album of this.albums" class="hover:bg-slate-800 hover:rounded-md transition-colors pt-2 pb-2">
+          <div (click)="redirect(album.id)"
+               class="flex items-center cursor-pointer no-underline truncate text-ellipsis overflow-hidden">
+            <img src="assets/images/{{album.image_url}}" class="h-12 w-12 object-cover ml-2">
+            <div class="pl-2 flex flex-col space-y-1">
+              <h5 class="text-zinc-400">{{album.title}}</h5>
+            </div>
+          </div>
+        </li>
+        <li *ngIf="this.albums.length == 0" class="pl-2 pt-2 pb-2">
+          <h3 class="text-zinc-400">There are no albums to display</h3>
+        </li>
+      </ul>
     </div>
   </main>
 </div>
@@ -63,35 +57,26 @@
   <div class="relative w-auto bg-sky-900 rounded-lg p-5">
     <h3 class="text-zinc-200">Add new Album</h3>
 
-    <form class="pt-5" [formGroup]="form">
+    <div class="pt-5">
       <div class="flex items-center gap-5">
         <div>
-          <label for="name" class="control-label block text-sm font-medium text-zinc-200 pb-2">Album name</label>
-          <input formControlName="name" type="text" size="50"
+          <input [(ngModel)]="this.newAlbumName" type="text" size="50"
                  class="outline-none text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500"
                  placeholder="Album name">
         </div>
       </div>
-      <div class="pt-5">
-        <label class="block mb-2 text-sm font-medium text-zinc-200" for="album_file">Choose album cover</label>
-        <input type="file" id="album_file" (change)="onChange($event)" accept="image/*"
-               class="outline-none text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none text-zinc-400 placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500
-                   file:cursor-pointer file:bg-sky-500 file:border-none file:rounded-md file:text-zinc-200 file:no-underline file:pr-4 file:pl-4 file:pt-1 file:pb-1 file:mr-2"
-               placeholder="Album cover">
-      </div>
-    </form>
+    </div>
 
     <div class="pt-8 flex items-center gap-2">
-      <button (click)="addAlbum()" [disabled]="!form.valid"
-              class="outline-none bg-sky-500 p-2 rounded-md border-none disabled:bg-zinc-500 disabled:cursor-not-allowed hover:bg-sky-700 w-20"
+      <button (click)="createAlbum()"
+              class="bg-sky-500 p-2 rounded-md border-none disabled:bg-zinc-500 disabled:cursor-not-allowed hover:bg-sky-700 w-20"
               type="button">
         <div class="flex items-center justify-center text-zinc-200">
           <h4 class="text-zinc-200">Save</h4>
         </div>
       </button>
-      <button (click)="onAlbumCancel()" class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700 w-20"
-              type="button">
-        <div class="flex items-center justify-center text-zinc-200">
+      <button class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700 w-20" type="button">
+        <div (click)="toggleAlbumModal()" class="flex items-center justify-center text-zinc-200">
           <h4 class="text-zinc-200">Cancel</h4>
         </div>
       </button>
@@ -103,47 +88,33 @@
 
 <div *ngIf="showWorshipModal" class="fixed inset-0 z-50 justify-center items-center flex">
   <div class="relative w-auto bg-sky-900 rounded-lg p-5">
-    <h3 class="text-zinc-200">Add Worship Program</h3>
+    <h3 class="text-zinc-200">Add new Worship</h3>
 
-    <form class="pt-5" [formGroup]="form">
+    <div class="pt-5">
       <div class="flex items-center gap-5">
         <div>
-          <label for="name" class="control-label block text-sm font-medium text-zinc-200 pb-2">Worship program
-            name</label>
-          <input formControlName="name" type="text" id="name" size="50"
-                 class="outline-none border text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500"
-                 placeholder="Worship program name">
+          <input [(ngModel)]="this.newWorshipName" type="text" size="50"
+                 class="outline-none text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                 placeholder="Worship name">
         </div>
       </div>
-      <div class="pt-5">
-        <label class="block mb-2 text-sm font-medium text-zinc-200" for="worship-file">Choose worship program
-          cover</label>
-        <input type="file" id="worship-file" (change)="onChange($event)" accept="image/*"
-               class="outline-none border text-sm rounded-lg block w-full pt-2 pb-2 pl-2 bg-slate-900 border-none text-zinc-400 placeholder-zinc-400 text-white focus:ring-blue-500 focus:border-blue-500
-                  file:bg-sky-500 file:border-none file:rounded-md file:text-zinc-200 file:no-underline file:pr-4 file:pl-4 file:pt-1 file:pb-1 file:mr-2"
-               placeholder="Worship program cover">
-      </div>
-    </form>
+    </div>
 
     <div class="pt-8 flex items-center gap-2">
-      <button (click)="addWorship()" [disabled]="!form.valid"
+      <button (click)="createWorship()"
               class="bg-sky-500 p-2 rounded-md border-none disabled:bg-zinc-500 disabled:cursor-not-allowed hover:bg-sky-700 w-20"
               type="button">
         <div class="flex items-center justify-center text-zinc-200">
           <h4 class="text-zinc-200">Save</h4>
         </div>
       </button>
-      <button (click)="onWorshipCancel()" class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700 w-20"
-              type="button">
-        <div class="flex items-center justify-center text-zinc-200">
+      <button class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700 w-20" type="button">
+        <div (click)="toggleWorshipModal()" class="flex items-center justify-center text-zinc-200">
           <h4 class="text-zinc-200">Cancel</h4>
         </div>
       </button>
     </div>
+
   </div>
 </div>
 <div *ngIf="showWorshipModal" class="opacity-50 fixed inset-0 z-40 bg-black"></div>
-
-<ng-template #loadingHistory>
-  <h3 class="p-5 mb-20 text-zinc-400">Loading history...</h3>
-</ng-template>

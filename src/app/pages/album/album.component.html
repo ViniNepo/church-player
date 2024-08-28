@@ -47,14 +47,11 @@
     </div>
 
     <div class="grid grid-cols-12 gap-4 pl-5 pr-5 pt-5">
-      <div *ngIf="album.has_numbered_songs == false" class="flex items-center col-span-11">
+      <div class="flex items-center col-span-9">
         <h4 class="pl-9 text-zinc-200">Music</h4>
       </div>
-      <div *ngIf="album.has_numbered_songs == true" class="flex items-center col-span-10">
-        <h4 class="pl-9 text-zinc-200">Music</h4>
-      </div>
-      <div *ngIf="album.has_numbered_songs == true" class="flex items-center col-span-1">
-        <h4 class="text-zinc-200">Number</h4>
+      <div class="flex items-center justify-center col-span-2">
+        <h4 class="text-zinc-200">Song number</h4>
       </div>
       <div class="flex items-center col-span-1 justify-self-end pr-6">
         <h4 class="text-zinc-200">Edit</h4>
@@ -67,19 +64,9 @@
   <main class="flex-1 pl-5 pr-5 pb-2 overflow-y-auto">
     <div cdkDropListGroup>
       <div cdkDropList [cdkDropListData]="album.songs" (cdkDropListDropped)="drop($event)">
-
         <div *ngFor="let song of album.songs; index as i;"
              class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm" cdkDrag>
-          <div *ngIf="album.has_numbered_songs == false && editSongIndex !== i" class="flex items-center col-span-11">
-            <div class="flex flex-row">
-              <button (click)="playSong(song)"
-                      class="pl-2 pr-2 cursor-pointer no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
-                <lucide-icon name="play" class="play" size="20"></lucide-icon>
-              </button>
-              <h4 class="text-zinc-200">{{song.title}}</h4>
-            </div>
-          </div>
-          <div *ngIf="album.has_numbered_songs == true" class="flex items-center col-span-10">
+          <div class="flex items-center col-span-9">
             <div *ngIf="editSongIndex !== i" class="flex flex-row">
               <button (click)="playSong(song)"
                       class="pl-2 pr-2 cursor-pointer no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
@@ -93,15 +80,15 @@
                      placeholder="Song name">
             </div>
           </div>
-          <div *ngIf="album.has_numbered_songs == true" class="flex items-center col-span-1">
+          <div class="flex items-center justify-center col-span-2">
             <h4 *ngIf="song.song_number != 0 && editSongIndex !== i" class="text-zinc-200">{{song.song_number}}</h4>
             <input *ngIf="editSongIndex === i" [(ngModel)]="song.song_number" type="number"
-                   class="block w-full rounded-md bg-gray-100 outline outline-offset-2 outline-1 outline-sky-600 border-0 pl-2 text-gray-900 placeholder:text-gray-400"
+                   class="flex rounded-md bg-gray-100 outline outline-offset-2 outline-1 outline-sky-600 border-0 pl-2 text-gray-900 placeholder:text-gray-400"
                    placeholder="Number">
           </div>
           <div class="flex items-center justify-self-end pr-2 pt-1 col-span-1 space-x-2">
             <button *ngIf="editSongIndex !== i" (click)="editSongDetails(i, song)"
-                    class="no-underline border-none bg-transparent text-zinc-200 hover:text-sky-500">
+                    class="no-underline border-none bg-transparent text-zinc-200 hover:text-sky-500 invisible group-hover:visible">
               <lucide-icon name="pencil-line" class="pencil-line"></lucide-icon>
             </button>
             <button *ngIf="editSongIndex === i" (click)="updateSongDetails(song)"
@@ -113,7 +100,7 @@
               <lucide-icon name="x" class="x pt-1"></lucide-icon>
             </button>
             <button *ngIf="editSongIndex !== i" (click)="toggleDeleteSong(song)"
-                    class="no-underline border-none bg-transparent text-red-400 hover:text-red-700">
+                    class="no-underline border-none bg-transparent text-red-400 hover:text-red-700 invisible group-hover:visible">
               <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
             </button>
           </div>

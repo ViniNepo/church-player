@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {CreateSongDTO, SongDTO, SongUpdateOrderDTO} from "../model/dto/songDTO";
+import {CreateSongDTO, SongDTO, SongUpdateOrderDTO, SongWithAlbumDTO} from "../model/dto/songDTO";
 import {Album} from "../model/album";
 import {Worship} from "../model/worship";
-import {WorshipDTO} from "../model/dto/worship-programDTO";
+import {CreateWorshipDTO, WorshipDTO} from "../model/dto/worship-programDTO";
 import {catchError, Observable, take, tap, throwError} from "rxjs";
 import {Song} from "../model/song";
-import {AlbumDTO} from "../model/dto/albumDTO";
+import {AlbumDTO, CreateAlbumDTO} from "../model/dto/albumDTO";
 import {Moment} from "../model/moment";
-import {CreateMomentDTO} from "../model/dto/momentDTO";
+import {CreateMomentDTO, MomentOrderDTO} from "../model/dto/momentDTO";
 import {CreateSectionDTO} from "../model/dto/sectionDTO";
 
 @Injectable({
@@ -20,6 +20,14 @@ export class DBService {
   }
 
   //ALBUMS
+  createAlbum(album: CreateAlbumDTO) {
+    return this.http.post('/api/albums', album).pipe(
+      catchError(error => {
+        console.error('Creating album failed', error);
+        return throwError(error);
+      })
+    );
+  }
   findAllAlbums(): Observable<Album[]> {
     return this.http.get<Album[]>('/api/albums');
   }
@@ -83,8 +91,8 @@ export class DBService {
     );
   }
 
-  findAll(): Observable<Song[]> {
-    return this.http.get<Song[]>(`/api/songs`).pipe(
+  findAll(): Observable<SongWithAlbumDTO[]> {
+    return this.http.get<SongWithAlbumDTO[]>(`/api/songs`).pipe(
       catchError(error => {
         console.error('Error getting all songs', error);
         return throwError(error);
@@ -93,6 +101,14 @@ export class DBService {
   }
 
   //WORSHIP
+  createWorship(worship: CreateWorshipDTO) {
+    return this.http.post('/api/worships', worship).pipe(
+      catchError(error => {
+        console.error('Creating worship failed', error);
+        return throwError(error);
+      })
+    );
+  }
   findAllWorships(): Observable<Worship[]> {
     return this.http.get<Worship[]>('/api/worships');
   }
@@ -124,6 +140,15 @@ export class DBService {
     return this.http.patch<Moment>('/api/moments', moment).pipe(
       catchError(error => {
         console.error('Update moment failed', error);
+        return throwError(error);
+      })
+    );
+  }
+
+  updateMomentsOrder(moments: MomentOrderDTO[]) {
+    return this.http.patch<SongUpdateOrderDTO[]>('/api/moments/orders', moments).pipe(
+      catchError(error => {
+        console.error('Update moments failed', error);
         return throwError(error);
       })
     );

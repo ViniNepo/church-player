@@ -1,9 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {DBService} from "../../service/db.service";
-import {SongDTO, SongWithAlbumDTO} from "../../model/dto/songDTO";
-import {Observable} from "rxjs";
+import {SongWithAlbumDTO} from "../../model/dto/songDTO";
 import {ActivatedRoute} from "@angular/router";
-import {AlbumDTO} from "../../model/dto/albumDTO";
 
 @Component({
   selector: 'app-search-songs',
@@ -30,10 +28,17 @@ export class SearchSongsComponent implements OnInit {
   }
 
   ngOnInit() {
-
   }
 
-  playSong(song: SongWithAlbumDTO) {
+  playSong(song: SongWithAlbumDTO): void {
+    this.dbService.playSong(song.id).subscribe({
+      next: () => {
+        console.log('song playing')
+      },
+      error: (error) => {
+        console.error('Error getting songs:', error);
+      }
+    });
   }
 
   searchSong(event: any): void {

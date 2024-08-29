@@ -3,6 +3,7 @@ import {Album} from "../../model/album";
 import {Worship} from "../../model/worship";
 import {DBService} from "../../service/db.service";
 import {BehaviorSubject, catchError, Observable, of} from "rxjs";
+import {AlbumDTO} from "../../model/dto/albumDTO";
 
 @Component({
   selector: 'app-home',
@@ -12,9 +13,8 @@ import {BehaviorSubject, catchError, Observable, of} from "rxjs";
 export class HomeComponent implements OnInit {
 
   time: string
-  albums$: Observable<Album[]>;
-  error$ = new BehaviorSubject<string | null>(null);
-  worships$: Observable<Worship[]>;
+  albums: Album[];
+  worships: Worship[];
 
 
   constructor(private dbService: DBService) {
@@ -22,18 +22,29 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.albums$ = this.dbService.findAllAlbums().pipe(
-      catchError(error => {
-        this.error$.next('Failed to load albums'); // Armazena a mensagem de erro
-        return of([]); // Retorna um array vazio para evitar que o template quebre
-      })
-    );
+    this.dbService.findAllAlbums().subscribe({
+      next: (albums: Album[]) => {
+        this.albums = albums
+        this.sendData(albums)
+        console.log('Albums getted:');
+      },
+      error: (error) => {
+        console.error('Failed to load albums', error);
+      }
+    });
 
-    this.worships$ = this.dbService.findAllWorships().pipe(
-      catchError(error => {
-        this.error$.next('Failed to load worships'); // Armazena a mensagem de erro
-        return of([]); // Retorna um array vazio para evitar que o template quebre
-      })
-    );
+    this.dbService.findAllWorships().subscribe({
+      next: (worships: Worship[]) => {
+        this.worships = worships
+        console.log('Worship getted:');
+      },
+      error: (error) => {
+        console.error('Failed to load worships', error);
+      }
+    });
+  }
+
+  sendData(albums: Album[]) {
+    this.dbService.changeData(albums);
   }
 }

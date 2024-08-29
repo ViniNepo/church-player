@@ -1,25 +1,27 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DBService} from "../../service/db.service";
 import {Router} from "@angular/router";
-import {Song} from "../../model/song";
 import {ToastrService} from 'ngx-toastr';
 import {CreateAlbumDTO} from "../../model/dto/albumDTO";
 import {CreateWorshipDTO} from "../../model/dto/worship-programDTO";
 import {Album} from "../../model/album";
 import {Worship} from "../../model/worship";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-left-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss']
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent implements OnInit, OnDestroy {
   file: Array<File>;
   showAlbumModal = false;
   showWorshipModal = false;
   newAlbumName = ""
   newWorshipName = ""
   albums: Album[]
+
+  subscription: Subscription;
 
   constructor(
     private dbService: DBService,
@@ -29,17 +31,16 @@ export class MenuComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dbService.findAllAlbums().subscribe({
-      next: (album: Album[]) => {
-        this.albums = album
-        console.log('Albums loaded:');
-        console.log(this.albums)
-      },
-      error: (error) => {
-        console.error('Error getting albums:', error);
-      }
+    this.subscription = this.dbService.currentData.subscribe(data => {
+      this.albums = data;
     });
+  }
 
+  ngOnDestroy() {
+    // Desinscreve-se para evitar vazamentos de memória
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   toggleAlbumModal() {

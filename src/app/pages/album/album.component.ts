@@ -2,10 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {DBService} from "../../service/db.service";
 import {AlbumDTO} from "../../model/dto/albumDTO";
-import {CreateSongDTO, SongDTO, SongUpdateOrderDTO} from "../../model/dto/songDTO";
-import {ToastrService} from "ngx-toastr";
+import {CreateSongDTO, SongDTO, SongUpdateOrderDTO, SongWithAlbumDTO} from "../../model/dto/songDTO";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {Song} from "../../model/song";
+import {Album} from "../../model/album";
 
 @Component({
   selector: 'app-album',
@@ -49,7 +49,15 @@ export class AlbumComponent implements OnInit {
     )
   }
 
-  playSong(song: SongDTO) {
+  playSong(song: SongDTO): void {
+    this.dbService.playSong(song.id).subscribe({
+      next: () => {
+        console.log('song playing')
+      },
+      error: (error) => {
+        console.error('Error getting songs:', error);
+      }
+    });
   }
 
   toggleAddMusic() {
@@ -101,7 +109,6 @@ export class AlbumComponent implements OnInit {
       error: (error) => {
         songDTO.title = this.originalSongName
         songDTO.song_number = this.originalSongNumber
-        alert("deu ruim")
         console.error('Error updating selected song:', error);
       }
     });

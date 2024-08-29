@@ -4,7 +4,7 @@ import {CreateSongDTO, SongDTO, SongUpdateOrderDTO, SongWithAlbumDTO} from "../m
 import {Album} from "../model/album";
 import {Worship} from "../model/worship";
 import {CreateWorshipDTO, WorshipDTO} from "../model/dto/worship-programDTO";
-import {catchError, Observable, take, tap, throwError} from "rxjs";
+import {BehaviorSubject, catchError, Observable, take, tap, throwError} from "rxjs";
 import {Song} from "../model/song";
 import {AlbumDTO, CreateAlbumDTO} from "../model/dto/albumDTO";
 import {Moment} from "../model/moment";
@@ -19,6 +19,26 @@ export class DBService {
   constructor(private http: HttpClient) {
   }
 
+  private dataSource = new BehaviorSubject<any>(null);
+
+  // Observable que será usado para assinar
+  currentData = this.dataSource.asObservable();
+
+  // Método para atualizar os dados
+  changeData(data: any) {
+    this.dataSource.next(data);
+  }
+
+  playSong(path: string) {
+    return this.http.get(`/api/file-control/${path}`).pipe(
+      catchError(error => {
+        console.error('Error while trying to play song', error);
+        return throwError(error);
+      })
+    );
+  }
+
+
   //ALBUMS
   createAlbum(album: CreateAlbumDTO) {
     return this.http.post('/api/albums', album).pipe(
@@ -29,11 +49,21 @@ export class DBService {
     );
   }
   findAllAlbums(): Observable<Album[]> {
-    return this.http.get<Album[]>('/api/albums');
+    return this.http.get<Album[]>('/api/albums').pipe(
+      catchError(error => {
+        console.error('Error getting all albums', error);
+        return throwError(error);
+      })
+    );
   }
 
   findAlbumByID(id: string): Observable<AlbumDTO> {
-    return this.http.get<AlbumDTO>(`/api/albums/${id}`);
+    return this.http.get<AlbumDTO>(`/api/albums/${id}`).pipe(
+      catchError(error => {
+        console.error('Error getting album by id', error);
+        return throwError(error);
+      })
+    );
   }
 
   updateAlbum(album: Album) {

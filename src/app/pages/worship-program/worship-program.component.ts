@@ -3,7 +3,7 @@ import {DBService} from "../../service/db.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WorshipDTO} from "../../model/dto/worship-programDTO";
 import {CreateMomentDTO, MomentDTO, MomentOrderDTO} from "../../model/dto/momentDTO";
-import {SongDTO, SongWithAlbumDTO} from "../../model/dto/songDTO";
+import {SongWithAlbumDTO} from "../../model/dto/songDTO";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {Worship} from "../../model/worship";
 import {Moment} from "../../model/moment";
@@ -83,6 +83,14 @@ export class WorshipProgramComponent implements OnInit {
   }
 
   playSong(song: SongWithAlbumDTO): void {
+    this.dbService.playSong(song.id).subscribe({
+      next: () => {
+        console.log('song playing')
+      },
+      error: (error) => {
+        console.error('Error getting songs:', error);
+      }
+    });
   }
 
   toggleDeleteWorship() {
@@ -118,30 +126,39 @@ export class WorshipProgramComponent implements OnInit {
     this.showEditCover = !this.showEditCover
   }
 
-  toggleUpdateLabelName(index: number, moment: MomentDTO) {
-    this.originalMomentName = moment.title
-    this.showUpdateLabelModal = !this.showUpdateLabelModal
-    this.editMomentIndex = index;
+  editMomentIndices: { sectionIndex: number, momentIndex: number } | null = null;
+
+  toggleUpdateLabelName(sectionIndex: number, momentIndex: number, moment: MomentDTO) {
+    this.originalMomentName = moment.title;
+    this.showUpdateLabelModal = !this.showUpdateLabelModal;
+    this.editMomentIndices = { sectionIndex, momentIndex };
   }
 
   cancelEditMomentDetails(moment: MomentDTO) {
-    moment.title = this.originalMomentName
-    this.editMomentIndex = null;
+    moment.title = this.originalMomentName;
+    this.editMomentIndices = null;
   }
 
   updateMomentDetails(momentDTO: MomentDTO, sectionID: string) {
-    const moment = new Moment(momentDTO.id, momentDTO.title, momentDTO.song_order, momentDTO.song.id, sectionID)
+    let songID: string =  ""
+    if (momentDTO.song != null) {
+      songID = momentDTO.song.id
+    }
+
+    const moment = new Moment(momentDTO.id, momentDTO.title, momentDTO.song_order, songID, sectionID);
     this.dbService.updateMoment(moment).subscribe({
       next: () => {
         console.log('Moment updated:');
       },
       error: (error) => {
-        momentDTO.title = this.originalMomentName
-        alert("deu ruim")
+        momentDTO.title = this.originalMomentName;
+        alert("deu ruim");
         console.error('Error updating selected moment:', error);
       }
     });
-    this.editMomentIndex = null;
+    this.originalMomentName = "";
+    this.showUpdateLabelModal = !this.showUpdateLabelModal;
+    this.editMomentIndices = null;
   }
 
   onChangeCover(event) {
@@ -319,6 +336,7 @@ export class WorshipProgramComponent implements OnInit {
   }
 
   selectOption(song: SongWithAlbumDTO) {
+    console.log(song)
     this.worship.sections[this.sectionIndex].moments[this.momentIndex].song = song
 
     let moment: MomentDTO = new MomentDTO(

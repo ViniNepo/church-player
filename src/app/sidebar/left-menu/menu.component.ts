@@ -56,7 +56,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   }
 
   createAlbum() {
-    let album: CreateAlbumDTO = new CreateAlbumDTO(this.newAlbumName, "")
+    let album: CreateAlbumDTO = new CreateAlbumDTO(this.newAlbumName, "church-player-2.png")
     this.dbService.createAlbum(album).subscribe({
       next: () => {
         this.dbService.findAllAlbums().subscribe({
@@ -82,7 +82,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   }
 
   createWorship() {
-    let worship: CreateWorshipDTO = new CreateWorshipDTO(this.newWorshipName, "")
+    let worship: CreateWorshipDTO = new CreateWorshipDTO(this.newWorshipName, "church-player-2.png")
     this.dbService.createWorship(worship).subscribe({
       next: () => {
         this.dbService.findAllWorships().subscribe({

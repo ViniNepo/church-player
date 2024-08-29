@@ -33,7 +33,6 @@ export class WorshipProgramComponent implements OnInit {
   momentID: string | null = null;
   newSectionName: string | null = null;
   newMomentName: string | null = null;
-  worshipImage: string | null = null
   worship: WorshipDTO
   songs: SongWithAlbumDTO[]
   filteredSongs: SongWithAlbumDTO[] = [];
@@ -55,7 +54,6 @@ export class WorshipProgramComponent implements OnInit {
         for (const section of this.worship.sections) {
           section.moments = section.moments || []
         }
-        this.worshipImage = this.worship.image_url
         this.originalName = this.worship.title
       }
     )
@@ -83,7 +81,7 @@ export class WorshipProgramComponent implements OnInit {
   }
 
   playSong(song: SongWithAlbumDTO): void {
-    this.dbService.playSong(song.id).subscribe({
+    this.dbService.playSong(song.file).subscribe({
       next: () => {
         console.log('song playing')
       },
@@ -166,12 +164,17 @@ export class WorshipProgramComponent implements OnInit {
   }
 
   editWorshipCover() {
+    const formData = new FormData();
     this.worship.image_url = this.selectedCover[0].name
     let worship: Worship = new Worship(this.worship.id, this.worship.title, this.worship.image_url)
+    formData.append('worship', JSON.stringify(worship));
 
-    this.dbService.updateWorship(worship).subscribe({
+    if (this.selectedCover[0]) {
+      formData.append('files', this.selectedCover[0]);
+    }
+
+    this.dbService.updateWorship(formData).subscribe({
       next: () => {
-        this.worshipImage = this.worship.image_url
         console.log('Worship updated:');
       },
       error: (error) => {
@@ -317,8 +320,12 @@ export class WorshipProgramComponent implements OnInit {
   }
 
   updateWorshipTitle() {
+    const formData = new FormData();
+    this.worship.image_url = this.selectedCover[0].name
     let worship: Worship = new Worship(this.worship.id, this.worship.title, this.worship.image_url)
-    this.dbService.updateWorship(worship).subscribe({
+    formData.append('worship', JSON.stringify(worship));
+
+    this.dbService.updateWorship(formData).subscribe({
       next: () => {
         console.log('Worship updated:');
       },

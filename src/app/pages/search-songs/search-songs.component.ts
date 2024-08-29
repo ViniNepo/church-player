@@ -31,7 +31,7 @@ export class SearchSongsComponent implements OnInit {
   }
 
   playSong(song: SongWithAlbumDTO): void {
-    this.dbService.playSong(song.id).subscribe({
+    this.dbService.playSong(song.file).subscribe({
       next: () => {
         console.log('song playing')
       },

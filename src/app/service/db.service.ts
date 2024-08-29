@@ -38,7 +38,6 @@ export class DBService {
     );
   }
 
-
   //ALBUMS
   createAlbum(album: CreateAlbumDTO) {
     return this.http.post('/api/albums', album).pipe(
@@ -66,8 +65,8 @@ export class DBService {
     );
   }
 
-  updateAlbum(album: Album) {
-    return this.http.patch<Album>('/api/albums', album).pipe(
+  updateAlbum(data: FormData) {
+    return this.http.patch<Album>('/api/albums', data).pipe(
       catchError(error => {
         console.error('Update failed', error);
         return throwError(error);
@@ -94,8 +93,8 @@ export class DBService {
     );
   }
 
-  createSong(songs: CreateSongDTO[]) {
-    return this.http.post(`/api/songs`, songs).pipe(
+  createSong(albumID: string, data: FormData) {
+    return this.http.post(`/api/songs/${albumID}`, data).pipe(
       catchError(error => {
         console.error('Creating failed', error);
         return throwError(error);
@@ -147,8 +146,8 @@ export class DBService {
     return this.http.get<WorshipDTO>(`/api/worships/${id}`)
   }
 
-  updateWorship(worship: Worship) {
-    return this.http.patch<Worship>('/api/worships', worship).pipe(
+  updateWorship(data: FormData) {
+    return this.http.patch<Worship>('/api/worships', data).pipe(
       catchError(error => {
         console.error('Update worship failed', error);
         return throwError(error);

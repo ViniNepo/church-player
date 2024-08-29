@@ -5,7 +5,7 @@
         <div (click)="toggleEditCover()" class="absolute inset-0 flex cursor-pointer items-center justify-center bg-gray-700 bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <lucide-icon name="pencil-line" class="pencil-line text-white justify-center"></lucide-icon>
         </div>
-        <img [src]="albumImage || 'assets/church-player-2.png'" class="w-48 h-auto max-w-full lg:w-48 md:w-32 sm:w-16 object-cover bg-slate-800 cursor-pointer">
+        <img src="assets/images/{{album.image_url}}" class="w-48 h-auto max-w-full lg:w-48 md:w-32 sm:w-16 object-cover bg-slate-800 cursor-pointer">
       </div>
       <div class="flex-1 pb-6 pl-4">
         <div>

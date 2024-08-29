@@ -47,7 +47,7 @@
       <h4 class="flex-1 pl-4 text-zinc-200">{{ worship.title }}</h4>
     </a>
   </div>
-  <h3 class="text-zinc-400" *ngIf="worships == null || worships.length == 0">There are no worship program to show. Create your first
+  <h3 class="pl-5 text-zinc-400" *ngIf="worships == null || worships.length == 0">There are no worship program to show. Create your first
     program to make your worship
     programing easier.</h3>
 
@@ -68,7 +68,7 @@
     </a>
   </div>
   <div *ngIf="albums == null || albums.length == 0" class="mb-40">
-    <h3 class="text-zinc-400">There are no album to show. Create your first album to add your songs.</h3>
+    <h3 class="pl-5 text-zinc-400">There are no album to show. Create your first album to add your songs.</h3>
   </div>
 </div>
 <ng-template #loadingWorship>

@@ -6,7 +6,7 @@
              class="absolute inset-0 flex cursor-pointer items-center justify-center bg-gray-700 bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <lucide-icon name="pencil-line" class="pencil-line text-white justify-center"></lucide-icon>
         </div>
-        <img [src]="worshipImage || 'assets/church-player-2.png'"
+        <img src="assets/images/{{worship.image_url}}"
              class="w-48 h-auto max-w-full lg:w-48 md:w-32 sm:w-16 object-cover bg-slate-800 cursor-pointer">
       </div>
       <div class="flex-1 pb-6 pl-4">
@@ -123,7 +123,7 @@
               <div class="flex items-center col-span-11">
                 <div *ngIf="moment.song != null" class="flex-1 flex-row pt-1 pb-1 pl-2 outline rounded-md outline-offset-2 outline-1 outline-sky-800">
                   <div class="flex items-center no-underline truncate text-ellipsis overflow-hidden">
-                    <img src="assets/church-player-2.png" class="h-12 w-12 object-cover">
+                    <img src="../../../assets/images/church-player-2.png" class="h-12 w-12 object-cover">
                     <div class="pl-2 flex flex-col space-y-1">
                       <h4
                         class="text-md text-zinc-200 truncate text-ellipsis overflow-hidden">{{moment.song.title}}</h4>

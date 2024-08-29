@@ -27,7 +27,6 @@ export class AlbumComponent implements OnInit {
   selectedSong: SongDTO = null;
   selectedCover: Array<File>
   files: Array<File>
-  albumImage: string | null = null
   editSongIndex: number | null = null;
 
 
@@ -43,14 +42,13 @@ export class AlbumComponent implements OnInit {
       (data: { album: AlbumDTO }) => {
         this.album = data.album
         this.album.songs = this.album.songs || []
-        this.albumImage = this.album.image_url
         this.originalName = this.album.title
       }
     )
   }
 
   playSong(song: SongDTO): void {
-    this.dbService.playSong(song.id).subscribe({
+    this.dbService.playSong(song.file).subscribe({
       next: () => {
         console.log('song playing')
       },
@@ -118,7 +116,7 @@ export class AlbumComponent implements OnInit {
   onChange(event) {
     const files: File[] = event.target.files;
 
-    if (files.length > 50) {
+    if (files.length > 10) {
       alert('You can only upload up to 50 files.');
       this.toggleAddMusic()
       return;
@@ -133,7 +131,10 @@ export class AlbumComponent implements OnInit {
   }
 
   updateAlbum() {
-    this.dbService.updateAlbum(this.album).subscribe({
+    const formData = new FormData();
+    formData.append('album', JSON.stringify(this.album));
+
+    this.dbService.updateAlbum(formData).subscribe({
       next: () => {
         console.log('Album updated:');
       },
@@ -146,11 +147,16 @@ export class AlbumComponent implements OnInit {
   }
 
   editAlbumCover() {
+    const formData = new FormData();
     this.album.image_url = this.selectedCover[0].name
-    console.log(this.album)
-    this.dbService.updateAlbum(this.album).subscribe({
+    formData.append('album', JSON.stringify(this.album));
+
+    if (this.selectedCover[0]) {
+      formData.append('files', this.selectedCover[0]);
+    }
+
+    this.dbService.updateAlbum(formData).subscribe({
       next: () => {
-        this.albumImage = this.album.image_url
         console.log('Album updated:');
       },
       error: (error) => {
@@ -162,13 +168,13 @@ export class AlbumComponent implements OnInit {
   }
 
   addSong() {
-    let songs: CreateSongDTO[] = []
-    for (let i = 0; i < this.files.length; i++) {
-      const song = new CreateSongDTO(this.files[i].name, this.album.id)
-      songs.push(song)
+    const formData = new FormData();
+    for (const file of this.files) {
+      formData.append('files', file);
     }
 
-    this.dbService.createSong(songs).subscribe({
+
+    this.dbService.createSong(this.album.id, formData).subscribe({
       next: () => {
         this.dbService.findAlbumByID(this.album.id).subscribe({
           next: (album: AlbumDTO) => {

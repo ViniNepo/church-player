@@ -10,6 +10,7 @@ import {AlbumDTO, CreateAlbumDTO} from "../model/dto/albumDTO";
 import {Moment} from "../model/moment";
 import {CreateMomentDTO, MomentOrderDTO} from "../model/dto/momentDTO";
 import {CreateSectionDTO} from "../model/dto/sectionDTO";
+import {Section} from "../model/section";
 
 @Injectable({
   providedIn: 'root'
@@ -206,6 +207,15 @@ export class DBService {
     return this.http.post('/api/sections', section).pipe(
       catchError(error => {
         console.error('Creating section failed', error);
+        return throwError(error);
+      })
+    );
+  }
+
+  updateSection(section: Section) {
+    return this.http.patch<Section>('/api/sections', section).pipe(
+      catchError(error => {
+        console.error('Update section failed', error);
         return throwError(error);
       })
     );

@@ -25,8 +25,6 @@ function createWindow() {
     slashes: true
   }));
 
-  appWindow.openDevTools()
-
   appWindow.on('closed', function () {
     appWindow = null;
   });

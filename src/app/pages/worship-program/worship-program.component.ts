@@ -7,7 +7,8 @@ import {SongWithAlbumDTO} from "../../model/dto/songDTO";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {Worship} from "../../model/worship";
 import {Moment} from "../../model/moment";
-import {CreateSectionDTO} from "../../model/dto/sectionDTO";
+import {CreateSectionDTO, SectionDTO} from "../../model/dto/sectionDTO";
+import {Section} from "../../model/section";
 
 @Component({
   selector: 'app-worship-program',
@@ -26,9 +27,11 @@ export class WorshipProgramComponent implements OnInit {
   showOptions = false
   showEditCover = false
   editName = false
+  editSection = false
   editMomentIndex: number | null = null;
-  originalName: string;
-  originalMomentName: string
+  originalName: string | null = null;
+  originalSection: string | null = null;
+  originalMomentName: string | null = null;
   sectionID: string | null = null;
   momentID: string | null = null;
   newSectionName: string | null = null;
@@ -41,6 +44,7 @@ export class WorshipProgramComponent implements OnInit {
   momentIndex: number
   selectedCover: Array<File>
   connectedTo: string[][] = [];
+  editSectionIndex: number | null = null;
 
   constructor(
     private dbService: DBService,
@@ -107,10 +111,12 @@ export class WorshipProgramComponent implements OnInit {
 
   toggleAddMoment(id: string) {
     this.sectionID = id
+    this.newMomentName = null
     this.showAddMomentModal = !this.showAddMomentModal
   }
 
   toggleAddSection() {
+    this.newSectionName = null
     this.showAddSectionModal = !this.showAddSectionModal
   }
 
@@ -121,6 +127,7 @@ export class WorshipProgramComponent implements OnInit {
   }
 
   toggleEditCover() {
+    this.selectedCover = []
     this.showEditCover = !this.showEditCover
   }
 
@@ -165,7 +172,6 @@ export class WorshipProgramComponent implements OnInit {
 
   editWorshipCover() {
     const formData = new FormData();
-    this.worship.image_url = this.selectedCover[0].name
     let worship: Worship = new Worship(this.worship.id, this.worship.title, this.worship.image_url)
     formData.append('worship', JSON.stringify(worship));
 
@@ -175,14 +181,15 @@ export class WorshipProgramComponent implements OnInit {
 
     this.dbService.updateWorship(formData).subscribe({
       next: () => {
+        this.worship.image_url = this.selectedCover[0].name
+        this.toggleEditCover()
         console.log('Worship updated:');
       },
       error: (error) => {
-        this.worship.title = this.originalName
+        this.toggleEditCover()
         console.error('Error updating worship cover:', error);
       }
     });
-    this.toggleEditCover()
   }
 
   createMoment() {
@@ -236,12 +243,10 @@ export class WorshipProgramComponent implements OnInit {
           }
         });
 
-        this.newSectionName = null
         this.toggleAddSection()
         console.log('Section created:');
       },
       error: (error) => {
-        this.newSectionName = null
         this.toggleAddSection()
         console.error('Error creating new moment:', error);
       }
@@ -319,9 +324,13 @@ export class WorshipProgramComponent implements OnInit {
     this.editName = !this.editName
   }
 
+  editSectionName(sectionName: string, index: number) {
+    this.originalSection = sectionName
+    this.editSectionIndex = index;
+  }
+
   updateWorshipTitle() {
     const formData = new FormData();
-    this.worship.image_url = this.selectedCover[0].name
     let worship: Worship = new Worship(this.worship.id, this.worship.title, this.worship.image_url)
     formData.append('worship', JSON.stringify(worship));
 
@@ -337,9 +346,29 @@ export class WorshipProgramComponent implements OnInit {
     this.editWorshipName()
   }
 
+  updateSectionTitle(section: SectionDTO, index: number) {
+    let s: Section = new Section(section.id, section.section_name, 0, this.worship.id)
+    this.dbService.updateSection(s).subscribe({
+      next: () => {
+        this.editSectionName(null, null)
+        console.log('Worship updated:');
+      },
+      error: (error) => {
+        this.worship.sections[index].section_name = this.originalSection
+        this.editSectionName(null, null)
+        console.error('Error updating worship:', error);
+      }
+    });
+  }
+
   cancelEditAlbumName() {
     this.worship.title = this.originalName
     this.editWorshipName()
+  }
+
+  cancelEditSectionName(index: number) {
+    this.worship.sections[index].section_name = this.originalSection
+    this.editSectionName(null, null)
   }
 
   selectOption(song: SongWithAlbumDTO) {

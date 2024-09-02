@@ -68,7 +68,7 @@
     </div>
 
     <div class="pt-8 flex items-center gap-2">
-      <button (click)="createAlbum()"
+      <button (click)="createAlbum()" [disabled]="this.newAlbumName == null || this.newAlbumName == ''"
               class="bg-sky-500 p-2 rounded-md border-none disabled:bg-zinc-500 disabled:cursor-not-allowed hover:bg-sky-700 w-20"
               type="button">
         <div class="flex items-center justify-center text-zinc-200">
@@ -101,7 +101,7 @@
     </div>
 
     <div class="pt-8 flex items-center gap-2">
-      <button (click)="createWorship()"
+      <button (click)="createWorship()" [disabled]="this.newWorshipName == null || this.newWorshipName == ''"
               class="bg-sky-500 p-2 rounded-md border-none disabled:bg-zinc-500 disabled:cursor-not-allowed hover:bg-sky-700 w-20"
               type="button">
         <div class="flex items-center justify-center text-zinc-200">

@@ -2,25 +2,28 @@
   <header>
     <div class="flex items-end bg-sky-900 rounded-t-lg">
       <div class="relative group flex ml-6 mb-6 mt-6">
-        <div (click)="toggleEditCover()" class="absolute inset-0 flex cursor-pointer items-center justify-center bg-gray-700 bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <lucide-icon name="pencil-line" class="pencil-line text-white justify-center"></lucide-icon>
-        </div>
-        <img src="assets/images/{{album.image_url}}" class="w-48 h-auto max-w-full lg:w-48 md:w-32 sm:w-16 object-cover bg-slate-800 cursor-pointer">
+        <button (click)="toggleEditCover()" [disabled]="editSongIndex != null || this.editName == true"
+                class="absolute inset-0 flex cursor-pointer items-center justify-center text-white bg-gray-700 bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 disabled:text-slate-500 disabled:cursor-not-allowed">
+          <lucide-icon name="pencil-line" class="pencil-line justify-center"></lucide-icon>
+        </button>
+        <img src="assets/images/{{this.album.image_url}}"
+             class="w-48 h-48 max-w-full max-h-full lg:w-48 lg:h-48 md:w-32 md:h-32 sm:w-16 sm:h-16 object-cover bg-slate-800 cursor-pointer">
       </div>
       <div class="flex-1 pb-6 pl-4">
         <div>
           <h5 class="text-xl text-zinc-400">Album</h5>
           <div class="flex items-end gap-2 mr-2">
-            <h1 *ngIf="!editName" class="text-4xl text-zinc-200">{{album.title}}</h1>
-            <input *ngIf="editName" [(ngModel)]="album.title" size="10"
-                   class="text-4xl rounded-md bg-gray-100 outline outline-offset-2 outline-1 outline-sky-600 border-0 pl-2 text-gray-900 placeholder:text-gray-400"
-                   placeholder="Album name">
+            <h1 *ngIf="!editName" class="text-4xl text-zinc-200">{{this.album.title}}</h1>
+            <input *ngIf="editName" [(ngModel)]="this.album.title" size="10"
+                   class="text-4xl rounded-md bg-gray-100 outline outline-offset-2 outline-1 outline-sky-600 border-0 pl-2 text-gray-900 placeholder:text-gray-400">
             <button *ngIf="!editName" (click)="editAlbumName()"
+                    [hidden]="editSongIndex != null || this.editName == true"
                     class="no-underline text-zinc-200 bg-transparent border-none hover:text-sky-500 pb-1">
               <lucide-icon name="pencil-line" class="pencil-line pt-1"></lucide-icon>
             </button>
             <button *ngIf="editName" (click)="updateAlbum()"
-                    class="no-underline text-green-500 bg-transparent border-none hover:text-green-700 pb-1">
+                    [disabled]="this.album.title == null || this.album.title == ''"
+                    class="no-underline text-green-500 bg-transparent border-none hover:text-green-700 pb-1 disabled:text-slate-500 disabled:cursor-not-allowed">
               <lucide-icon name="check" class="check pt-1"></lucide-icon>
             </button>
             <button *ngIf="editName" (click)="cancelEditAlbumName()"
@@ -32,15 +35,18 @@
       </div>
 
       <div class="flex pr-8 pb-8 gap-2">
-        <button (click)="toggleAddMusic()" class="bg-sky-500 p-2 rounded-md border-none hover:bg-sky-700" type="button">
-          <div class="flex items-center text-zinc-200">
-            <h4 class="text-zinc-200">Add New Song</h4>
+        <button (click)="toggleAddMusic()"
+                class="bg-sky-500 p-2 text-zinc-200 rounded-md border-none hover:bg-sky-700 disabled:bg-zinc-800 disabled:text-slate-500 disabled:cursor-not-allowed"
+                [disabled]="editSongIndex != null || this.editName == true" type="button">
+          <div class="flex items-center">
+            <h4>Add New Song</h4>
           </div>
         </button>
-        <button (click)="toggleDeleteAlbum()" class="bg-red-500 p-2 rounded-md border-none hover:bg-red-700"
-                type="button">
-          <div class="flex items-center text-zinc-200">
-            <h4 class="text-zinc-200">Delete Album</h4>
+        <button (click)="toggleDeleteAlbum()"
+                class="bg-red-500 p-2 text-zinc-200 rounded-md border-none hover:bg-red-700 disabled:bg-zinc-800 disabled:text-slate-500 disabled:cursor-not-allowed"
+                [disabled]="editSongIndex != null || this.editName == true" type="button">
+          <div class="flex items-center">
+            <h4>Delete Album</h4>
           </div>
         </button>
       </div>
@@ -63,20 +69,21 @@
 
   <main class="flex-1 pl-5 pr-5 pb-2 overflow-y-auto">
     <div cdkDropListGroup>
-      <div cdkDropList [cdkDropListData]="album.songs" (cdkDropListDropped)="drop($event)" class="drop-area">
+      <div cdkDropList [cdkDropListData]="this.album.songs" (cdkDropListDropped)="drop($event)" class="drop-area">
         <div *ngFor="let song of album.songs; index as i;"
-             class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm" cdkDragBoundary=".drop-area" cdkDragLockAxis="y" cdkDrag>
+             class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm"
+             cdkDragBoundary=".drop-area" cdkDragLockAxis="y" cdkDrag>
           <div class="flex items-center col-span-9">
-            <div *ngIf="editSongIndex !== i" class="flex flex-row">
-              <button cdkDragHandle
+            <div class="flex flex-row">
+              <button cdkDragHandle [hidden]="editSongIndex != null || this.editName == true"
                       class="pl-1 cursor-move no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
                 <lucide-icon name="chevrons-up-down" class="chevrons-up-down" size="20"></lucide-icon>
               </button>
-              <button (click)="playSong(song)"
+              <button (click)="playSong(song)" [hidden]="editSongIndex != null || this.editName == true"
                       class="pl-2 pr-2 cursor-pointer no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
                 <lucide-icon name="play" class="play" size="20"></lucide-icon>
               </button>
-              <h4 class="text-zinc-200">{{song.title}}</h4>
+              <h4 *ngIf="editSongIndex !== i" class="pl-2 text-zinc-200">{{song.title}}</h4>
             </div>
             <div class="pl-9">
               <input *ngIf="editSongIndex === i" [(ngModel)]="song.title" size="40"
@@ -92,11 +99,13 @@
           </div>
           <div class="flex items-center justify-self-end pr-2 pt-1 col-span-1 space-x-2">
             <button *ngIf="editSongIndex !== i" (click)="editSongDetails(i, song)"
+                    [hidden]="editSongIndex != null || this.editName == true"
                     class="no-underline border-none bg-transparent text-zinc-200 hover:text-sky-500 invisible group-hover:visible">
               <lucide-icon name="pencil-line" class="pencil-line"></lucide-icon>
             </button>
             <button *ngIf="editSongIndex === i" (click)="updateSongDetails(song)"
-                    class="no-underline text-green-500 bg-transparent border-none hover:text-green-700 pb-1">
+                    [disabled]="song.title == null || song.title == ''"
+                    class="no-underline text-green-500 bg-transparent border-none hover:text-green-700 pb-1 disabled:text-slate-500 disabled:cursor-not-allowed">
               <lucide-icon name="check" class="check pt-1"></lucide-icon>
             </button>
             <button *ngIf="editSongIndex === i" (click)="cancelEditSongDetails(song)"
@@ -104,13 +113,14 @@
               <lucide-icon name="x" class="x pt-1"></lucide-icon>
             </button>
             <button *ngIf="editSongIndex !== i" (click)="toggleDeleteSong(song)"
+                    [hidden]="editSongIndex != null || this.editName == true"
                     class="no-underline border-none bg-transparent text-red-400 hover:text-red-700 invisible group-hover:visible">
               <lucide-icon name="minus-circle" class="minus-circle"></lucide-icon>
             </button>
           </div>
         </div>
 
-        <div *ngIf="album.songs.length == 0">
+        <div *ngIf="album.songs == null || album.songs.length == 0">
           <h3 class="p-5 mb-20 text-zinc-400">There are not songs in your album.</h3>
         </div>
       </div>
@@ -180,7 +190,7 @@
     </form>
 
     <div class="pt-8 flex items-center gap-2">
-      <button (click)="addSong()"
+      <button (click)="addSong()" [disabled]="this.files == null || this.files.length == 0"
               class="bg-sky-500 p-2 rounded-md border-none disabled:bg-zinc-500 disabled:cursor-not-allowed hover:bg-sky-700 w-20"
               type="button">
         <div class="flex items-center justify-center text-zinc-200">
@@ -193,6 +203,17 @@
           <h4 class="text-zinc-200">Cancel</h4>
         </div>
       </button>
+    </div>
+
+    <div [hidden]="this.processing">
+      <div class="flex flex-row pt-5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             class="flex animate-spin h-5 w-5 mr-3 lucide lucide-loader-circle">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+        </svg>
+        <h3><strong>Processing...</strong></h3>
+      </div>
     </div>
 
   </div>
@@ -215,7 +236,7 @@
     </form>
 
     <div class="pt-8 flex items-center gap-2">
-      <button (click)="editAlbumCover()"
+      <button (click)="editAlbumCover()" [disabled]="this.selectedCover == null || this.selectedCover.length == 0"
               class="bg-sky-500 p-2 rounded-md border-none disabled:bg-zinc-500 disabled:cursor-not-allowed hover:bg-sky-700 w-20"
               type="button">
         <div class="flex items-center justify-center text-zinc-200">
@@ -228,6 +249,17 @@
           <h4 class="text-zinc-200">Cancel</h4>
         </div>
       </button>
+    </div>
+
+    <div [hidden]="this.processing">
+      <div class="flex flex-row pt-5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             class="flex animate-spin h-5 w-5 mr-3 lucide lucide-loader-circle">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+        </svg>
+        <h3><strong>Processing...</strong></h3>
+      </div>
     </div>
 
   </div>

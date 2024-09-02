@@ -20,6 +20,7 @@ export class AlbumComponent implements OnInit {
   showDeleteSongModal = false
   showAddSongModal = false
   showEditCover = false
+  processing = false
   originalName: string;
   originalSongName: string;
   originalSongNumber: number;
@@ -61,6 +62,7 @@ export class AlbumComponent implements OnInit {
   toggleAddMusic() {
     this.files = []
     this.showAddSongModal = !this.showAddSongModal
+    this.processing = false
   }
 
   toggleDeleteAlbum() {
@@ -73,7 +75,9 @@ export class AlbumComponent implements OnInit {
   }
 
   toggleEditCover() {
+    this.selectedCover = []
     this.showEditCover = !this.showEditCover
+    this.processing = false
   }
 
   editAlbumName() {
@@ -147,9 +151,10 @@ export class AlbumComponent implements OnInit {
   }
 
   editAlbumCover() {
+    this.processing = true
     const formData = new FormData();
-    this.album.image_url = this.selectedCover[0].name
-    formData.append('album', JSON.stringify(this.album));
+    let album: Album = new Album(this.album.id, this.album.title, this.selectedCover[0].name)
+    formData.append('album', JSON.stringify(album));
 
     if (this.selectedCover[0]) {
       formData.append('files', this.selectedCover[0]);
@@ -157,17 +162,28 @@ export class AlbumComponent implements OnInit {
 
     this.dbService.updateAlbum(formData).subscribe({
       next: () => {
+        this.dbService.findAllAlbums().subscribe({
+          next: (albums: Album[]) => {
+            this.dbService.changeData(albums)
+            this.album.image_url = this.selectedCover[0].name
+            this.toggleEditCover()
+            console.log('Albums getted:');
+          },
+          error: (error) => {
+            console.error('Failed to load albums', error);
+          }
+        });
         console.log('Album updated:');
       },
       error: (error) => {
-        this.album.title = this.originalName
+        this.toggleEditCover()
         console.error('Error updating album:', error);
       }
     });
-    this.toggleEditCover()
   }
 
   addSong() {
+    this.processing = true
     const formData = new FormData();
     for (const file of this.files) {
       formData.append('files', file);

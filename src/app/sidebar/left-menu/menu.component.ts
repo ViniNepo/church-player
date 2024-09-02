@@ -44,10 +44,12 @@ export class MenuComponent implements OnInit, OnDestroy {
   }
 
   toggleAlbumModal() {
+    this.newAlbumName = null
     this.showAlbumModal = !this.showAlbumModal;
   }
 
   toggleWorshipModal() {
+    this.newWorshipName = null
     this.showWorshipModal = !this.showWorshipModal;
   }
 

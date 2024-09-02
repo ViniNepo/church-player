@@ -121,7 +121,7 @@ export class AlbumComponent implements OnInit {
     const files: File[] = event.target.files;
 
     if (files.length > 10) {
-      alert('You can only upload up to 50 files.');
+      alert('You can only upload up to 20 files.');
       this.toggleAddMusic()
       return;
     }
@@ -136,10 +136,12 @@ export class AlbumComponent implements OnInit {
 
   updateAlbum() {
     const formData = new FormData();
-    formData.append('album', JSON.stringify(this.album));
+    let album: Album = new Album(this.album.id, this.album.title, this.album.image_url)
+    formData.append('album', JSON.stringify(album));
 
     this.dbService.updateAlbum(formData).subscribe({
       next: () => {
+        this.dbService.changeDataName(album)
         console.log('Album updated:');
       },
       error: (error) => {
@@ -208,7 +210,19 @@ export class AlbumComponent implements OnInit {
         console.log('Song added:');
       },
       error: (error) => {
-        this.toggleAddMusic()
+        this.dbService.findAlbumByID(this.album.id).subscribe({
+          next: (album: AlbumDTO) => {
+            this.album.songs = album.songs
+            this.toggleAddMusic()
+          },
+          error: (error) => {
+            this.toggleAddMusic()
+            console.error('Error updating songs list:', error);
+            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+              this.router.navigate([this.router.url]);
+            });
+          }
+        });
         console.error('Error add song:', error);
       }
     });

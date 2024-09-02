@@ -9,10 +9,10 @@ let goProcess;
 
 function createWindow() {
   appWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    minWidth: 1200,
-    minHeight: 800,
+    width: 1020,
+    height: 680,
+    minWidth: 1020,
+    minHeight: 680,
     icon: path.join(__dirname, '/dist/church-player/assets/church-player-2.png'),
     webPreferences: {
       nodeIntegration: true

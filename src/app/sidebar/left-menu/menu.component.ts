@@ -7,6 +7,7 @@ import {CreateWorshipDTO} from "../../model/dto/worship-programDTO";
 import {Album} from "../../model/album";
 import {Worship} from "../../model/worship";
 import {Subscription} from "rxjs";
+import {SongWithAlbumDTO} from "../../model/dto/songDTO";
 
 @Component({
   selector: 'app-left-menu',
@@ -19,8 +20,11 @@ export class MenuComponent implements OnInit, OnDestroy {
   showWorshipModal = false;
   newAlbumName = ""
   newWorshipName = ""
+  searchTerm: string = '';
   albums: Album[]
-
+  songs: SongWithAlbumDTO[]
+  filteredSongs: SongWithAlbumDTO[] = [];
+  selectedTab: string = 'content'; // Aba selecionada inicial
   subscription: Subscription;
 
   constructor(
@@ -42,6 +46,30 @@ export class MenuComponent implements OnInit, OnDestroy {
       this.subscription.unsubscribe();
     }
   }
+
+  selectTab(tab: string) {
+    this.dbService.findAll().subscribe({
+      next: (songDTO: SongWithAlbumDTO[]) => {
+        this.songs = songDTO || [];
+        this.filteredSongs = this.songs;
+        this.selectedTab = tab;
+      },
+      error: (error) => {
+        this.selectedTab = tab;
+        console.error('Error getting songs:', error);
+      }
+    });
+  }
+
+  searchSong(event: any): void {
+    this.searchTerm = event.target.value.toLowerCase();
+
+    // Se searchTerm estiver vazio, exibe todas as músicas, caso contrário, aplica o filtro
+    this.filteredSongs = this.searchTerm ?
+      this.songs.filter(song => song.title.toLowerCase().includes(this.searchTerm)) :
+      this.songs;
+  }
+
 
   toggleAlbumModal() {
     this.newAlbumName = null

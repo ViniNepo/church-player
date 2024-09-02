@@ -28,6 +28,7 @@ export class WorshipProgramComponent implements OnInit {
   showEditCover = false
   editName = false
   editSection = false
+  processing = false
   editMomentIndex: number | null = null;
   originalName: string | null = null;
   originalSection: string | null = null;
@@ -136,7 +137,7 @@ export class WorshipProgramComponent implements OnInit {
   toggleUpdateLabelName(sectionIndex: number, momentIndex: number, moment: MomentDTO) {
     this.originalMomentName = moment.title;
     this.showUpdateLabelModal = !this.showUpdateLabelModal;
-    this.editMomentIndices = { sectionIndex, momentIndex };
+    this.editMomentIndices = {sectionIndex, momentIndex};
   }
 
   cancelEditMomentDetails(moment: MomentDTO) {
@@ -145,7 +146,7 @@ export class WorshipProgramComponent implements OnInit {
   }
 
   updateMomentDetails(momentDTO: MomentDTO, sectionID: string) {
-    let songID: string =  ""
+    let songID: string = ""
     if (momentDTO.song != null) {
       songID = momentDTO.song.id
     }
@@ -171,8 +172,9 @@ export class WorshipProgramComponent implements OnInit {
   }
 
   editWorshipCover() {
+    this.processing = true
     const formData = new FormData();
-    let worship: Worship = new Worship(this.worship.id, this.worship.title, this.worship.image_url)
+    let worship: Worship = new Worship(this.worship.id, this.worship.title, this.selectedCover[0].name)
     formData.append('worship', JSON.stringify(worship));
 
     if (this.selectedCover[0]) {
@@ -182,10 +184,12 @@ export class WorshipProgramComponent implements OnInit {
     this.dbService.updateWorship(formData).subscribe({
       next: () => {
         this.worship.image_url = this.selectedCover[0].name
+        this.processing = false
         this.toggleEditCover()
         console.log('Worship updated:');
       },
       error: (error) => {
+        this.processing = false
         this.toggleEditCover()
         console.error('Error updating worship cover:', error);
       }
@@ -416,12 +420,7 @@ export class WorshipProgramComponent implements OnInit {
       this.songs;
   }
 
-  drop(event
-         :
-         CdkDragDrop<MomentDTO[]>, sessionIndex
-         :
-         number
-  ) {
+  drop(event: CdkDragDrop<MomentDTO[]>, sessionIndex: number) {
     // Verifica se o item foi movido dentro da mesma lista ou para outra lista
     if (event.previousContainer === event.container) {
       // Reordena dentro da mesma sessão

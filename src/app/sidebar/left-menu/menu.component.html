@@ -28,29 +28,73 @@
       </nav>
     </aside>
 
-    <div class="flex items-center mt-2 p-5 pb-2 text-zinc-200 bg-slate-900 rounded-t-lg">
-      <h3 class="flex-1 text-xl"><strong>Albums</strong></h3>
+    <div class="flex items-center mt-2 text-zinc-200 bg-slate-900 rounded-t-lg">
     </div>
   </header>
 
-  <main class="flex-1 overflow-y-auto bg-slate-900 rounded-b-lg">
-    <div class="overflow-y-auto">
-      <ul class="mt-4 flex ml-2 mr-2 flex-col list-none">
-        <li *ngFor="let album of this.albums" class="hover:bg-slate-800 hover:rounded-md transition-colors pt-2 pb-2">
-          <div (click)="redirect(album.id)"
-               class="flex items-center cursor-pointer no-underline truncate text-ellipsis overflow-hidden">
-            <img src="assets/images/{{album.image_url}}" class="h-12 w-12 object-cover ml-2">
-            <div class="pl-2 flex flex-col space-y-1">
-              <h5 class="text-zinc-400">{{album.title}}</h5>
+  <main class="flex-1 overflow-y-auto bg-slate-900 rounded-b-lg p">
+  <div class="tabs-container">
+    <!-- Tab Navigation -->
+    <ul class="tabs flex w-full border-b">
+      <li (click)="selectTab('content')" [class.active]="selectedTab === 'content'"
+          class="tab-item cursor-pointer px-4 py-2" [ngClass]="{'bg-slate-800 text-bold rounded-t-md': selectedTab === 'content'}">
+        <h3 class="text-sm">Albums</h3>
+      </li>
+      <li (click)="selectTab('quick-search')" [class.active]="selectedTab === 'quick-search'"
+          class="tab-item cursor-pointer px-4 py-2" [ngClass]="{'bg-slate-800 text-bold rounded-t-md': selectedTab === 'quick-search'}">
+        <h3 class="text-sm">Quick Search</h3>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Content Tab -->
+      <div *ngIf="selectedTab === 'content'" class="content-tab overflow-y-auto">
+        <ul class="mt-4 flex ml-2 mr-2 flex-col list-none">
+          <li *ngFor="let album of albums" class="hover:bg-slate-800 hover:rounded-md transition-colors pt-2 pb-2 pr-2">
+            <div (click)="redirect(album.id)"
+                 class="flex items-center cursor-pointer no-underline truncate text-ellipsis overflow-hidden">
+              <img src="assets/images/{{album.image_url}}" class="h-12 w-12 object-cover ml-2">
+              <div class="pl-2 flex flex-col space-y-1">
+                <h5 class="text-zinc-400">{{album.title}}</h5>
+              </div>
             </div>
+          </li>
+          <li *ngIf="albums == null || albums.length == 0" class="pl-2 pt-2 pb-2">
+            <h3 class="text-zinc-400">There are no albums to display</h3>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Quick Search Tab -->
+      <div *ngIf="selectedTab === 'quick-search'" class="quick-search-tab">
+        <div class="flex flex-row p-2">
+          <div class="flex items-center pr-2">
+            <lucide-icon name="search" class="search" class="pt-0.5 text-zinc-200"></lucide-icon>
           </div>
-        </li>
-        <li *ngIf="this.albums == null || this.albums.length == 0" class="pl-2 pt-2 pb-2">
-          <h3 class="text-zinc-400">There are no albums to display</h3>
-        </li>
-      </ul>
+          <input
+            (keyup)="searchSong($event)" type="text" class="flex-grow w-full rounded-md bg-gray-100 outline outline-offset-2 outline-1 outline-sky-600 border-0 pl-2 text-gray-900 placeholder:text-gray-400" placeholder="Search">
+        </div>
+
+        <ul class="mt-2 flex ml-2 mr-2 flex-col list-none">
+          <li *ngFor="let song of this.filteredSongs" class="hover:bg-slate-800 hover:rounded-md transition-colors pt-2 pb-2 pr-2">
+            <div (click)="redirect(song.album_id)"
+                 class="flex items-center cursor-pointer no-underline truncate text-ellipsis overflow-hidden">
+              <div class="pl-2 flex flex-col space-y-1">
+                <h5 class="text-zinc-200">{{song.title}}</h5>
+                <h5 class="text-zinc-400">{{song.album_name}}</h5>
+              </div>
+            </div>
+          </li>
+          <li *ngIf="this.filteredSongs == null || this.filteredSongs.length == 0" class="pl-2 pt-2 pb-2">
+            <h3 class="text-zinc-400">There are no songs to display</h3>
+          </li>
+        </ul>
+      </div>
     </div>
-  </main>
+  </div>
+</main>
+
 </div>
 
 <div *ngIf="showAlbumModal" class="fixed inset-0 z-50 justify-center items-center flex">

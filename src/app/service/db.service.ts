@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {CreateSongDTO, SongDTO, SongUpdateOrderDTO, SongWithAlbumDTO} from "../model/dto/songDTO";
 import {Album} from "../model/album";
 import {Worship} from "../model/worship";
@@ -20,18 +20,28 @@ export class DBService {
   constructor(private http: HttpClient) {
   }
 
-  private dataSource = new BehaviorSubject<any>(null);
+  private dataSource = new BehaviorSubject<Album[]>(null);
 
   // Observable que será usado para assinar
   currentData = this.dataSource.asObservable();
 
   // Método para atualizar os dados
-  changeData(data: any) {
+  changeData(data: Album[]) {
     this.dataSource.next(data);
   }
 
+  changeDataName(a: Album) {
+    this.dataSource.subscribe(albums => {
+        albums.forEach(album => {
+          if (a.id == album.id) {
+            album.title = a.title
+          }
+        });
+    });
+  }
+
   playSong(path: string) {
-    return this.http.get(`/api/file-control/${path}`).pipe(
+    return this.http.get(`http://localhost:8080/file-control/${path}`).pipe(
       catchError(error => {
         console.error('Error while trying to play song', error);
         return throwError(error);
@@ -41,7 +51,7 @@ export class DBService {
 
   //ALBUMS
   createAlbum(album: CreateAlbumDTO) {
-    return this.http.post('/api/albums', album).pipe(
+    return this.http.post('http://localhost:8080/albums', album).pipe(
       catchError(error => {
         console.error('Creating album failed', error);
         return throwError(error);
@@ -49,7 +59,7 @@ export class DBService {
     );
   }
   findAllAlbums(): Observable<Album[]> {
-    return this.http.get<Album[]>('/api/albums').pipe(
+    return this.http.get<Album[]>('http://localhost:8080/albums').pipe(
       catchError(error => {
         console.error('Error getting all albums', error);
         return throwError(error);
@@ -58,7 +68,7 @@ export class DBService {
   }
 
   findAlbumByID(id: string): Observable<AlbumDTO> {
-    return this.http.get<AlbumDTO>(`/api/albums/${id}`).pipe(
+    return this.http.get<AlbumDTO>(`http://localhost:8080/albums/${id}`).pipe(
       catchError(error => {
         console.error('Error getting album by id', error);
         return throwError(error);
@@ -67,7 +77,7 @@ export class DBService {
   }
 
   updateAlbum(data: FormData) {
-    return this.http.patch<Album>('/api/albums', data).pipe(
+    return this.http.patch<Album>('http://localhost:8080/albums', data).pipe(
       catchError(error => {
         console.error('Update failed', error);
         return throwError(error);
@@ -76,7 +86,7 @@ export class DBService {
   }
 
   deleteAlbum(id: string) {
-    return this.http.delete(`/api/albums/${id}`).pipe(
+    return this.http.delete(`http://localhost:8080/albums/${id}`).pipe(
       catchError(error => {
         console.error('Delete failed', error);
         return throwError(error);
@@ -86,7 +96,7 @@ export class DBService {
 
   //SONGS
   deleteSong(id: string) {
-    return this.http.delete(`/api/songs/${id}`).pipe(
+    return this.http.delete(`http://localhost:8080/songs/${id}`).pipe(
       catchError(error => {
         console.error('Delete failed', error);
         return throwError(error);
@@ -95,16 +105,20 @@ export class DBService {
   }
 
   createSong(albumID: string, data: FormData) {
-    return this.http.post(`/api/songs/${albumID}`, data).pipe(
-      catchError(error => {
-        console.error('Creating failed', error);
+    return this.http.post(`http://localhost:8080/songs/${albumID}`, data).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.error.includes('already exists')) {
+          alert(`Alert: ${error.error}!`)
+          console.error('file exists', error.error.message);
+        }
+        console.error('Update failed', error);
         return throwError(error);
       })
     );
   }
 
   updateSong(song: Song) {
-    return this.http.patch<Song>('/api/songs', song).pipe(
+    return this.http.patch<Song>('http://localhost:8080/songs', song).pipe(
       catchError(error => {
         console.error('Update failed', error);
         return throwError(error);
@@ -113,7 +127,7 @@ export class DBService {
   }
 
   updateSongOrder(songs: SongUpdateOrderDTO[]) {
-    return this.http.patch<SongUpdateOrderDTO[]>('/api/songs/orders', songs).pipe(
+    return this.http.patch<SongUpdateOrderDTO[]>('http://localhost:8080/songs/orders', songs).pipe(
       catchError(error => {
         console.error('Update orders failed', error);
         return throwError(error);
@@ -122,7 +136,7 @@ export class DBService {
   }
 
   findAll(): Observable<SongWithAlbumDTO[]> {
-    return this.http.get<SongWithAlbumDTO[]>(`/api/songs`).pipe(
+    return this.http.get<SongWithAlbumDTO[]>(`http://localhost:8080/songs`).pipe(
       catchError(error => {
         console.error('Error getting all songs', error);
         return throwError(error);
@@ -132,7 +146,7 @@ export class DBService {
 
   //WORSHIP
   createWorship(worship: CreateWorshipDTO) {
-    return this.http.post('/api/worships', worship).pipe(
+    return this.http.post('http://localhost:8080/worships', worship).pipe(
       catchError(error => {
         console.error('Creating worship failed', error);
         return throwError(error);
@@ -140,15 +154,15 @@ export class DBService {
     );
   }
   findAllWorships(): Observable<Worship[]> {
-    return this.http.get<Worship[]>('/api/worships');
+    return this.http.get<Worship[]>('http://localhost:8080/worships');
   }
 
   getWorshipByID(id: string): Observable<WorshipDTO> {
-    return this.http.get<WorshipDTO>(`/api/worships/${id}`)
+    return this.http.get<WorshipDTO>(`http://localhost:8080/worships/${id}`)
   }
 
   updateWorship(data: FormData) {
-    return this.http.patch<Worship>('/api/worships', data).pipe(
+    return this.http.patch<Worship>('http://localhost:8080/worships', data).pipe(
       catchError(error => {
         console.error('Update worship failed', error);
         return throwError(error);
@@ -157,7 +171,7 @@ export class DBService {
   }
 
   deleteWorship(id: string) {
-    return this.http.delete(`/api/worships/${id}`).pipe(
+    return this.http.delete(`http://localhost:8080/worships/${id}`).pipe(
       catchError(error => {
         console.error('Delete failed', error);
         return throwError(error);
@@ -167,7 +181,7 @@ export class DBService {
 
   //MOMENTS
   updateMoment(moment: Moment) {
-    return this.http.patch<Moment>('/api/moments', moment).pipe(
+    return this.http.patch<Moment>('http://localhost:8080/moments', moment).pipe(
       catchError(error => {
         console.error('Update moment failed', error);
         return throwError(error);
@@ -176,7 +190,7 @@ export class DBService {
   }
 
   updateMomentsOrder(moments: MomentOrderDTO[]) {
-    return this.http.patch<SongUpdateOrderDTO[]>('/api/moments/orders', moments).pipe(
+    return this.http.patch<SongUpdateOrderDTO[]>('http://localhost:8080/moments/orders', moments).pipe(
       catchError(error => {
         console.error('Update moments failed', error);
         return throwError(error);
@@ -185,7 +199,7 @@ export class DBService {
   }
 
   createMoment(moment: CreateMomentDTO) {
-    return this.http.post('/api/moments', moment).pipe(
+    return this.http.post('http://localhost:8080/moments', moment).pipe(
       catchError(error => {
         console.error('Creating moment failed', error);
         return throwError(error);
@@ -194,7 +208,7 @@ export class DBService {
   }
 
   deleteMoment(id: string) {
-    return this.http.delete(`/api/moments/${id}`).pipe(
+    return this.http.delete(`http://localhost:8080/moments/${id}`).pipe(
       catchError(error => {
         console.error('Delete failed', error);
         return throwError(error);
@@ -204,7 +218,7 @@ export class DBService {
 
   //SECTIONS
   createSection(section: CreateSectionDTO) {
-    return this.http.post('/api/sections', section).pipe(
+    return this.http.post('http://localhost:8080/sections', section).pipe(
       catchError(error => {
         console.error('Creating section failed', error);
         return throwError(error);
@@ -213,7 +227,7 @@ export class DBService {
   }
 
   updateSection(section: Section) {
-    return this.http.patch<Section>('/api/sections', section).pipe(
+    return this.http.patch<Section>('http://localhost:8080/sections', section).pipe(
       catchError(error => {
         console.error('Update section failed', error);
         return throwError(error);
@@ -222,7 +236,7 @@ export class DBService {
   }
 
   deleteSection(id: string) {
-    return this.http.delete(`/api/sections/${id}`).pipe(
+    return this.http.delete(`http://localhost:8080/sections/${id}`).pipe(
       catchError(error => {
         console.error('Delete failed', error);
         return throwError(error);

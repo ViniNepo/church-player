@@ -74,7 +74,7 @@
              class="grid grid-cols-12 gap-4 pt-2 pb-2 no-underline group hover:bg-sky-900 rounded-sm"
              cdkDragBoundary=".drop-area" cdkDragLockAxis="y" cdkDrag>
           <div class="flex items-center col-span-9">
-            <div *ngIf="editSongIndex !== i" class="flex flex-row">
+            <div class="flex flex-row">
               <button cdkDragHandle [hidden]="editSongIndex != null || this.editName == true"
                       class="pl-1 cursor-move no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
                 <lucide-icon name="chevrons-up-down" class="chevrons-up-down" size="20"></lucide-icon>
@@ -83,8 +83,10 @@
                       class="pl-2 pr-2 cursor-pointer no-underline border-none bg-transparent text-zinc-400 hover:text-zinc-200 invisible group-hover:visible">
                 <lucide-icon name="play" class="play" size="20"></lucide-icon>
               </button>
-              <h4 *ngIf="editSongIndex !== i" class="pl-2 text-zinc-200 truncate">{{song.title}}</h4>
-              <input *ngIf="editSongIndex === i" [(ngModel)]="song.title"
+              <h4 *ngIf="editSongIndex !== i" class="pl-2 text-zinc-200">{{song.title}}</h4>
+            </div>
+            <div class="pl-9">
+              <input *ngIf="editSongIndex === i" [(ngModel)]="song.title" size="40"
                      class="block w-full rounded-md bg-gray-100 outline outline-offset-2 outline-1 outline-sky-600 border-0 pl-2 text-gray-900 placeholder:text-gray-400"
                      placeholder="Song name">
             </div>

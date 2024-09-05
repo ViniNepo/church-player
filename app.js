@@ -48,7 +48,7 @@ function createWindow() {
 }
 
 function startBackend() {
-  const goExecutablePath = path.join(__dirname, 'church_player_backend.exe');
+  const goExecutablePath = path.join(__dirname, 'church_player_backend');
   goProcess = spawn(goExecutablePath, [], {
     stdio: 'ignore', // Executa o processo em segundo plano
     detached: true   // Permite que o processo continue rodando em segundo plano
